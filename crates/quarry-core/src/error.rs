@@ -63,3 +63,6 @@ impl From<std::io::Error> for Error {
         Self::Io(err)
     }
 }
+
+/// Shorthand used throughout the crate.
+pub type Result<T> = std::result::Result<T, Error>;
