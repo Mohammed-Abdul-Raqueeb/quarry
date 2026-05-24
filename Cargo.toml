@@ -6,3 +6,12 @@ members = [
     "crates/quarry-server",
 ]
 resolver = "2"
+
+[workspace.package]
+version = "0.4.0"
+edition = "2021"
+rust-version = "1.82"
+authors = ["Mohammed Abdul Raqueeb"]
+license = "MIT"
+repository = "https://github.com/Mohammed-Abdul-Raqueeb/quarry"
+description = "An embedded full-text search engine with no dependencies."
