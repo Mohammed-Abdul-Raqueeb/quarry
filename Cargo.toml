@@ -15,3 +15,7 @@ authors = ["Mohammed Abdul Raqueeb"]
 license = "MIT"
 repository = "https://github.com/Mohammed-Abdul-Raqueeb/quarry"
 description = "An embedded full-text search engine with no dependencies."
+
+# Quarry has no external dependencies on purpose; see docs/architecture.md.
+# Keeping `[workspace.dependencies]` empty is the enforcement of that.
+[workspace.dependencies]
