@@ -1,0 +1,12 @@
+# build output
+/target/
+**/*.rs.bk
+
+# index data written by the CLI and the tests
+/data/
+*.qseg
+
+# editors / OS
+.idea/
+.DS_Store
+Thumbs.db
