@@ -32,3 +32,19 @@ pub enum Error {
     /// A limit guarding against hostile or runaway input was exceeded.
     Limit(String),
 }
+
+impl fmt::Display for Error {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        match self {
+            Self::Io(err) => write!(f, "io error: {err}"),
+            Self::Corrupt(what) => write!(f, "corrupt index: {what}"),
+            Self::Schema(what) => write!(f, "schema error: {what}"),
+            Self::Json(what) => write!(f, "invalid json: {what}"),
+            Self::UnknownField(name) => write!(f, "unknown field: {name}"),
+            Self::Version { found, expected } => {
+                write!(f, "segment format v{found} cannot be read by v{expected}")
+            }
+            Self::Limit(what) => write!(f, "limit exceeded: {what}"),
+        }
+    }
+}
