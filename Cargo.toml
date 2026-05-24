@@ -43,3 +43,9 @@ too_many_lines = "allow"
 # Flags pairs like `doc`/`docs` and `field`/`fields`, which are the clearest
 # names available here.
 similar_names = "allow"
+
+[profile.release]
+opt-level = 3
+lto = "thin"
+codegen-units = 1
+panic = "abort"
