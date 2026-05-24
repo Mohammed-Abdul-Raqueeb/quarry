@@ -1,0 +1,8 @@
+[workspace]
+members = [
+    "crates/quarry-core",
+    "crates/quarry-query",
+    "crates/quarry-cli",
+    "crates/quarry-server",
+]
+resolver = "2"
