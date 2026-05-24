@@ -19,3 +19,9 @@ description = "An embedded full-text search engine with no dependencies."
 # Quarry has no external dependencies on purpose; see docs/architecture.md.
 # Keeping `[workspace.dependencies]` empty is the enforcement of that.
 [workspace.dependencies]
+
+[workspace.lints.rust]
+unsafe_code = "forbid"
+missing_docs = "warn"
+unreachable_pub = "warn"
+rust_2018_idioms = { level = "warn", priority = -1 }
