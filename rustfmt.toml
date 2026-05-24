@@ -1,0 +1,5 @@
+# Defaults, with one change: the standard 100-column width suits the long
+# descriptive names used throughout this codebase better than the 80 that
+# `max_width` would otherwise imply for comments.
+edition = "2021"
+max_width = 100
