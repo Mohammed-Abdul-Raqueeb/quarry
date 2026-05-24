@@ -25,3 +25,21 @@ unsafe_code = "forbid"
 missing_docs = "warn"
 unreachable_pub = "warn"
 rust_2018_idioms = { level = "warn", priority = -1 }
+
+[workspace.lints.clippy]
+all = { level = "warn", priority = -1 }
+pedantic = { level = "warn", priority = -1 }
+# Index arithmetic is pervasive in a postings codec and reads worse when
+# rewritten to satisfy these.
+cast_possible_truncation = "allow"
+cast_precision_loss = "allow"
+cast_sign_loss = "allow"
+module_name_repetitions = "allow"
+missing_errors_doc = "allow"
+missing_panics_doc = "allow"
+# A codec or parser function is naturally long and splitting one to satisfy a
+# line count makes the format harder to follow, not easier.
+too_many_lines = "allow"
+# Flags pairs like `doc`/`docs` and `field`/`fields`, which are the clearest
+# names available here.
+similar_names = "allow"
