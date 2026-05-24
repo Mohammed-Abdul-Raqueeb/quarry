@@ -1,0 +1,19 @@
+[package]
+name = "quarry-core"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+authors.workspace = true
+license.workspace = true
+repository.workspace = true
+description = "Indexing, scoring and search for Quarry."
+
+[lints]
+workspace = true
+
+[[bench]]
+name = "engine"
+path = "../../benches/engine.rs"
+# The default harness would wrap this in libtest and demand nightly for
+# #[bench]; this is a plain binary that prints a table.
+harness = false
