@@ -66,3 +66,34 @@ impl From<std::io::Error> for Error {
 
 /// Shorthand used throughout the crate.
 pub type Result<T> = std::result::Result<T, Error>;
+
+impl Error {
+    /// Builds a [`Error::Corrupt`] from anything displayable.
+    pub fn corrupt(what: impl fmt::Display) -> Self {
+        Self::Corrupt(what.to_string())
+    }
+
+    /// Builds a [`Error::Schema`] from anything displayable.
+    pub fn schema(what: impl fmt::Display) -> Self {
+        Self::Schema(what.to_string())
+    }
+
+    /// Builds a [`Error::Json`] from anything displayable.
+    pub fn json(what: impl fmt::Display) -> Self {
+        Self::Json(what.to_string())
+    }
+
+    /// Builds a [`Error::Limit`] from anything displayable.
+    pub fn limit(what: impl fmt::Display) -> Self {
+        Self::Limit(what.to_string())
+    }
+
+    /// Whether retrying the same operation could plausibly succeed.
+    ///
+    /// Only I/O is transient. A corrupt segment or a rejected document will
+    /// fail identically forever, so a caller should surface it rather than loop.
+    #[must_use]
+    pub fn is_transient(&self) -> bool {
+        matches!(self, Self::Io(_))
+    }
+}
