@@ -198,3 +198,9 @@ pub fn parse(input: &str) -> Result<Json> {
     }
     Ok(value)
 }
+
+struct Parser<'a> {
+    bytes: &'a [u8],
+    pos: usize,
+    depth: usize,
+}
