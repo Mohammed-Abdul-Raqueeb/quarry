@@ -285,3 +285,30 @@ impl Parser<'_> {
             self.depth -= 1;
             return Ok(Json::Array(items));
         }
+
+        loop {
+            self.skip_whitespace();
+            items.push(self.parse_value()?);
+            self.skip_whitespace();
+            match self.bump() {
+                Some(b',') => {}
+                Some(b']') => break,
+                Some(b) => {
+                    return Err(Error::json(format!(
+                        "expected ',' or ']' but found {:?} at byte {}",
+                        b as char,
+                        self.pos - 1
+                    )))
+                }
+                None => return Err(Error::json("unterminated array")),
+            }
+        }
+
+        self.depth -= 1;
+        Ok(Json::Array(items))
+    }
+
+    fn parse_object(&mut self) -> Result<Json> {
+        self.expect(b'{')?;
+        self.depth += 1;
+        let mut map = BTreeMap::new();
