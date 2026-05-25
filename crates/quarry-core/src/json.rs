@@ -204,3 +204,18 @@ struct Parser<'a> {
     pos: usize,
     depth: usize,
 }
+
+impl Parser<'_> {
+    fn skip_whitespace(&mut self) {
+        while let Some(b) = self.peek() {
+            if matches!(b, b' ' | b'\t' | b'\n' | b'\r') {
+                self.pos += 1;
+            } else {
+                break;
+            }
+        }
+    }
+
+    fn peek(&self) -> Option<u8> {
+        self.bytes.get(self.pos).copied()
+    }
