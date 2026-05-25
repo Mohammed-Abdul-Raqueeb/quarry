@@ -156,3 +156,23 @@ fn write_number(f: &mut fmt::Formatter<'_>, n: f64) -> fmt::Result {
         write!(f, "{n}")
     }
 }
+
+fn write_string(f: &mut fmt::Formatter<'_>, s: &str) -> fmt::Result {
+    f.write_char('"')?;
+    for ch in s.chars() {
+        match ch {
+            '"' => f.write_str("\\\"")?,
+            '\\' => f.write_str("\\\\")?,
+            '\n' => f.write_str("\\n")?,
+            '\r' => f.write_str("\\r")?,
+            '\t' => f.write_str("\\t")?,
+            '\u{08}' => f.write_str("\\b")?,
+            '\u{0c}' => f.write_str("\\f")?,
+            // Everything below 0x20 must be escaped; the rest can go out raw
+            // because the output is declared UTF-8.
+            c if (c as u32) < 0x20 => write!(f, "\\u{:04x}", c as u32)?,
+            c => f.write_char(c)?,
+        }
+    }
+    f.write_char('"')
+}
