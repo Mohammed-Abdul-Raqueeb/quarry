@@ -70,3 +70,21 @@ impl Json {
             _ => None,
         }
     }
+
+    /// The elements, if this is an array.
+    #[must_use]
+    pub fn as_array(&self) -> Option<&[Json]> {
+        match self {
+            Self::Array(items) => Some(items),
+            _ => None,
+        }
+    }
+
+    /// The entries, if this is an object.
+    #[must_use]
+    pub fn as_object(&self) -> Option<&BTreeMap<String, Json>> {
+        match self {
+            Self::Object(map) => Some(map),
+            _ => None,
+        }
+    }
