@@ -142,3 +142,17 @@ impl fmt::Display for Json {
         }
     }
 }
+
+/// Writes a number without a trailing `.0`, so integers round-trip as integers.
+fn write_number(f: &mut fmt::Formatter<'_>, n: f64) -> fmt::Result {
+    // JSON has no way to spell a non-finite number, and emitting `NaN` would
+    // produce output no parser accepts. Null is the conventional stand-in.
+    if !n.is_finite() {
+        return f.write_str("null");
+    }
+    if n.fract() == 0.0 && n.abs() < 1e15 {
+        write!(f, "{}", n as i64)
+    } else {
+        write!(f, "{n}")
+    }
+}
