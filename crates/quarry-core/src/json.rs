@@ -400,3 +400,25 @@ impl Parser<'_> {
     /// Reads `\uXXXX`, joining a surrogate pair into one code point.
     fn parse_unicode_escape(&mut self) -> Result<char> {
         let first = self.parse_hex4()?;
+
+        // A high surrogate is only half a code point; JSON spells astral
+        // characters as a pair, so the low half has to be read with it.
+        if (0xD800..0xDC00).contains(&first) {
+            if self.peek() != Some(b'\\') {
+                return Err(Error::json("high surrogate without a low surrogate"));
+            }
+            self.pos += 1;
+            if self.bump() != Some(b'u') {
+                return Err(Error::json("high surrogate without a low surrogate"));
+            }
+            let second = self.parse_hex4()?;
+            if !(0xDC00..0xE000).contains(&second) {
+                return Err(Error::json(format!(
+                    "expected a low surrogate but found {second:#06x}"
+                )));
+            }
+            let combined =
+                0x1_0000 + ((u32::from(first) - 0xD800) << 10) + (u32::from(second) - 0xDC00);
+            return char::from_u32(combined)
+                .ok_or_else(|| Error::json("surrogate pair is not a code point"));
+        }
