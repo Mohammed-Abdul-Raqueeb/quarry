@@ -219,3 +219,27 @@ impl Parser<'_> {
     fn peek(&self) -> Option<u8> {
         self.bytes.get(self.pos).copied()
     }
+
+    fn bump(&mut self) -> Option<u8> {
+        let b = self.peek();
+        if b.is_some() {
+            self.pos += 1;
+        }
+        b
+    }
+
+    fn expect(&mut self, want: u8) -> Result<()> {
+        match self.bump() {
+            Some(b) if b == want => Ok(()),
+            Some(b) => Err(Error::json(format!(
+                "expected {:?} but found {:?} at byte {}",
+                want as char,
+                b as char,
+                self.pos - 1
+            ))),
+            None => Err(Error::json(format!(
+                "expected {:?} but input ended",
+                want as char
+            ))),
+        }
+    }
