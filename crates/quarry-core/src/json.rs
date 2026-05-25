@@ -33,3 +33,22 @@ pub enum Json {
     /// An object with sorted keys.
     Object(BTreeMap<String, Json>),
 }
+
+impl Json {
+    /// The value at `key`, if this is an object that has it.
+    #[must_use]
+    pub fn get(&self, key: &str) -> Option<&Json> {
+        match self {
+            Self::Object(map) => map.get(key),
+            _ => None,
+        }
+    }
+
+    /// The string inside, if this is a string.
+    #[must_use]
+    pub fn as_str(&self) -> Option<&str> {
+        match self {
+            Self::String(s) => Some(s),
+            _ => None,
+        }
+    }
