@@ -347,3 +347,35 @@ impl Parser<'_> {
         self.depth -= 1;
         Ok(Json::Object(map))
     }
+
+    fn parse_string(&mut self) -> Result<String> {
+        self.expect(b'"')?;
+        let mut out = String::new();
+
+        loop {
+            match self.bump() {
+                None => return Err(Error::json("unterminated string")),
+                Some(b'"') => return Ok(out),
+                Some(b'\\') => self.parse_escape(&mut out)?,
+                Some(b) if b < 0x20 => {
+                    return Err(Error::json(format!(
+                        "unescaped control byte {b:#04x} in string"
+                    )))
+                }
+                Some(b) => {
+                    // Re-assemble the UTF-8 sequence this byte starts. The
+                    // input is a &str, so it is already valid UTF-8 and the
+                    // continuation bytes are guaranteed to be there.
+                    let len = utf8_len(b);
+                    let start = self.pos - 1;
+                    let end = start + len;
+                    let slice = self
+                        .bytes
+                        .get(start..end)
+                        .ok_or_else(|| Error::json("truncated utf-8 sequence"))?;
+                    out.push_str(std::str::from_utf8(slice).map_err(Error::json)?);
+                    self.pos = end;
+                }
+            }
+        }
+    }
