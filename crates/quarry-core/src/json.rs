@@ -312,3 +312,38 @@ impl Parser<'_> {
         self.expect(b'{')?;
         self.depth += 1;
         let mut map = BTreeMap::new();
+
+        self.skip_whitespace();
+        if self.peek() == Some(b'}') {
+            self.pos += 1;
+            self.depth -= 1;
+            return Ok(Json::Object(map));
+        }
+
+        loop {
+            self.skip_whitespace();
+            let key = self.parse_string()?;
+            self.skip_whitespace();
+            self.expect(b':')?;
+            self.skip_whitespace();
+            let value = self.parse_value()?;
+            // A repeated key keeps the last value, matching what most parsers do.
+            map.insert(key, value);
+            self.skip_whitespace();
+            match self.bump() {
+                Some(b',') => {}
+                Some(b'}') => break,
+                Some(b) => {
+                    return Err(Error::json(format!(
+                        "expected ',' or '}}' but found {:?} at byte {}",
+                        b as char,
+                        self.pos - 1
+                    )))
+                }
+                None => return Err(Error::json("unterminated object")),
+            }
+        }
+
+        self.depth -= 1;
+        Ok(Json::Object(map))
+    }
