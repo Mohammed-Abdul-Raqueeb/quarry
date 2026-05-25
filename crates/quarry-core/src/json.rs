@@ -108,3 +108,37 @@ impl Json {
         }
     }
 }
+
+impl fmt::Display for Json {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        match self {
+            Self::Null => f.write_str("null"),
+            Self::Bool(true) => f.write_str("true"),
+            Self::Bool(false) => f.write_str("false"),
+            Self::Number(n) => write_number(f, *n),
+            Self::String(s) => write_string(f, s),
+            Self::Array(items) => {
+                f.write_char('[')?;
+                for (i, item) in items.iter().enumerate() {
+                    if i > 0 {
+                        f.write_char(',')?;
+                    }
+                    write!(f, "{item}")?;
+                }
+                f.write_char(']')
+            }
+            Self::Object(map) => {
+                f.write_char('{')?;
+                for (i, (key, value)) in map.iter().enumerate() {
+                    if i > 0 {
+                        f.write_char(',')?;
+                    }
+                    write_string(f, key)?;
+                    f.write_char(':')?;
+                    write!(f, "{value}")?;
+                }
+                f.write_char('}')
+            }
+        }
+    }
+}
