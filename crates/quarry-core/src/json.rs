@@ -52,3 +52,21 @@ impl Json {
             _ => None,
         }
     }
+
+    /// The number inside, if this is a number.
+    #[must_use]
+    pub fn as_f64(&self) -> Option<f64> {
+        match self {
+            Self::Number(n) => Some(*n),
+            _ => None,
+        }
+    }
+
+    /// The boolean inside, if this is a boolean.
+    #[must_use]
+    pub fn as_bool(&self) -> Option<bool> {
+        match self {
+            Self::Bool(b) => Some(*b),
+            _ => None,
+        }
+    }
