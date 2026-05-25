@@ -243,3 +243,33 @@ impl Parser<'_> {
             ))),
         }
     }
+
+    fn parse_value(&mut self) -> Result<Json> {
+        if self.depth >= MAX_DEPTH {
+            return Err(Error::json(format!("nesting deeper than {MAX_DEPTH}")));
+        }
+
+        match self.peek() {
+            Some(b'n') => self.parse_literal("null", Json::Null),
+            Some(b't') => self.parse_literal("true", Json::Bool(true)),
+            Some(b'f') => self.parse_literal("false", Json::Bool(false)),
+            Some(b'"') => Ok(Json::String(self.parse_string()?)),
+            Some(b'[') => self.parse_array(),
+            Some(b'{') => self.parse_object(),
+            Some(b'-' | b'0'..=b'9') => self.parse_number(),
+            Some(b) => Err(Error::json(format!(
+                "unexpected {:?} at byte {}",
+                b as char, self.pos
+            ))),
+            None => Err(Error::json("unexpected end of input")),
+        }
+    }
+
+    fn parse_literal(&mut self, word: &str, value: Json) -> Result<Json> {
+        if self.bytes[self.pos..].starts_with(word.as_bytes()) {
+            self.pos += word.len();
+            Ok(value)
+        } else {
+            Err(Error::json(format!("expected {word} at byte {}", self.pos)))
+        }
+    }
