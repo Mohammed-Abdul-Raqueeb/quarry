@@ -379,3 +379,24 @@ impl Parser<'_> {
             }
         }
     }
+
+    fn parse_escape(&mut self, out: &mut String) -> Result<()> {
+        match self.bump() {
+            Some(b'"') => out.push('"'),
+            Some(b'\\') => out.push('\\'),
+            Some(b'/') => out.push('/'),
+            Some(b'b') => out.push('\u{08}'),
+            Some(b'f') => out.push('\u{0c}'),
+            Some(b'n') => out.push('\n'),
+            Some(b'r') => out.push('\r'),
+            Some(b't') => out.push('\t'),
+            Some(b'u') => out.push(self.parse_unicode_escape()?),
+            Some(b) => return Err(Error::json(format!("unknown escape \\{:?}", b as char))),
+            None => return Err(Error::json("input ended inside an escape")),
+        }
+        Ok(())
+    }
+
+    /// Reads `\uXXXX`, joining a surrogate pair into one code point.
+    fn parse_unicode_escape(&mut self) -> Result<char> {
+        let first = self.parse_hex4()?;
