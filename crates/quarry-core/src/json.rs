@@ -176,3 +176,25 @@ fn write_string(f: &mut fmt::Formatter<'_>, s: &str) -> fmt::Result {
     }
     f.write_char('"')
 }
+
+/// Parses a complete JSON document.
+///
+/// Trailing content after the value is an error, so a truncated or doubled
+/// payload is rejected rather than silently half-read.
+pub fn parse(input: &str) -> Result<Json> {
+    let mut parser = Parser {
+        bytes: input.as_bytes(),
+        pos: 0,
+        depth: 0,
+    };
+    parser.skip_whitespace();
+    let value = parser.parse_value()?;
+    parser.skip_whitespace();
+    if parser.pos != parser.bytes.len() {
+        return Err(Error::json(format!(
+            "unexpected trailing input at byte {}",
+            parser.pos
+        )));
+    }
+    Ok(value)
+}
