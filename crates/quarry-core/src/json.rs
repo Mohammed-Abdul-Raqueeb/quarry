@@ -273,3 +273,15 @@ impl Parser<'_> {
             Err(Error::json(format!("expected {word} at byte {}", self.pos)))
         }
     }
+
+    fn parse_array(&mut self) -> Result<Json> {
+        self.expect(b'[')?;
+        self.depth += 1;
+        let mut items = Vec::new();
+
+        self.skip_whitespace();
+        if self.peek() == Some(b']') {
+            self.pos += 1;
+            self.depth -= 1;
+            return Ok(Json::Array(items));
+        }
