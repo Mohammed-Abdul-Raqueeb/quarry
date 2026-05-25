@@ -9,3 +9,6 @@
 use crate::error::{Error, Result};
 use std::collections::BTreeMap;
 use std::fmt::{self, Write as _};
+
+/// Deepest nesting accepted. Well past anything a real document needs.
+pub const MAX_DEPTH: usize = 64;
