@@ -25,3 +25,8 @@ pub fn write_u64(out: &mut Vec<u8>, mut value: u64) {
         }
     }
 }
+
+/// Appends `value` as an unsigned varint.
+pub fn write_u32(out: &mut Vec<u8>, value: u32) {
+    write_u64(out, u64::from(value));
+}
