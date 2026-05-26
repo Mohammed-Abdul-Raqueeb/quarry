@@ -85,3 +85,9 @@ pub fn zigzag_decode(value: u64) -> i64 {
 pub fn write_i64(out: &mut Vec<u8>, value: i64) {
     write_u64(out, zigzag_encode(value));
 }
+
+/// Reads a signed varint.
+pub fn read_i64(input: &[u8]) -> Result<(i64, usize)> {
+    let (raw, used) = read_u64(input)?;
+    Ok((zigzag_decode(raw), used))
+}
