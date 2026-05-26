@@ -61,3 +61,14 @@ pub fn read_u32(input: &[u8]) -> Result<(u32, usize)> {
         u32::try_from(value).map_err(|_| Error::corrupt(format!("{value} does not fit in u32")))?;
     Ok((narrowed, used))
 }
+
+/// Maps a signed integer onto an unsigned one so small magnitudes stay small.
+///
+/// Two's complement makes `-1` into `0xFFFF_FFFF_FFFF_FFFF`, which is the worst
+/// case for a varint. Zigzag interleaves the signs instead, so `-1` is 1.
+#[must_use]
+// The shift-and-xor relies on wrapping: that is what the transformation is.
+#[allow(clippy::cast_sign_loss, clippy::cast_possible_wrap)]
+pub fn zigzag_encode(value: i64) -> u64 {
+    ((value << 1) ^ (value >> 63)) as u64
+}
