@@ -53,3 +53,11 @@ pub fn read_u64(input: &[u8]) -> Result<(u64, usize)> {
         "varint is unterminated or longer than 10 bytes",
     ))
 }
+
+/// Reads an unsigned varint that must fit in a `u32`.
+pub fn read_u32(input: &[u8]) -> Result<(u32, usize)> {
+    let (value, used) = read_u64(input)?;
+    let narrowed =
+        u32::try_from(value).map_err(|_| Error::corrupt(format!("{value} does not fit in u32")))?;
+    Ok((narrowed, used))
+}
