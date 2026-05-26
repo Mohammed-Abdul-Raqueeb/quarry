@@ -30,3 +30,26 @@ pub fn write_u64(out: &mut Vec<u8>, mut value: u64) {
 pub fn write_u32(out: &mut Vec<u8>, value: u32) {
     write_u64(out, u64::from(value));
 }
+
+/// Reads an unsigned varint, returning the value and how many bytes it used.
+pub fn read_u64(input: &[u8]) -> Result<(u64, usize)> {
+    let mut value: u64 = 0;
+    let mut shift = 0;
+
+    for (i, &byte) in input.iter().take(MAX_VARINT_LEN).enumerate() {
+        value |= u64::from(byte & 0x7F) << shift;
+        if byte & 0x80 == 0 {
+            // A value whose last byte is 0x00 but is not the first byte was
+            // written with redundant padding, which no honest encoder emits.
+            if i > 0 && byte == 0 {
+                return Err(Error::corrupt("varint has a redundant trailing zero"));
+            }
+            return Ok((value, i + 1));
+        }
+        shift += 7;
+    }
+
+    Err(Error::corrupt(
+        "varint is unterminated or longer than 10 bytes",
+    ))
+}
