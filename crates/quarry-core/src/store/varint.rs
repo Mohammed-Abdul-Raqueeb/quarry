@@ -106,3 +106,18 @@ pub fn encoded_len(value: u64) -> usize {
     }
     len
 }
+
+/// Writes a sorted slice as a first value plus gaps.
+///
+/// Document ids in a posting list ascend, and the gaps between them are far
+/// smaller than the ids themselves — this is what makes a list of a million
+/// document ids cost about a byte each instead of four.
+pub fn write_sorted_u32(out: &mut Vec<u8>, values: &[u32]) {
+    write_u32(out, values.len() as u32);
+    let mut previous = 0u32;
+    for &value in values {
+        debug_assert!(value >= previous, "write_sorted_u32 needs ascending input");
+        write_u32(out, value - previous);
+        previous = value;
+    }
+}
