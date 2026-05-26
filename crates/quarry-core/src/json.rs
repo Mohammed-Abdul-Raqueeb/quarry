@@ -457,3 +457,35 @@ impl Parser<'_> {
             Some(b'1'..=b'9') => self.skip_digits(),
             _ => return Err(Error::json(format!("malformed number at byte {start}"))),
         }
+
+        if self.peek() == Some(b'.') {
+            self.pos += 1;
+            if !matches!(self.peek(), Some(b'0'..=b'9')) {
+                return Err(Error::json("digit expected after decimal point"));
+            }
+            self.skip_digits();
+        }
+
+        if matches!(self.peek(), Some(b'e' | b'E')) {
+            self.pos += 1;
+            if matches!(self.peek(), Some(b'+' | b'-')) {
+                self.pos += 1;
+            }
+            if !matches!(self.peek(), Some(b'0'..=b'9')) {
+                return Err(Error::json("digit expected in exponent"));
+            }
+            self.skip_digits();
+        }
+
+        let text = std::str::from_utf8(&self.bytes[start..self.pos]).map_err(Error::json)?;
+        text.parse::<f64>()
+            .map(Json::Number)
+            .map_err(|_| Error::json(format!("{text} is not a number")))
+    }
+
+    fn skip_digits(&mut self) {
+        while matches!(self.peek(), Some(b'0'..=b'9')) {
+            self.pos += 1;
+        }
+    }
+}
