@@ -528,3 +528,22 @@ impl JsonBuilder {
     pub fn str(self, key: &str, value: impl Into<String>) -> Self {
         self.set(key, Json::String(value.into()))
     }
+
+    /// Inserts a numeric value.
+    #[must_use]
+    pub fn num(self, key: &str, value: impl Into<f64>) -> Self {
+        self.set(key, Json::Number(value.into()))
+    }
+
+    /// Inserts a boolean value.
+    #[must_use]
+    pub fn bool(self, key: &str, value: bool) -> Self {
+        self.set(key, Json::Bool(value))
+    }
+
+    /// Finishes the object.
+    #[must_use]
+    pub fn build(self) -> Json {
+        Json::Object(self.map)
+    }
+}
