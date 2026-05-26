@@ -508,3 +508,23 @@ fn utf8_len(first: u8) -> usize {
 pub struct JsonBuilder {
     map: BTreeMap<String, Json>,
 }
+
+impl JsonBuilder {
+    /// Starts an empty object.
+    #[must_use]
+    pub fn new() -> Self {
+        Self::default()
+    }
+
+    /// Inserts a value, replacing any existing entry for `key`.
+    #[must_use]
+    pub fn set(mut self, key: &str, value: Json) -> Self {
+        self.map.insert(key.to_string(), value);
+        self
+    }
+
+    /// Inserts a string value.
+    #[must_use]
+    pub fn str(self, key: &str, value: impl Into<String>) -> Self {
+        self.set(key, Json::String(value.into()))
+    }
