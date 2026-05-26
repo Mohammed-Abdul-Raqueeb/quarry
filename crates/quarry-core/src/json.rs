@@ -422,3 +422,38 @@ impl Parser<'_> {
             return char::from_u32(combined)
                 .ok_or_else(|| Error::json("surrogate pair is not a code point"));
         }
+
+        if (0xDC00..0xE000).contains(&first) {
+            return Err(Error::json("lone low surrogate"));
+        }
+
+        char::from_u32(u32::from(first)).ok_or_else(|| Error::json("escape is not a code point"))
+    }
+
+    fn parse_hex4(&mut self) -> Result<u16> {
+        let mut value: u16 = 0;
+        for _ in 0..4 {
+            let b = self
+                .bump()
+                .ok_or_else(|| Error::json("input ended inside a \\u escape"))?;
+            let digit = (b as char)
+                .to_digit(16)
+                .ok_or_else(|| Error::json(format!("{:?} is not a hex digit", b as char)))?;
+            value = value * 16 + digit as u16;
+        }
+        Ok(value)
+    }
+
+    fn parse_number(&mut self) -> Result<Json> {
+        let start = self.pos;
+
+        if self.peek() == Some(b'-') {
+            self.pos += 1;
+        }
+
+        // JSON forbids a leading zero followed by more digits, and `-` alone.
+        match self.peek() {
+            Some(b'0') => self.pos += 1,
+            Some(b'1'..=b'9') => self.skip_digits(),
+            _ => return Err(Error::json(format!("malformed number at byte {start}"))),
+        }
