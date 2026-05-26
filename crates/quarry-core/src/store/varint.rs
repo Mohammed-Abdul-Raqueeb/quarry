@@ -6,3 +6,6 @@
 //! is where most of the compression in the segment format comes from.
 
 use crate::error::{Error, Result};
+
+/// Bytes needed to hold the largest `u64` in LEB128.
+pub const MAX_VARINT_LEN: usize = 10;
