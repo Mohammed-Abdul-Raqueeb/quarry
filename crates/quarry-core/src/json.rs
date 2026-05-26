@@ -502,3 +502,9 @@ fn utf8_len(first: u8) -> usize {
         4
     }
 }
+
+/// Builds a JSON object from key/value pairs, for assembling responses.
+#[derive(Debug, Default)]
+pub struct JsonBuilder {
+    map: BTreeMap<String, Json>,
+}
