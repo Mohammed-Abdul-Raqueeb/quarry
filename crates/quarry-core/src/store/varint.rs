@@ -9,3 +9,19 @@ use crate::error::{Error, Result};
 
 /// Bytes needed to hold the largest `u64` in LEB128.
 pub const MAX_VARINT_LEN: usize = 10;
+
+/// Appends `value` to `out` as an unsigned varint.
+pub fn write_u64(out: &mut Vec<u8>, mut value: u64) {
+    loop {
+        let mut byte = (value & 0x7F) as u8;
+        value >>= 7;
+        if value != 0 {
+            // The high bit means "another byte follows".
+            byte |= 0x80;
+            out.push(byte);
+        } else {
+            out.push(byte);
+            return;
+        }
+    }
+}
