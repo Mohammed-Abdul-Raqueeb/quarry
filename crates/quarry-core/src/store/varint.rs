@@ -72,3 +72,11 @@ pub fn read_u32(input: &[u8]) -> Result<(u32, usize)> {
 pub fn zigzag_encode(value: i64) -> u64 {
     ((value << 1) ^ (value >> 63)) as u64
 }
+
+/// Reverses [`zigzag_encode`].
+#[must_use]
+// Same wrapping arithmetic as the encoder, in reverse.
+#[allow(clippy::cast_possible_wrap)]
+pub fn zigzag_decode(value: u64) -> i64 {
+    ((value >> 1) as i64) ^ -((value & 1) as i64)
+}
