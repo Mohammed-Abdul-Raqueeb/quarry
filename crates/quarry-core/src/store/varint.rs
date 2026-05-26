@@ -121,3 +121,28 @@ pub fn write_sorted_u32(out: &mut Vec<u8>, values: &[u32]) {
         previous = value;
     }
 }
+
+/// Reads what [`write_sorted_u32`] wrote.
+pub fn read_sorted_u32(input: &[u8]) -> Result<(Vec<u32>, usize)> {
+    let (count, mut used) = read_u32(input)?;
+
+    // A corrupt length could otherwise ask for a multi-gigabyte allocation
+    // before the first read fails, so the capacity is clamped.
+    let mut values = Vec::with_capacity((count as usize).min(4096));
+    let mut current = 0u32;
+
+    for _ in 0..count {
+        let (gap, n) = read_u32(
+            input
+                .get(used..)
+                .ok_or_else(|| Error::corrupt("sorted list ended early"))?,
+        )?;
+        current = current
+            .checked_add(gap)
+            .ok_or_else(|| Error::corrupt("sorted list overflows u32"))?;
+        values.push(current);
+        used += n;
+    }
+
+    Ok((values, used))
+}
