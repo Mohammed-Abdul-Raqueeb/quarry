@@ -80,3 +80,8 @@ pub fn zigzag_encode(value: i64) -> u64 {
 pub fn zigzag_decode(value: u64) -> i64 {
     ((value >> 1) as i64) ^ -((value & 1) as i64)
 }
+
+/// Appends a signed varint.
+pub fn write_i64(out: &mut Vec<u8>, value: i64) {
+    write_u64(out, zigzag_encode(value));
+}
