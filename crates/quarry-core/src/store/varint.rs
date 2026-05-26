@@ -91,3 +91,18 @@ pub fn read_i64(input: &[u8]) -> Result<(i64, usize)> {
     let (raw, used) = read_u64(input)?;
     Ok((zigzag_decode(raw), used))
 }
+
+/// Bytes `value` would occupy, without encoding it.
+///
+/// Used to size a buffer before writing a block, so the vector never reallocates
+/// mid-encode.
+#[must_use]
+pub fn encoded_len(value: u64) -> usize {
+    let mut len = 1;
+    let mut remaining = value >> 7;
+    while remaining != 0 {
+        len += 1;
+        remaining >>= 7;
+    }
+    len
+}
