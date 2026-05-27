@@ -7,3 +7,9 @@
 
 /// The reversed IEEE polynomial, as used by zlib, PNG and gzip.
 const POLYNOMIAL: u32 = 0xEDB8_8320;
+
+/// Precomputed byte-at-a-time table.
+///
+/// Built in a `const` block so it lands in the binary rather than being
+/// computed on first use, which also keeps the function free of a `OnceLock`.
+const TABLE: [u32; 256] = build_table();
