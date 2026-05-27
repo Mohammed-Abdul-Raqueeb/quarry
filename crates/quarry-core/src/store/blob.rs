@@ -196,3 +196,35 @@ impl<'a> BlobReader<'a> {
             b[0], b[1], b[2], b[3], b[4], b[5], b[6], b[7],
         ]))
     }
+
+    /// Reads a little-endian `f32`.
+    pub fn f32(&mut self) -> Result<f32> {
+        let b = self.take(4)?;
+        Ok(f32::from_le_bytes([b[0], b[1], b[2], b[3]]))
+    }
+
+    /// Reads an unsigned varint.
+    pub fn varint(&mut self) -> Result<u64> {
+        let (value, used) = varint::read_u64(&self.bytes[self.pos..])?;
+        self.pos += used;
+        Ok(value)
+    }
+
+    /// Reads an unsigned varint that must fit in a `u32`.
+    pub fn varint_u32(&mut self) -> Result<u32> {
+        let (value, used) = varint::read_u32(&self.bytes[self.pos..])?;
+        self.pos += used;
+        Ok(value)
+    }
+
+    /// Reads a signed varint.
+    pub fn svarint(&mut self) -> Result<i64> {
+        let (value, used) = varint::read_i64(&self.bytes[self.pos..])?;
+        self.pos += used;
+        Ok(value)
+    }
+
+    /// Reads `n` raw bytes.
+    pub fn raw(&mut self, n: usize) -> Result<&'a [u8]> {
+        self.take(n)
+    }
