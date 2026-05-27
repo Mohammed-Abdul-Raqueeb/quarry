@@ -48,3 +48,9 @@ pub fn crc32(bytes: &[u8]) -> u32 {
 pub struct Crc32 {
     state: u32,
 }
+
+impl Default for Crc32 {
+    fn default() -> Self {
+        Self::new()
+    }
+}
