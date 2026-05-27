@@ -36,3 +36,9 @@ const fn build_table() -> [u32; 256] {
 
     table
 }
+
+/// CRC32 of a byte slice.
+#[must_use]
+pub fn crc32(bytes: &[u8]) -> u32 {
+    Crc32::new().update(bytes).finish()
+}
