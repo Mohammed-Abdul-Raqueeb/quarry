@@ -159,3 +159,21 @@ impl<'a> BlobReader<'a> {
     pub fn remaining(&self) -> usize {
         self.bytes.len() - self.pos
     }
+
+    /// Whether the cursor is at the end.
+    #[must_use]
+    pub fn is_empty(&self) -> bool {
+        self.pos >= self.bytes.len()
+    }
+
+    fn take(&mut self, n: usize) -> Result<&'a [u8]> {
+        let end = self
+            .pos
+            .checked_add(n)
+            .ok_or_else(|| Error::corrupt("read length overflows"))?;
+        let slice = self.bytes.get(self.pos..end).ok_or_else(|| {
+            Error::corrupt(format!("needed {n} bytes, {} left", self.remaining()))
+        })?;
+        self.pos = end;
+        Ok(slice)
+    }
