@@ -117,3 +117,14 @@ impl BlobWriter {
         &self.bytes
     }
 }
+
+/// Cursor over a byte slice, mirroring [`BlobWriter`].
+///
+/// Every read is bounds-checked and returns [`Error::Corrupt`] rather than
+/// panicking: the input is a file that may have been truncated, so a short read
+/// is an expected condition, not a bug.
+#[derive(Debug, Clone)]
+pub struct BlobReader<'a> {
+    bytes: &'a [u8],
+    pos: usize,
+}
