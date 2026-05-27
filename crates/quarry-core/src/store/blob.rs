@@ -67,3 +67,29 @@ impl BlobWriter {
     pub fn f32(&mut self, value: f32) {
         self.bytes.extend_from_slice(&value.to_le_bytes());
     }
+
+    /// Writes an unsigned varint.
+    pub fn varint(&mut self, value: u64) {
+        varint::write_u64(&mut self.bytes, value);
+    }
+
+    /// Writes a signed varint.
+    pub fn svarint(&mut self, value: i64) {
+        varint::write_i64(&mut self.bytes, value);
+    }
+
+    /// Writes raw bytes with no length prefix.
+    pub fn raw(&mut self, bytes: &[u8]) {
+        self.bytes.extend_from_slice(bytes);
+    }
+
+    /// Writes a varint length followed by the bytes.
+    pub fn bytes(&mut self, bytes: &[u8]) {
+        self.varint(bytes.len() as u64);
+        self.bytes.extend_from_slice(bytes);
+    }
+
+    /// Writes a varint length followed by the UTF-8 bytes.
+    pub fn string(&mut self, value: &str) {
+        self.bytes(value.as_bytes());
+    }
