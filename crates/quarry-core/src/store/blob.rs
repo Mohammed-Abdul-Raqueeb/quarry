@@ -93,3 +93,27 @@ impl BlobWriter {
     pub fn string(&mut self, value: &str) {
         self.bytes(value.as_bytes());
     }
+
+    /// Writes an ascending `u32` slice as gaps.
+    pub fn sorted_u32(&mut self, values: &[u32]) {
+        varint::write_sorted_u32(&mut self.bytes, values);
+    }
+
+    /// Checksum of everything written so far.
+    #[must_use]
+    pub fn checksum(&self) -> u32 {
+        Crc32::new().update(&self.bytes).finish()
+    }
+
+    /// Consumes the writer, returning the buffer.
+    #[must_use]
+    pub fn finish(self) -> Vec<u8> {
+        self.bytes
+    }
+
+    /// The buffer, borrowed.
+    #[must_use]
+    pub fn as_slice(&self) -> &[u8] {
+        &self.bytes
+    }
+}
