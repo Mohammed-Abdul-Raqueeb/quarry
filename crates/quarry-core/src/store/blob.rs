@@ -8,3 +8,9 @@
 use super::checksum::Crc32;
 use super::varint;
 use crate::error::{Error, Result};
+
+/// Append-only byte buffer with varint and length-prefixed helpers.
+#[derive(Debug, Default)]
+pub struct BlobWriter {
+    bytes: Vec<u8>,
+}
