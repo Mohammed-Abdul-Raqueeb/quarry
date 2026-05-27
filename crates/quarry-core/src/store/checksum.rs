@@ -13,3 +13,26 @@ const POLYNOMIAL: u32 = 0xEDB8_8320;
 /// Built in a `const` block so it lands in the binary rather than being
 /// computed on first use, which also keeps the function free of a `OnceLock`.
 const TABLE: [u32; 256] = build_table();
+
+const fn build_table() -> [u32; 256] {
+    let mut table = [0u32; 256];
+    let mut i = 0;
+
+    while i < 256 {
+        let mut crc = i as u32;
+        let mut bit = 0;
+        while bit < 8 {
+            // Shift out the low bit; if it was set, fold in the polynomial.
+            crc = if crc & 1 == 1 {
+                (crc >> 1) ^ POLYNOMIAL
+            } else {
+                crc >> 1
+            };
+            bit += 1;
+        }
+        table[i] = crc;
+        i += 1;
+    }
+
+    table
+}
