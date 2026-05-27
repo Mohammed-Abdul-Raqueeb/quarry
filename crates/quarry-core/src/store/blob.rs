@@ -177,3 +177,22 @@ impl<'a> BlobReader<'a> {
         self.pos = end;
         Ok(slice)
     }
+
+    /// Reads one byte.
+    pub fn u8(&mut self) -> Result<u8> {
+        Ok(self.take(1)?[0])
+    }
+
+    /// Reads a little-endian `u32`.
+    pub fn u32(&mut self) -> Result<u32> {
+        let bytes = self.take(4)?;
+        Ok(u32::from_le_bytes([bytes[0], bytes[1], bytes[2], bytes[3]]))
+    }
+
+    /// Reads a little-endian `u64`.
+    pub fn u64(&mut self) -> Result<u64> {
+        let b = self.take(8)?;
+        Ok(u64::from_le_bytes([
+            b[0], b[1], b[2], b[3], b[4], b[5], b[6], b[7],
+        ]))
+    }
