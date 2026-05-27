@@ -228,3 +228,35 @@ impl<'a> BlobReader<'a> {
     pub fn raw(&mut self, n: usize) -> Result<&'a [u8]> {
         self.take(n)
     }
+
+    /// Reads a length-prefixed byte string.
+    pub fn bytes(&mut self) -> Result<&'a [u8]> {
+        let len = self.varint()? as usize;
+        self.take(len)
+    }
+
+    /// Reads a length-prefixed UTF-8 string.
+    pub fn string(&mut self) -> Result<&'a str> {
+        let bytes = self.bytes()?;
+        std::str::from_utf8(bytes).map_err(|_| Error::corrupt("string is not valid utf-8"))
+    }
+
+    /// Reads a gap-encoded ascending `u32` list.
+    pub fn sorted_u32(&mut self) -> Result<Vec<u32>> {
+        let (values, used) = varint::read_sorted_u32(&self.bytes[self.pos..])?;
+        self.pos += used;
+        Ok(values)
+    }
+
+    /// Verifies a CRC32 over `bytes` against `expected`.
+    pub fn verify_checksum(bytes: &[u8], expected: u32) -> Result<()> {
+        let actual = Crc32::new().update(bytes).finish();
+        if actual == expected {
+            Ok(())
+        } else {
+            Err(Error::corrupt(format!(
+                "checksum mismatch: stored {expected:#010x}, computed {actual:#010x}"
+            )))
+        }
+    }
+}
