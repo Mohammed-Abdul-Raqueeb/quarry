@@ -84,3 +84,21 @@ impl Crc32 {
         self.state ^ 0xFFFF_FFFF
     }
 }
+
+/// FNV-1a, for in-memory hashing where collision resistance does not matter.
+///
+/// Used to bucket terms during indexing. Not a checksum and not a CRC
+/// replacement — it is here because it is three lines and faster than `SipHash`
+/// for short keys.
+#[must_use]
+pub fn fnv1a(bytes: &[u8]) -> u64 {
+    const OFFSET: u64 = 0xcbf2_9ce4_8422_2325;
+    const PRIME: u64 = 0x0000_0100_0000_01b3;
+
+    let mut hash = OFFSET;
+    for &byte in bytes {
+        hash ^= u64::from(byte);
+        hash = hash.wrapping_mul(PRIME);
+    }
+    hash
+}
