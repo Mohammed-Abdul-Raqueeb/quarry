@@ -41,3 +41,29 @@ impl BlobWriter {
     pub fn is_empty(&self) -> bool {
         self.bytes.is_empty()
     }
+
+    /// The current write offset, for recording in an index.
+    #[must_use]
+    pub fn offset(&self) -> u64 {
+        self.bytes.len() as u64
+    }
+
+    /// Writes one byte.
+    pub fn u8(&mut self, value: u8) {
+        self.bytes.push(value);
+    }
+
+    /// Writes a little-endian `u32`.
+    pub fn u32(&mut self, value: u32) {
+        self.bytes.extend_from_slice(&value.to_le_bytes());
+    }
+
+    /// Writes a little-endian `u64`.
+    pub fn u64(&mut self, value: u64) {
+        self.bytes.extend_from_slice(&value.to_le_bytes());
+    }
+
+    /// Writes a little-endian `f32`.
+    pub fn f32(&mut self, value: f32) {
+        self.bytes.extend_from_slice(&value.to_le_bytes());
+    }
