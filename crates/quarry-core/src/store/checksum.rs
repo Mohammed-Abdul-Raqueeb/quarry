@@ -54,3 +54,33 @@ impl Default for Crc32 {
         Self::new()
     }
 }
+
+impl Crc32 {
+    /// A fresh checksum.
+    #[must_use]
+    pub const fn new() -> Self {
+        // The standard pre-conditioning value; inverted again on finish.
+        Self { state: 0xFFFF_FFFF }
+    }
+
+    /// Folds more bytes in.
+    #[must_use]
+    pub fn update(mut self, bytes: &[u8]) -> Self {
+        for &byte in bytes {
+            let index = ((self.state ^ u32::from(byte)) & 0xFF) as usize;
+            self.state = TABLE[index] ^ (self.state >> 8);
+        }
+        self
+    }
+
+    /// Folds more bytes in, in place.
+    pub fn write(&mut self, bytes: &[u8]) {
+        *self = self.update(bytes);
+    }
+
+    /// The final checksum.
+    #[must_use]
+    pub const fn finish(self) -> u32 {
+        self.state ^ 0xFFFF_FFFF
+    }
+}
