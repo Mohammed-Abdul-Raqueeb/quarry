@@ -128,3 +128,34 @@ pub struct BlobReader<'a> {
     bytes: &'a [u8],
     pos: usize,
 }
+
+impl<'a> BlobReader<'a> {
+    /// A cursor at the start of `bytes`.
+    #[must_use]
+    pub fn new(bytes: &'a [u8]) -> Self {
+        Self { bytes, pos: 0 }
+    }
+
+    /// Current offset.
+    #[must_use]
+    pub fn position(&self) -> usize {
+        self.pos
+    }
+
+    /// Moves to an absolute offset.
+    pub fn seek(&mut self, pos: usize) -> Result<()> {
+        if pos > self.bytes.len() {
+            return Err(Error::corrupt(format!(
+                "seek to {pos} past end of {} bytes",
+                self.bytes.len()
+            )));
+        }
+        self.pos = pos;
+        Ok(())
+    }
+
+    /// Bytes left.
+    #[must_use]
+    pub fn remaining(&self) -> usize {
+        self.bytes.len() - self.pos
+    }
