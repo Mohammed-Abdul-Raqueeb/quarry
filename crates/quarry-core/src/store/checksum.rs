@@ -42,3 +42,9 @@ const fn build_table() -> [u32; 256] {
 pub fn crc32(bytes: &[u8]) -> u32 {
     Crc32::new().update(bytes).finish()
 }
+
+/// Incremental CRC32, for checksumming a stream without buffering it.
+#[derive(Debug, Clone, Copy)]
+pub struct Crc32 {
+    state: u32,
+}
