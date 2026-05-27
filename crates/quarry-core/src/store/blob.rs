@@ -14,3 +14,30 @@ use crate::error::{Error, Result};
 pub struct BlobWriter {
     bytes: Vec<u8>,
 }
+
+impl BlobWriter {
+    /// An empty writer.
+    #[must_use]
+    pub fn new() -> Self {
+        Self::default()
+    }
+
+    /// An empty writer with room for `capacity` bytes.
+    #[must_use]
+    pub fn with_capacity(capacity: usize) -> Self {
+        Self {
+            bytes: Vec::with_capacity(capacity),
+        }
+    }
+
+    /// Bytes written so far.
+    #[must_use]
+    pub fn len(&self) -> usize {
+        self.bytes.len()
+    }
+
+    /// Whether nothing has been written.
+    #[must_use]
+    pub fn is_empty(&self) -> bool {
+        self.bytes.is_empty()
+    }
