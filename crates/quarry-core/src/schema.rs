@@ -77,3 +77,16 @@ impl Default for FieldOptions {
         }
     }
 }
+
+/// One field in the schema.
+#[derive(Debug, Clone, PartialEq)]
+pub struct Field {
+    /// Dense id assigned in declaration order.
+    pub id: FieldId,
+    /// Name used in documents and queries.
+    pub name: String,
+    /// How the value is treated.
+    pub ty: FieldType,
+    /// Indexing options.
+    pub options: FieldOptions,
+}
