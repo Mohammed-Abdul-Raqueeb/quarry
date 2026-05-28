@@ -194,3 +194,26 @@ impl SchemaBuilder {
                 "field names starting with '_' are reserved: {name}"
             )));
         }
+
+        let id = self.fields.len() as FieldId;
+        self.by_name.insert(name.to_string(), id);
+        self.fields.push(Field {
+            id,
+            name: name.to_string(),
+            ty,
+            options,
+        });
+        Ok(self)
+    }
+
+    /// Adds an analyzed text field with positions, searched by default.
+    pub fn text(self, name: &str) -> Result<Self> {
+        self.add(
+            name,
+            FieldType::Text,
+            FieldOptions {
+                positions: true,
+                ..FieldOptions::default()
+            },
+        )
+    }
