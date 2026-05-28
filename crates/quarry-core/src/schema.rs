@@ -90,3 +90,10 @@ pub struct Field {
     /// Indexing options.
     pub options: FieldOptions,
 }
+
+/// The set of fields an index accepts.
+#[derive(Debug, Clone, Default, PartialEq)]
+pub struct Schema {
+    fields: Vec<Field>,
+    by_name: HashMap<String, FieldId>,
+}
