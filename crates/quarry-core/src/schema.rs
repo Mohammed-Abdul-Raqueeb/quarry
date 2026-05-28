@@ -130,3 +130,17 @@ impl Schema {
             .get(name)
             .and_then(|id| self.fields.get(*id as usize))
     }
+
+    /// The field with this id.
+    #[must_use]
+    pub fn field_by_id(&self, id: FieldId) -> Option<&Field> {
+        self.fields.get(id as usize)
+    }
+
+    /// The id of the field with this name.
+    pub fn field_id(&self, name: &str) -> Result<FieldId> {
+        self.by_name
+            .get(name)
+            .copied()
+            .ok_or_else(|| Error::UnknownField(name.to_string()))
+    }
