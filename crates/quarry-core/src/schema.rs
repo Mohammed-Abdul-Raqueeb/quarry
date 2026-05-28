@@ -22,3 +22,31 @@ pub enum FieldType {
     /// Indexed for range queries and sorting.
     Numeric,
 }
+
+impl FieldType {
+    /// Whether values of this type go through the analyzer.
+    #[must_use]
+    pub fn is_analyzed(self) -> bool {
+        matches!(self, Self::Text)
+    }
+
+    /// Short name used in the on-disk schema and in error messages.
+    #[must_use]
+    pub fn as_str(self) -> &'static str {
+        match self {
+            Self::Text => "text",
+            Self::Keyword => "keyword",
+            Self::Numeric => "numeric",
+        }
+    }
+
+    /// Parses what [`FieldType::as_str`] produced.
+    pub fn parse(name: &str) -> Result<Self> {
+        match name {
+            "text" => Ok(Self::Text),
+            "keyword" => Ok(Self::Keyword),
+            "numeric" => Ok(Self::Numeric),
+            other => Err(Error::schema(format!("unknown field type: {other}"))),
+        }
+    }
+}
