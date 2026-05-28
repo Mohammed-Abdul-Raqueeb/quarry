@@ -97,3 +97,36 @@ pub struct Schema {
     fields: Vec<Field>,
     by_name: HashMap<String, FieldId>,
 }
+
+impl Schema {
+    /// Starts building a schema.
+    #[must_use]
+    pub fn builder() -> SchemaBuilder {
+        SchemaBuilder::default()
+    }
+
+    /// Every field, in declaration order.
+    #[must_use]
+    pub fn fields(&self) -> &[Field] {
+        &self.fields
+    }
+
+    /// How many fields are defined.
+    #[must_use]
+    pub fn len(&self) -> usize {
+        self.fields.len()
+    }
+
+    /// Whether no fields are defined.
+    #[must_use]
+    pub fn is_empty(&self) -> bool {
+        self.fields.is_empty()
+    }
+
+    /// The field with this name.
+    #[must_use]
+    pub fn field(&self, name: &str) -> Option<&Field> {
+        self.by_name
+            .get(name)
+            .and_then(|id| self.fields.get(*id as usize))
+    }
