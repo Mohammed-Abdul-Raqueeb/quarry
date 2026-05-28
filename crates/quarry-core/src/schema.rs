@@ -167,3 +167,10 @@ impl Schema {
             .collect()
     }
 }
+
+/// Accumulates fields, then produces a [`Schema`].
+#[derive(Debug, Default)]
+pub struct SchemaBuilder {
+    fields: Vec<Field>,
+    by_name: HashMap<String, FieldId>,
+}
