@@ -144,3 +144,26 @@ impl Schema {
             .copied()
             .ok_or_else(|| Error::UnknownField(name.to_string()))
     }
+
+    /// Fields that are searched when a query names no field.
+    ///
+    /// Every indexed text field, which is what a user expects from a bare term.
+    #[must_use]
+    pub fn default_search_fields(&self) -> Vec<FieldId> {
+        self.fields
+            .iter()
+            .filter(|f| f.options.indexed && f.ty == FieldType::Text)
+            .map(|f| f.id)
+            .collect()
+    }
+
+    /// Fields whose values are kept for retrieval.
+    #[must_use]
+    pub fn stored_fields(&self) -> Vec<FieldId> {
+        self.fields
+            .iter()
+            .filter(|f| f.options.stored)
+            .map(|f| f.id)
+            .collect()
+    }
+}
