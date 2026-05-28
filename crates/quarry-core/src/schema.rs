@@ -11,3 +11,14 @@ use std::collections::HashMap;
 
 /// A field's position in the schema. Stored in postings instead of its name.
 pub type FieldId = u16;
+
+/// How a field's value is treated.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum FieldType {
+    /// Analyzed into terms. Use for prose.
+    Text,
+    /// Indexed whole, unanalyzed. Use for ids, tags, enum values.
+    Keyword,
+    /// Indexed for range queries and sorting.
+    Numeric,
+}
