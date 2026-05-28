@@ -4,3 +4,10 @@ use crate::error::{Error, Result};
 use crate::json::Json;
 use crate::schema::{FieldId, FieldType, Schema};
 use std::collections::BTreeMap;
+
+/// A document's dense, index-local identifier.
+///
+/// Assigned in insertion order within a segment, which is what lets posting
+/// lists be gap-encoded. It is not stable across a merge — the external id is
+/// whatever the caller stored in a keyword field.
+pub type DocId = u32;
