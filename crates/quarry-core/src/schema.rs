@@ -8,3 +8,6 @@
 
 use crate::error::{Error, Result};
 use std::collections::HashMap;
+
+/// A field's position in the schema. Stored in postings instead of its name.
+pub type FieldId = u16;
