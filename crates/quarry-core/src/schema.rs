@@ -217,3 +217,26 @@ impl SchemaBuilder {
             },
         )
     }
+
+    /// Adds an analyzed text field with a score boost.
+    pub fn text_boosted(self, name: &str, boost: f32) -> Result<Self> {
+        self.add(
+            name,
+            FieldType::Text,
+            FieldOptions {
+                positions: true,
+                boost,
+                ..FieldOptions::default()
+            },
+        )
+    }
+
+    /// Adds an unanalyzed keyword field.
+    pub fn keyword(self, name: &str) -> Result<Self> {
+        self.add(name, FieldType::Keyword, FieldOptions::default())
+    }
+
+    /// Adds a numeric field.
+    pub fn numeric(self, name: &str) -> Result<Self> {
+        self.add(name, FieldType::Numeric, FieldOptions::default())
+    }
