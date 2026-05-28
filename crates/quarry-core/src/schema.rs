@@ -240,3 +240,29 @@ impl SchemaBuilder {
     pub fn numeric(self, name: &str) -> Result<Self> {
         self.add(name, FieldType::Numeric, FieldOptions::default())
     }
+
+    /// Adds a field that is kept but never searched.
+    pub fn stored_only(self, name: &str) -> Result<Self> {
+        self.add(
+            name,
+            FieldType::Keyword,
+            FieldOptions {
+                indexed: false,
+                stored: true,
+                positions: false,
+                boost: 1.0,
+            },
+        )
+    }
+
+    /// Finishes the schema.
+    pub fn build(self) -> Result<Schema> {
+        if self.fields.is_empty() {
+            return Err(Error::schema("a schema needs at least one field"));
+        }
+        Ok(Schema {
+            fields: self.fields,
+            by_name: self.by_name,
+        })
+    }
+}
