@@ -63,3 +63,17 @@ pub struct FieldOptions {
     /// Multiplier applied to this field's contribution to a score.
     pub boost: f32,
 }
+
+impl Default for FieldOptions {
+    fn default() -> Self {
+        Self {
+            indexed: true,
+            stored: true,
+            // Positions roughly double the size of a posting list, so they are
+            // opt-in; `text_field` turns them on because phrase queries are the
+            // common case for prose.
+            positions: false,
+            boost: 1.0,
+        }
+    }
+}
