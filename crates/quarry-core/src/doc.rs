@@ -22,3 +22,37 @@ pub enum Value {
     /// A number.
     Number(f64),
 }
+
+impl Value {
+    /// The value as text, for analysis or storage.
+    #[must_use]
+    pub fn as_text(&self) -> String {
+        match self {
+            Self::Text(s) | Self::Keyword(s) => s.clone(),
+            Self::Number(n) => format_number(*n),
+        }
+    }
+
+    /// The value as a number, if it is one.
+    #[must_use]
+    pub fn as_number(&self) -> Option<f64> {
+        match self {
+            Self::Number(n) => Some(*n),
+            // A keyword that happens to look numeric is still a keyword; only
+            // an actual number is one, so range queries cannot silently
+            // succeed on a mistyped field.
+            _ => None,
+        }
+    }
+
+    /// Whether this value is compatible with `ty`.
+    #[must_use]
+    pub fn matches(&self, ty: FieldType) -> bool {
+        matches!(
+            (self, ty),
+            (Self::Text(_), FieldType::Text)
+                | (Self::Keyword(_), FieldType::Keyword)
+                | (Self::Number(_), FieldType::Numeric)
+        )
+    }
+}
