@@ -50,3 +50,16 @@ impl FieldType {
         }
     }
 }
+
+/// Per-field indexing options.
+#[derive(Debug, Clone, Copy, PartialEq)]
+pub struct FieldOptions {
+    /// Whether the field can be searched.
+    pub indexed: bool,
+    /// Whether the original value is kept for retrieval and highlighting.
+    pub stored: bool,
+    /// Whether term positions are recorded. Required for phrase queries.
+    pub positions: bool,
+    /// Multiplier applied to this field's contribution to a score.
+    pub boost: f32,
+}
