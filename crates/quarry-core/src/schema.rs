@@ -174,3 +174,23 @@ pub struct SchemaBuilder {
     fields: Vec<Field>,
     by_name: HashMap<String, FieldId>,
 }
+
+impl SchemaBuilder {
+    /// Adds a field with explicit options.
+    pub fn add(mut self, name: &str, ty: FieldType, options: FieldOptions) -> Result<Self> {
+        if name.is_empty() {
+            return Err(Error::schema("field name cannot be empty"));
+        }
+        if self.by_name.contains_key(name) {
+            return Err(Error::schema(format!("duplicate field: {name}")));
+        }
+        if self.fields.len() >= FieldId::MAX as usize {
+            return Err(Error::schema("too many fields"));
+        }
+        // Reserved so the query parser can treat `_all` and friends specially
+        // without a field being able to shadow them.
+        if name.starts_with('_') {
+            return Err(Error::schema(format!(
+                "field names starting with '_' are reserved: {name}"
+            )));
+        }
