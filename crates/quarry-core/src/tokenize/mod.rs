@@ -8,3 +8,4 @@
 //! they cannot drift.
 
 pub mod ascii;
+pub mod ngram;
