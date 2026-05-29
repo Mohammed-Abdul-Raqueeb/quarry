@@ -10,3 +10,4 @@
 pub mod ascii;
 pub mod ngram;
 pub mod standard;
+pub mod stemmer;
