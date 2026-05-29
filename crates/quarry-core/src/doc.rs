@@ -125,3 +125,34 @@ impl Document {
     pub fn is_empty(&self) -> bool {
         self.fields.is_empty()
     }
+
+    /// Builds a document from JSON, validating against `schema`.
+    ///
+    /// A JSON type that does not match the field's declared type is an error
+    /// rather than a coercion. Quietly turning `"42"` into a number is how an
+    /// index ends up with a numeric field that cannot be range-queried
+    /// consistently.
+    pub fn from_json(schema: &Schema, json: &Json) -> Result<Self> {
+        let object = json.as_object().ok_or_else(|| {
+            Error::schema(format!(
+                "a document must be an object, got {}",
+                json.type_name()
+            ))
+        })?;
+
+        let mut doc = Self::new();
+
+        for (name, value) in object {
+            let field = schema
+                .field(name)
+                .ok_or_else(|| Error::UnknownField(name.clone()))?;
+
+            match value {
+                Json::Array(items) => {
+                    for item in items {
+                        doc.add(field.id, value_from_json(field.ty, name, item)?);
+                    }
+                }
+                single => doc.add(field.id, value_from_json(field.ty, name, single)?),
+            }
+        }
