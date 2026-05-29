@@ -76,3 +76,29 @@ pub fn format_number(n: f64) -> String {
 pub struct Document {
     fields: BTreeMap<FieldId, Vec<Value>>,
 }
+
+impl Document {
+    /// An empty document.
+    #[must_use]
+    pub fn new() -> Self {
+        Self::default()
+    }
+
+    /// Adds a value, keeping any already present for the field.
+    ///
+    /// Repeating a field is how a multi-valued field is expressed: three `tag`
+    /// values index as three keywords on one document.
+    pub fn add(&mut self, field: FieldId, value: Value) {
+        self.fields.entry(field).or_default().push(value);
+    }
+
+    /// Replaces every value for a field.
+    pub fn set(&mut self, field: FieldId, value: Value) {
+        self.fields.insert(field, vec![value]);
+    }
+
+    /// Values for a field.
+    #[must_use]
+    pub fn values(&self, field: FieldId) -> &[Value] {
+        self.fields.get(&field).map_or(&[], Vec::as_slice)
+    }
