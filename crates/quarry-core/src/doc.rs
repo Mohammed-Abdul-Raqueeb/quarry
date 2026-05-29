@@ -156,3 +156,29 @@ impl Document {
                 single => doc.add(field.id, value_from_json(field.ty, name, single)?),
             }
         }
+
+        Ok(doc)
+    }
+
+    /// Renders the document as JSON, naming fields from `schema`.
+    #[must_use]
+    pub fn to_json(&self, schema: &Schema) -> Json {
+        let mut map = BTreeMap::new();
+
+        for (id, values) in self.iter() {
+            let Some(field) = schema.field_by_id(id) else {
+                continue;
+            };
+
+            let rendered = if values.len() == 1 {
+                value_to_json(&values[0])
+            } else {
+                Json::Array(values.iter().map(value_to_json).collect())
+            };
+
+            map.insert(field.name.clone(), rendered);
+        }
+
+        Json::Object(map)
+    }
+}
