@@ -198,3 +198,10 @@ fn value_from_json(ty: FieldType, name: &str, json: &Json) -> Result<Value> {
         ))),
     }
 }
+
+fn value_to_json(value: &Value) -> Json {
+    match value {
+        Value::Text(s) | Value::Keyword(s) => Json::String(s.clone()),
+        Value::Number(n) => Json::Number(*n),
+    }
+}
