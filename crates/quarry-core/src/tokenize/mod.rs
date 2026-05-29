@@ -31,3 +31,33 @@ pub struct Token {
     /// Byte offset just past the original text.
     pub end: usize,
 }
+
+impl Token {
+    /// A token covering the given span.
+    #[must_use]
+    pub fn new(text: impl Into<String>, position: u32, start: usize, end: usize) -> Self {
+        Self {
+            text: text.into(),
+            position,
+            start,
+            end,
+        }
+    }
+
+    /// The token's text replaced, keeping its position and span.
+    #[must_use]
+    pub fn with_text(&self, text: impl Into<String>) -> Self {
+        Self {
+            text: text.into(),
+            position: self.position,
+            start: self.start,
+            end: self.end,
+        }
+    }
+
+    /// Length in bytes of the original text.
+    #[must_use]
+    pub fn span_len(&self) -> usize {
+        self.end.saturating_sub(self.start)
+    }
+}
