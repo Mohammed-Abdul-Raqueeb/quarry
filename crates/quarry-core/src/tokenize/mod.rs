@@ -67,3 +67,12 @@ pub trait Tokenizer: Debug + Send + Sync {
     /// Splits `input`.
     fn tokenize(&self, input: &str) -> Vec<Token>;
 }
+
+/// Transforms a token stream.
+pub trait TokenFilter: Debug + Send + Sync {
+    /// Rewrites, drops or expands tokens.
+    fn filter(&self, tokens: Vec<Token>) -> Vec<Token>;
+
+    /// A short name, used when describing an analyzer in diagnostics.
+    fn name(&self) -> &'static str;
+}
