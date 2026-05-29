@@ -182,3 +182,19 @@ impl Document {
         Json::Object(map)
     }
 }
+
+fn value_from_json(ty: FieldType, name: &str, json: &Json) -> Result<Value> {
+    match (ty, json) {
+        (FieldType::Text, Json::String(s)) => Ok(Value::Text(s.clone())),
+        (FieldType::Keyword, Json::String(s)) => Ok(Value::Keyword(s.clone())),
+        (FieldType::Numeric, Json::Number(n)) => Ok(Value::Number(*n)),
+        // A boolean in a keyword field is common enough in real documents to be
+        // worth accepting, since there is exactly one sensible reading.
+        (FieldType::Keyword, Json::Bool(b)) => Ok(Value::Keyword(b.to_string())),
+        (_, found) => Err(Error::schema(format!(
+            "field {name} is {} but the document has {}",
+            ty.as_str(),
+            found.type_name()
+        ))),
+    }
+}
