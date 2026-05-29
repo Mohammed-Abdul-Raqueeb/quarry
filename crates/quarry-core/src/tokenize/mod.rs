@@ -61,3 +61,9 @@ impl Token {
         self.end.saturating_sub(self.start)
     }
 }
+
+/// Splits text into tokens.
+pub trait Tokenizer: Debug + Send + Sync {
+    /// Splits `input`.
+    fn tokenize(&self, input: &str) -> Vec<Token>;
+}
