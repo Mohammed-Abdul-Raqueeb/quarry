@@ -76,3 +76,10 @@ pub trait TokenFilter: Debug + Send + Sync {
     /// A short name, used when describing an analyzer in diagnostics.
     fn name(&self) -> &'static str;
 }
+
+/// Lowercases every token.
+///
+/// Almost always the first filter: without it `Rust` and `rust` are different
+/// terms, and a user typing either expects both.
+#[derive(Debug, Default, Clone, Copy)]
+pub struct Lowercase;
