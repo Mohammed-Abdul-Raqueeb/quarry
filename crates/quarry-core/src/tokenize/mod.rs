@@ -83,3 +83,19 @@ pub trait TokenFilter: Debug + Send + Sync {
 /// terms, and a user typing either expects both.
 #[derive(Debug, Default, Clone, Copy)]
 pub struct Lowercase;
+
+impl TokenFilter for Lowercase {
+    fn filter(&self, tokens: Vec<Token>) -> Vec<Token> {
+        tokens
+            .into_iter()
+            .map(|t| {
+                let lowered = t.text.to_lowercase();
+                t.with_text(lowered)
+            })
+            .collect()
+    }
+
+    fn name(&self) -> &'static str {
+        "lowercase"
+    }
+}
