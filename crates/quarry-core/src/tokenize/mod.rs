@@ -11,3 +11,6 @@ pub mod ascii;
 pub mod ngram;
 pub mod standard;
 pub mod stemmer;
+pub mod stopwords;
+
+use std::fmt::Debug;
