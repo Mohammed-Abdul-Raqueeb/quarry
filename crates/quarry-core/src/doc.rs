@@ -102,3 +102,26 @@ impl Document {
     pub fn values(&self, field: FieldId) -> &[Value] {
         self.fields.get(&field).map_or(&[], Vec::as_slice)
     }
+
+    /// The first value for a field.
+    #[must_use]
+    pub fn value(&self, field: FieldId) -> Option<&Value> {
+        self.fields.get(&field).and_then(|v| v.first())
+    }
+
+    /// Every populated field and its values.
+    pub fn iter(&self) -> impl Iterator<Item = (FieldId, &[Value])> {
+        self.fields.iter().map(|(id, v)| (*id, v.as_slice()))
+    }
+
+    /// How many fields are populated.
+    #[must_use]
+    pub fn len(&self) -> usize {
+        self.fields.len()
+    }
+
+    /// Whether the document has no fields.
+    #[must_use]
+    pub fn is_empty(&self) -> bool {
+        self.fields.is_empty()
+    }
