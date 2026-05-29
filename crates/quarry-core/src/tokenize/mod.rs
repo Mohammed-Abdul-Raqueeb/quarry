@@ -6,3 +6,5 @@
 //! is indexed as `run`, the query `Running` has to become `run` too, or the
 //! document is unfindable. [`Analyzer`] is the single object both sides use so
 //! they cannot drift.
+
+pub mod ascii;
