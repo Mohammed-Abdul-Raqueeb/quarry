@@ -66,3 +66,13 @@ pub fn format_number(n: f64) -> String {
         format!("{n}")
     }
 }
+
+/// A document ready to be indexed.
+///
+/// Fields are keyed by [`FieldId`], so a document is already validated against
+/// a schema by the time it exists — there is no way to build one holding a field
+/// the schema does not define.
+#[derive(Debug, Clone, Default, PartialEq)]
+pub struct Document {
+    fields: BTreeMap<FieldId, Vec<Value>>,
+}
