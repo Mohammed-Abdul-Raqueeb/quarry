@@ -14,3 +14,20 @@ pub mod stemmer;
 pub mod stopwords;
 
 use std::fmt::Debug;
+
+/// One term, with where it came from.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct Token {
+    /// The term text, after filtering.
+    pub text: String,
+    /// Ordinal within the field, counting from zero.
+    ///
+    /// Phrase matching compares these, so a filter that drops a token must
+    /// leave a gap rather than renumber — otherwise removing a stopword would
+    /// make `"king of pop"` match `"king pop"`.
+    pub position: u32,
+    /// Byte offset of the original text in the input.
+    pub start: usize,
+    /// Byte offset just past the original text.
+    pub end: usize,
+}
