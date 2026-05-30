@@ -25,3 +25,21 @@ impl Default for StandardTokenizer {
         }
     }
 }
+
+impl StandardTokenizer {
+    /// A tokenizer that splits on every non-alphanumeric character.
+    #[must_use]
+    pub fn strict() -> Self {
+        Self {
+            keep_internal: false,
+        }
+    }
+
+    /// Whether `ch` continues the current token.
+    fn is_token_char(self, ch: char) -> bool {
+        if ch.is_alphanumeric() || ch == '_' {
+            return true;
+        }
+        self.keep_internal && matches!(ch, '\'' | '\u{2019}' | '-' | '.')
+    }
+}
