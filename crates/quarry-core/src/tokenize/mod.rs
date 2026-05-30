@@ -194,3 +194,21 @@ impl Analyzer {
             .with(Box::new(stopwords::StopwordFilter::english()))
             .with(Box::new(stemmer::PorterStemmer))
     }
+
+    /// Lowercase and fold, but neither stem nor drop stopwords.
+    ///
+    /// For fields where exactness matters more than recall — a product code, or
+    /// prose that will only ever be phrase-matched.
+    #[must_use]
+    pub fn simple() -> Self {
+        Self::new(Box::new(standard::StandardTokenizer::default()))
+            .with(Box::new(Lowercase))
+            .with(Box::new(ascii::AsciiFolding))
+    }
+
+    /// Emits the whole input as a single token.
+    #[must_use]
+    pub fn keyword() -> Self {
+        Self::new(Box::new(standard::KeywordTokenizer)).with(Box::new(Lowercase))
+    }
+}
