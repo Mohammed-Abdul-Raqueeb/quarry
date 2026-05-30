@@ -133,3 +133,10 @@ impl TokenFilter for LengthFilter {
         "length"
     }
 }
+
+/// A tokenizer plus its filters.
+#[derive(Debug)]
+pub struct Analyzer {
+    tokenizer: Box<dyn Tokenizer>,
+    filters: Vec<Box<dyn TokenFilter>>,
+}
