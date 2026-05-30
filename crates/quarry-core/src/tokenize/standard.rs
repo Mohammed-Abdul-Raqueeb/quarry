@@ -43,3 +43,33 @@ impl StandardTokenizer {
         self.keep_internal && matches!(ch, '\'' | '\u{2019}' | '-' | '.')
     }
 }
+
+impl Tokenizer for StandardTokenizer {
+    fn tokenize(&self, input: &str) -> Vec<Token> {
+        let mut tokens = Vec::new();
+        let mut position = 0u32;
+        let mut start: Option<usize> = None;
+
+        for (offset, ch) in input.char_indices() {
+            if self.is_token_char(ch) {
+                if start.is_none() {
+                    start = Some(offset);
+                }
+            } else if let Some(begin) = start.take() {
+                if let Some(token) = trim_token(input, begin, offset, position) {
+                    tokens.push(token);
+                    position += 1;
+                }
+            }
+        }
+
+        // A token running to the end of the input has no terminating separator.
+        if let Some(begin) = start {
+            if let Some(token) = trim_token(input, begin, input.len(), position) {
+                tokens.push(token);
+            }
+        }
+
+        tokens
+    }
+}
