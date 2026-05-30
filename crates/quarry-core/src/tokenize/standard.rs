@@ -122,3 +122,15 @@ impl Tokenizer for KeywordTokenizer {
 /// Splits on whitespace only, keeping punctuation attached.
 #[derive(Debug, Clone, Copy, Default)]
 pub struct WhitespaceTokenizer;
+
+impl Tokenizer for WhitespaceTokenizer {
+    fn tokenize(&self, input: &str) -> Vec<Token> {
+        split_whitespace_indices(input)
+            .into_iter()
+            .enumerate()
+            .map(|(position, (offset, word))| {
+                Token::new(word, position as u32, offset, offset + word.len())
+            })
+            .collect()
+    }
+}
