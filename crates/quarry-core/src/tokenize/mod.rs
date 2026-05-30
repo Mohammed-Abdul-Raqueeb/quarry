@@ -117,3 +117,19 @@ impl Default for LengthFilter {
         Self { min: 1, max: 64 }
     }
 }
+
+impl TokenFilter for LengthFilter {
+    fn filter(&self, tokens: Vec<Token>) -> Vec<Token> {
+        tokens
+            .into_iter()
+            .filter(|t| {
+                let len = t.text.chars().count();
+                len >= self.min && len <= self.max
+            })
+            .collect()
+    }
+
+    fn name(&self) -> &'static str {
+        "length"
+    }
+}
