@@ -118,3 +118,7 @@ impl Tokenizer for KeywordTokenizer {
         vec![Token::new(trimmed, 0, start, start + trimmed.len())]
     }
 }
+
+/// Splits on whitespace only, keeping punctuation attached.
+#[derive(Debug, Clone, Copy, Default)]
+pub struct WhitespaceTokenizer;
