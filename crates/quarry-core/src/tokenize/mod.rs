@@ -99,3 +99,15 @@ impl TokenFilter for Lowercase {
         "lowercase"
     }
 }
+
+/// Drops tokens outside a length range.
+///
+/// Single characters are rarely worth an entry in the dictionary, and a 300
+/// character "word" is a URL or a hash that will never be searched for.
+#[derive(Debug, Clone, Copy)]
+pub struct LengthFilter {
+    /// Shortest token kept, in characters.
+    pub min: usize,
+    /// Longest token kept, in characters.
+    pub max: usize,
+}
