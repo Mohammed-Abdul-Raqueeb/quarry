@@ -106,3 +106,15 @@ fn trim_token(input: &str, start: usize, end: usize, position: u32) -> Option<To
 /// make an exact lookup impossible.
 #[derive(Debug, Clone, Copy, Default)]
 pub struct KeywordTokenizer;
+
+impl Tokenizer for KeywordTokenizer {
+    fn tokenize(&self, input: &str) -> Vec<Token> {
+        let trimmed = input.trim();
+        if trimmed.is_empty() {
+            return Vec::new();
+        }
+
+        let start = input.find(trimmed).unwrap_or(0);
+        vec![Token::new(trimmed, 0, start, start + trimmed.len())]
+    }
+}
