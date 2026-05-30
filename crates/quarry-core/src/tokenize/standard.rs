@@ -99,3 +99,10 @@ fn trim_token(input: &str, start: usize, end: usize, position: u32) -> Option<To
         start + lead + trimmed.len(),
     ))
 }
+
+/// Emits the entire input as one token.
+///
+/// For keyword fields, where the value is an identifier and splitting it would
+/// make an exact lookup impossible.
+#[derive(Debug, Clone, Copy, Default)]
+pub struct KeywordTokenizer;
