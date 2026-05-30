@@ -140,3 +140,36 @@ pub struct Analyzer {
     tokenizer: Box<dyn Tokenizer>,
     filters: Vec<Box<dyn TokenFilter>>,
 }
+
+impl Analyzer {
+    /// An analyzer with no filters.
+    #[must_use]
+    pub fn new(tokenizer: Box<dyn Tokenizer>) -> Self {
+        Self {
+            tokenizer,
+            filters: Vec::new(),
+        }
+    }
+
+    /// Appends a filter. Order matters.
+    #[must_use]
+    pub fn with(mut self, filter: Box<dyn TokenFilter>) -> Self {
+        self.filters.push(filter);
+        self
+    }
+
+    /// Runs the tokenizer and every filter.
+    #[must_use]
+    pub fn analyze(&self, input: &str) -> Vec<Token> {
+        let mut tokens = self.tokenizer.tokenize(input);
+        for filter in &self.filters {
+            tokens = filter.filter(tokens);
+        }
+        tokens
+    }
+
+    /// Just the term strings.
+    #[must_use]
+    pub fn terms(&self, input: &str) -> Vec<String> {
+        self.analyze(input).into_iter().map(|t| t.text).collect()
+    }
