@@ -173,3 +173,24 @@ impl Analyzer {
     pub fn terms(&self, input: &str) -> Vec<String> {
         self.analyze(input).into_iter().map(|t| t.text).collect()
     }
+
+    /// The names of the filters, in order.
+    #[must_use]
+    pub fn filter_names(&self) -> Vec<&'static str> {
+        self.filters.iter().map(|f| f.name()).collect()
+    }
+
+    /// The default English pipeline.
+    ///
+    /// Lowercase, fold accents, drop stopwords, then stem. Folding before the
+    /// stopword list matters: otherwise `thé` survives a list that contains
+    /// `the`.
+    #[must_use]
+    pub fn english() -> Self {
+        Self::new(Box::new(standard::StandardTokenizer::default()))
+            .with(Box::new(Lowercase))
+            .with(Box::new(ascii::AsciiFolding))
+            .with(Box::new(LengthFilter::default()))
+            .with(Box::new(stopwords::StopwordFilter::english()))
+            .with(Box::new(stemmer::PorterStemmer))
+    }
