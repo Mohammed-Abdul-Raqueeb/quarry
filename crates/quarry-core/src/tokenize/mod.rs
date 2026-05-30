@@ -212,3 +212,9 @@ impl Analyzer {
         Self::new(Box::new(standard::KeywordTokenizer)).with(Box::new(Lowercase))
     }
 }
+
+impl Default for Analyzer {
+    fn default() -> Self {
+        Self::english()
+    }
+}
