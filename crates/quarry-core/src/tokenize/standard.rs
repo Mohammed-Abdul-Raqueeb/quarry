@@ -17,3 +17,11 @@ pub struct StandardTokenizer {
     /// terms. Apostrophes and hyphens are the two that matter in practice.
     pub keep_internal: bool,
 }
+
+impl Default for StandardTokenizer {
+    fn default() -> Self {
+        Self {
+            keep_internal: true,
+        }
+    }
+}
