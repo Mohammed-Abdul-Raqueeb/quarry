@@ -73,3 +73,29 @@ impl Tokenizer for StandardTokenizer {
         tokens
     }
 }
+
+/// Trims the internal characters off the edges of a candidate token.
+///
+/// `keep_internal` lets `'`, `-` and `.` through, which also lets in the
+/// trailing period of a sentence and the leading dash of a list item. Those are
+/// punctuation, not part of the word, so they are stripped here rather than
+/// complicating the scanner.
+fn trim_token(input: &str, start: usize, end: usize, position: u32) -> Option<Token> {
+    let raw = &input[start..end];
+    let trimmed = raw.trim_matches(|c: char| matches!(c, '\'' | '\u{2019}' | '-' | '.'));
+
+    if trimmed.is_empty() {
+        return None;
+    }
+
+    // Offsets must point into the original text for highlighting to work, so
+    // the trim is measured rather than assumed.
+    let lead = raw.len() - raw.trim_start_matches(['\'', '\u{2019}', '-', '.']).len();
+
+    Some(Token::new(
+        trimmed,
+        position,
+        start + lead,
+        start + lead + trimmed.len(),
+    ))
+}
