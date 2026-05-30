@@ -111,3 +111,9 @@ pub struct LengthFilter {
     /// Longest token kept, in characters.
     pub max: usize,
 }
+
+impl Default for LengthFilter {
+    fn default() -> Self {
+        Self { min: 1, max: 64 }
+    }
+}
