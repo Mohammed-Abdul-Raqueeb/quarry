@@ -134,3 +134,25 @@ impl Tokenizer for WhitespaceTokenizer {
             .collect()
     }
 }
+
+/// Like `str::split_whitespace`, but yielding byte offsets too.
+fn split_whitespace_indices(input: &str) -> Vec<(usize, &str)> {
+    let mut out = Vec::new();
+    let mut start: Option<usize> = None;
+
+    for (offset, ch) in input.char_indices() {
+        if ch.is_whitespace() {
+            if let Some(begin) = start.take() {
+                out.push((begin, &input[begin..offset]));
+            }
+        } else if start.is_none() {
+            start = Some(offset);
+        }
+    }
+
+    if let Some(begin) = start {
+        out.push((begin, &input[begin..]));
+    }
+
+    out
+}
