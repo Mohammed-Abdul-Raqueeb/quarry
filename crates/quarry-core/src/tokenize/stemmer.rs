@@ -159,3 +159,26 @@ fn step1a(w: &mut Vec<u8>) {
         w.truncate(w.len() - 1);
     }
 }
+
+/// Past tense and progressive: `eed`, `ed`, `ing`.
+fn step1b(w: &mut Vec<u8>) {
+    let mut second_pass = false;
+
+    if ends_with(w, "eed") {
+        let stem_len = w.len() - 1;
+        if measure(&w[..stem_len - 2]) > 0 {
+            w.truncate(stem_len);
+        }
+    } else if ends_with(w, "ed") {
+        let stem_len = w.len() - 2;
+        if has_vowel(&w[..stem_len]) {
+            w.truncate(stem_len);
+            second_pass = true;
+        }
+    } else if ends_with(w, "ing") {
+        let stem_len = w.len() - 3;
+        if has_vowel(&w[..stem_len]) {
+            w.truncate(stem_len);
+            second_pass = true;
+        }
+    }
