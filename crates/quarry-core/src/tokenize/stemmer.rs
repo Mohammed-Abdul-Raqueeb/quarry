@@ -126,3 +126,7 @@ fn ends_cvc(w: &[u8]) -> bool {
         && !is_vowel(w, n - 3)
         && !matches!(w[n - 1], b'w' | b'x' | b'y')
 }
+
+fn ends_with(w: &[u8], suffix: &str) -> bool {
+    w.ends_with(suffix.as_bytes())
+}
