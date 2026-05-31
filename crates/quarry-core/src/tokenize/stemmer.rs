@@ -101,3 +101,8 @@ fn measure(w: &[u8]) -> usize {
 
     m
 }
+
+/// Whether the stem contains any vowel.
+fn has_vowel(w: &[u8]) -> bool {
+    (0..w.len()).any(|i| is_vowel(w, i))
+}
