@@ -60,3 +60,13 @@ pub fn stem(word: &str) -> String {
 
     String::from_utf8(w).unwrap_or_else(|_| word.to_string())
 }
+
+fn is_vowel(w: &[u8], i: usize) -> bool {
+    match w[i] {
+        b'a' | b'e' | b'i' | b'o' | b'u' => true,
+        // A `y` is a vowel only when the letter before it is not, which is what
+        // separates `sky` (vowel) from `yes` (consonant).
+        b'y' => i > 0 && !is_vowel(w, i - 1),
+        _ => false,
+    }
+}
