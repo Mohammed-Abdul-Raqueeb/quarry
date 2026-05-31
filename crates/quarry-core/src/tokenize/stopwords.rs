@@ -82,3 +82,9 @@ impl StopwordFilter {
         self
     }
 }
+
+impl Default for StopwordFilter {
+    fn default() -> Self {
+        Self::english()
+    }
+}
