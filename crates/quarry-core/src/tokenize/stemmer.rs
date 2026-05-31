@@ -70,3 +70,34 @@ fn is_vowel(w: &[u8], i: usize) -> bool {
         _ => false,
     }
 }
+
+/// Porter's *m*: the number of vowel-consonant sequences in the stem.
+///
+/// Rules are gated on this as a stand-in for syllable count — it is what stops
+/// `sing` losing its `ing`.
+fn measure(w: &[u8]) -> usize {
+    let mut m = 0;
+    let mut i = 0;
+
+    // Skip a leading consonant run.
+    while i < w.len() && !is_vowel(w, i) {
+        i += 1;
+    }
+
+    while i < w.len() {
+        // Vowel run.
+        while i < w.len() && is_vowel(w, i) {
+            i += 1;
+        }
+        if i >= w.len() {
+            break;
+        }
+        // Consonant run completes one VC pair.
+        while i < w.len() && !is_vowel(w, i) {
+            i += 1;
+        }
+        m += 1;
+    }
+
+    m
+}
