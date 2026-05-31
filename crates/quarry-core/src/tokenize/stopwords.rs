@@ -23,3 +23,36 @@ pub const ENGLISH: &[&str] = &[
 pub struct StopwordFilter {
     words: HashSet<String>,
 }
+
+impl StopwordFilter {
+    /// A filter over an explicit word list.
+    #[must_use]
+    pub fn new<I, S>(words: I) -> Self
+    where
+        I: IntoIterator<Item = S>,
+        S: AsRef<str>,
+    {
+        Self {
+            words: words
+                .into_iter()
+                .map(|w| w.as_ref().to_lowercase())
+                .collect(),
+        }
+    }
+
+    /// A filter over [`ENGLISH`].
+    #[must_use]
+    pub fn english() -> Self {
+        Self::new(ENGLISH.iter().copied())
+    }
+
+    /// A filter that removes nothing.
+    ///
+    /// Useful for a field where every word matters, without restructuring the
+    /// analyzer to omit the filter entirely.
+    #[must_use]
+    pub fn empty() -> Self {
+        Self {
+            words: HashSet::new(),
+        }
+    }
