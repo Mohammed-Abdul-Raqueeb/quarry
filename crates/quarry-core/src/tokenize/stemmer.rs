@@ -18,3 +18,19 @@ use super::{Token, TokenFilter};
 /// Applies [`stem`] to every token.
 #[derive(Debug, Clone, Copy, Default)]
 pub struct PorterStemmer;
+
+impl TokenFilter for PorterStemmer {
+    fn filter(&self, tokens: Vec<Token>) -> Vec<Token> {
+        tokens
+            .into_iter()
+            .map(|t| {
+                let stemmed = stem(&t.text);
+                t.with_text(stemmed)
+            })
+            .collect()
+    }
+
+    fn name(&self) -> &'static str {
+        "porter"
+    }
+}
