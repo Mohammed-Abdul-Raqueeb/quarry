@@ -182,3 +182,16 @@ fn step1b(w: &mut Vec<u8>) {
             second_pass = true;
         }
     }
+
+    // After removing `-ed` or `-ing` the stem can be left malformed, so it is
+    // repaired: `conflat` -> `conflate`, `hopp` -> `hop`, `fil` -> `file`.
+    if second_pass {
+        if ends_with(w, "at") || ends_with(w, "bl") || ends_with(w, "iz") {
+            w.push(b'e');
+        } else if ends_double_consonant(w) && !matches!(w[w.len() - 1], b'l' | b's' | b'z') {
+            w.truncate(w.len() - 1);
+        } else if measure(w) == 1 && ends_cvc(w) {
+            w.push(b'e');
+        }
+    }
+}
