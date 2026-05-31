@@ -111,3 +111,18 @@ fn has_vowel(w: &[u8]) -> bool {
 fn ends_double_consonant(w: &[u8]) -> bool {
     w.len() >= 2 && w[w.len() - 1] == w[w.len() - 2] && !is_vowel(w, w.len() - 1)
 }
+
+/// Porter's *o*: ends consonant-vowel-consonant, final not w, x or y.
+///
+/// This is the test that decides whether to restore an `e`, so that `hop`
+/// becomes `hope` rather than `hop` after `-ing` is removed.
+fn ends_cvc(w: &[u8]) -> bool {
+    let n = w.len();
+    if n < 3 {
+        return false;
+    }
+    !is_vowel(w, n - 1)
+        && is_vowel(w, n - 2)
+        && !is_vowel(w, n - 3)
+        && !matches!(w[n - 1], b'w' | b'x' | b'y')
+}
