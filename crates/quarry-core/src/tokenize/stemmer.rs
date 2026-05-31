@@ -147,3 +147,15 @@ fn replace_if(w: &mut Vec<u8>, suffix: &str, replacement: &str, min_m: usize) ->
     // Porter's steps stop at the first matching rule either way.
     true
 }
+
+/// Plurals: `sses` to `ss`, `ies` to `i`, and a trailing `s` dropped.
+fn step1a(w: &mut Vec<u8>) {
+    // `sses` and `ies` both lose two characters, which is why they share a branch.
+    if ends_with(w, "sses") || ends_with(w, "ies") {
+        w.truncate(w.len() - 2);
+    } else if ends_with(w, "ss") {
+        // Left alone: `ss` is not a plural marker.
+    } else if ends_with(w, "s") {
+        w.truncate(w.len() - 1);
+    }
+}
