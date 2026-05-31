@@ -34,3 +34,29 @@ impl TokenFilter for PorterStemmer {
         "porter"
     }
 }
+
+/// Reduces an English word to its Porter stem.
+///
+/// Input is expected to be lowercase already; a word of two characters or fewer
+/// is returned unchanged, since every rule would leave it empty.
+#[must_use]
+pub fn stem(word: &str) -> String {
+    // Non-ASCII never matches a rule and would make the byte indexing below
+    // unsound, so it is passed through.
+    if word.len() <= 2 || !word.is_ascii() {
+        return word.to_string();
+    }
+
+    let mut w: Vec<u8> = word.as_bytes().to_vec();
+
+    step1a(&mut w);
+    step1b(&mut w);
+    step1c(&mut w);
+    step2(&mut w);
+    step3(&mut w);
+    step4(&mut w);
+    step5a(&mut w);
+    step5b(&mut w);
+
+    String::from_utf8(w).unwrap_or_else(|_| word.to_string())
+}
