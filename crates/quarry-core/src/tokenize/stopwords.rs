@@ -56,3 +56,29 @@ impl StopwordFilter {
             words: HashSet::new(),
         }
     }
+
+    /// Whether `word` is in the list.
+    #[must_use]
+    pub fn contains(&self, word: &str) -> bool {
+        self.words.contains(word)
+    }
+
+    /// How many words the list holds.
+    #[must_use]
+    pub fn len(&self) -> usize {
+        self.words.len()
+    }
+
+    /// Whether the list is empty.
+    #[must_use]
+    pub fn is_empty(&self) -> bool {
+        self.words.is_empty()
+    }
+
+    /// Adds a word to the list.
+    #[must_use]
+    pub fn with_word(mut self, word: &str) -> Self {
+        self.words.insert(word.to_lowercase());
+        self
+    }
+}
