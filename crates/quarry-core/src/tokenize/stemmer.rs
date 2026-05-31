@@ -130,3 +130,20 @@ fn ends_cvc(w: &[u8]) -> bool {
 fn ends_with(w: &[u8], suffix: &str) -> bool {
     w.ends_with(suffix.as_bytes())
 }
+
+/// Replaces `suffix` with `replacement` when the stem's measure exceeds `min_m`.
+fn replace_if(w: &mut Vec<u8>, suffix: &str, replacement: &str, min_m: usize) -> bool {
+    if !ends_with(w, suffix) {
+        return false;
+    }
+
+    let stem_len = w.len() - suffix.len();
+    if measure(&w[..stem_len]) > min_m {
+        w.truncate(stem_len);
+        w.extend_from_slice(replacement.as_bytes());
+    }
+
+    // Returns true because the suffix matched, whether or not it was replaced:
+    // Porter's steps stop at the first matching rule either way.
+    true
+}
