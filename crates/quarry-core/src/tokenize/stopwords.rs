@@ -88,3 +88,20 @@ impl Default for StopwordFilter {
         Self::english()
     }
 }
+
+impl TokenFilter for StopwordFilter {
+    fn filter(&self, tokens: Vec<Token>) -> Vec<Token> {
+        if self.words.is_empty() {
+            return tokens;
+        }
+
+        tokens
+            .into_iter()
+            .filter(|t| !self.words.contains(&t.text))
+            .collect()
+    }
+
+    fn name(&self) -> &'static str {
+        "stopwords"
+    }
+}
