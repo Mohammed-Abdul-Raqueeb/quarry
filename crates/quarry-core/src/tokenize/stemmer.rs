@@ -14,3 +14,7 @@
 //! Reference: Porter, "An algorithm for suffix stripping", Program 14(3), 1980.
 
 use super::{Token, TokenFilter};
+
+/// Applies [`stem`] to every token.
+#[derive(Debug, Clone, Copy, Default)]
+pub struct PorterStemmer;
