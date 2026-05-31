@@ -106,3 +106,8 @@ fn measure(w: &[u8]) -> usize {
 fn has_vowel(w: &[u8]) -> bool {
     (0..w.len()).any(|i| is_vowel(w, i))
 }
+
+/// Whether the word ends in a doubled consonant.
+fn ends_double_consonant(w: &[u8]) -> bool {
+    w.len() >= 2 && w[w.len() - 1] == w[w.len() - 2] && !is_vowel(w, w.len() - 1)
+}
