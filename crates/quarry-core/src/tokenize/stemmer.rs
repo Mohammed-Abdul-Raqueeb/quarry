@@ -255,3 +255,35 @@ fn step3(w: &mut Vec<u8>) {
         }
     }
 }
+
+/// Removes a suffix only from a word with at least two VC pairs.
+fn step4(w: &mut Vec<u8>) {
+    const SUFFIXES: &[&str] = &[
+        "al", "ance", "ence", "er", "ic", "able", "ible", "ant", "ement", "ment", "ent", "ou",
+        "ism", "ate", "iti", "ous", "ive", "ize",
+    ];
+
+    // `-ion` only goes when the stem ends in s or t, which keeps `lion` whole.
+    if ends_with(w, "ion") {
+        let stem_len = w.len() - 3;
+        if stem_len > 0 && measure(&w[..stem_len]) > 1 && matches!(w[stem_len - 1], b's' | b't') {
+            w.truncate(stem_len);
+        }
+        return;
+    }
+
+    // Longest suffix first, so `ement` is tried before `ment` and `ent`.
+    let mut matched: Option<&str> = None;
+    for suffix in SUFFIXES {
+        if ends_with(w, suffix) && matched.is_none_or(|m: &str| suffix.len() > m.len()) {
+            matched = Some(suffix);
+        }
+    }
+
+    if let Some(suffix) = matched {
+        let stem_len = w.len() - suffix.len();
+        if measure(&w[..stem_len]) > 1 {
+            w.truncate(stem_len);
+        }
+    }
+}
