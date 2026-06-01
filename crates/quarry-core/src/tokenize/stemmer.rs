@@ -301,3 +301,10 @@ fn step5a(w: &mut Vec<u8>) {
         w.truncate(stem_len);
     }
 }
+
+/// Collapses a doubled terminal `l`.
+fn step5b(w: &mut Vec<u8>) {
+    if measure(w) > 1 && ends_double_consonant(w) && ends_with(w, "l") {
+        w.truncate(w.len() - 1);
+    }
+}
