@@ -30,3 +30,25 @@ impl Default for NgramTokenizer {
         Self { min: 2, max: 3 }
     }
 }
+
+impl NgramTokenizer {
+    /// An n-gram tokenizer over a window range.
+    ///
+    /// `min` is clamped to at least 1, and `max` to at least `min`, so a
+    /// reversed or zero range degrades to something sensible rather than
+    /// producing no tokens at all.
+    #[must_use]
+    pub fn new(min: usize, max: usize) -> Self {
+        let min = min.max(1);
+        Self {
+            min,
+            max: max.max(min),
+        }
+    }
+
+    /// Fixed-width windows.
+    #[must_use]
+    pub fn fixed(n: usize) -> Self {
+        Self::new(n, n)
+    }
+}
