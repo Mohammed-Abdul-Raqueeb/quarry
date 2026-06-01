@@ -52,3 +52,37 @@ impl NgramTokenizer {
         Self::new(n, n)
     }
 }
+
+impl Tokenizer for NgramTokenizer {
+    fn tokenize(&self, input: &str) -> Vec<Token> {
+        // Collected once, because a window needs random access by character
+        // index and `char_indices` only walks forwards.
+        let chars: Vec<(usize, char)> = input.char_indices().collect();
+        let mut tokens = Vec::new();
+        let mut position = 0u32;
+
+        for start in 0..chars.len() {
+            for width in self.min..=self.max {
+                let end = start + width;
+                if end > chars.len() {
+                    break;
+                }
+
+                let begin_byte = chars[start].0;
+                let end_byte = chars[end - 1].0 + chars[end - 1].1.len_utf8();
+                let text = &input[begin_byte..end_byte];
+
+                // Whitespace inside a window makes it span a word boundary,
+                // where it matches nothing useful.
+                if text.chars().any(char::is_whitespace) {
+                    continue;
+                }
+
+                tokens.push(Token::new(text, position, begin_byte, end_byte));
+                position += 1;
+            }
+        }
+
+        tokens
+    }
+}
