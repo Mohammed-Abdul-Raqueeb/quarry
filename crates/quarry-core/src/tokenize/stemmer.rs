@@ -236,3 +236,22 @@ fn step2(w: &mut Vec<u8>) {
         }
     }
 }
+
+/// Suffix pairs such as `icate` to `ic`, with `ful` and `ness` removed outright.
+fn step3(w: &mut Vec<u8>) {
+    const RULES: &[(&str, &str)] = &[
+        ("icate", "ic"),
+        ("ative", ""),
+        ("alize", "al"),
+        ("iciti", "ic"),
+        ("ical", "ic"),
+        ("ful", ""),
+        ("ness", ""),
+    ];
+
+    for (suffix, replacement) in RULES {
+        if replace_if(w, suffix, replacement, 0) {
+            return;
+        }
+    }
+}
