@@ -86,3 +86,15 @@ impl Tokenizer for NgramTokenizer {
         tokens
     }
 }
+
+/// Emits prefixes anchored at the start of each word.
+///
+/// For a prefix search box: indexing `search` as `se`, `sea`, `sear`, `searc`,
+/// `search` turns "starts with sear" into an exact term lookup.
+#[derive(Debug, Clone, Copy)]
+pub struct EdgeNgramTokenizer {
+    /// Shortest prefix emitted.
+    pub min: usize,
+    /// Longest prefix emitted.
+    pub max: usize,
+}
