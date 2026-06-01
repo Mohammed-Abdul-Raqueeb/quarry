@@ -203,3 +203,36 @@ fn step1c(w: &mut [u8]) {
         w[last] = b'i';
     }
 }
+
+/// Double suffixes: `ational` -> `ate`, `tional` -> `tion`, and so on.
+fn step2(w: &mut Vec<u8>) {
+    const RULES: &[(&str, &str)] = &[
+        ("ational", "ate"),
+        ("tional", "tion"),
+        ("enci", "ence"),
+        ("anci", "ance"),
+        ("izer", "ize"),
+        ("bli", "ble"),
+        ("alli", "al"),
+        ("entli", "ent"),
+        ("eli", "e"),
+        ("ousli", "ous"),
+        ("ization", "ize"),
+        ("ation", "ate"),
+        ("ator", "ate"),
+        ("alism", "al"),
+        ("iveness", "ive"),
+        ("fulness", "ful"),
+        ("ousness", "ous"),
+        ("aliti", "al"),
+        ("iviti", "ive"),
+        ("biliti", "ble"),
+        ("logi", "log"),
+    ];
+
+    for (suffix, replacement) in RULES {
+        if replace_if(w, suffix, replacement, 0) {
+            return;
+        }
+    }
+}
