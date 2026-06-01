@@ -13,3 +13,12 @@
 //! roughly with the n-gram range. Use it on one field, not everywhere.
 
 use super::{Token, Tokenizer};
+
+/// Emits every character window between `min` and `max` wide.
+#[derive(Debug, Clone, Copy)]
+pub struct NgramTokenizer {
+    /// Shortest window.
+    pub min: usize,
+    /// Longest window.
+    pub max: usize,
+}
