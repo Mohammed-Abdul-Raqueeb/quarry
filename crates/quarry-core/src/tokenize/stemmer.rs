@@ -195,3 +195,11 @@ fn step1b(w: &mut Vec<u8>) {
         }
     }
 }
+
+/// Terminal `y` becomes `i` when the stem has a vowel.
+fn step1c(w: &mut [u8]) {
+    if ends_with(w, "y") && has_vowel(&w[..w.len() - 1]) {
+        let last = w.len() - 1;
+        w[last] = b'i';
+    }
+}
