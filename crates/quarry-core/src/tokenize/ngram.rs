@@ -22,3 +22,11 @@ pub struct NgramTokenizer {
     /// Longest window.
     pub max: usize,
 }
+
+impl Default for NgramTokenizer {
+    fn default() -> Self {
+        // Bigrams and trigrams: enough to be discriminating without exploding
+        // the dictionary.
+        Self { min: 2, max: 3 }
+    }
+}
