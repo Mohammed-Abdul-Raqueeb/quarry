@@ -32,3 +32,18 @@ impl TokenFilter for AsciiFolding {
         "asciifolding"
     }
 }
+
+/// Folds accented Latin characters to their ASCII base.
+#[must_use]
+pub fn fold(input: &str) -> String {
+    let mut out = String::with_capacity(input.len());
+
+    for ch in input.chars() {
+        match fold_char(ch) {
+            Some(replacement) => out.push_str(replacement),
+            None => out.push(ch),
+        }
+    }
+
+    out
+}
