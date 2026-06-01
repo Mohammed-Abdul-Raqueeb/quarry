@@ -287,3 +287,17 @@ fn step4(w: &mut Vec<u8>) {
         }
     }
 }
+
+/// Drops a terminal `e` unless the word needs it.
+fn step5a(w: &mut Vec<u8>) {
+    if !ends_with(w, "e") {
+        return;
+    }
+
+    let stem_len = w.len() - 1;
+    let m = measure(&w[..stem_len]);
+
+    if m > 1 || (m == 1 && !ends_cvc(&w[..stem_len])) {
+        w.truncate(stem_len);
+    }
+}
