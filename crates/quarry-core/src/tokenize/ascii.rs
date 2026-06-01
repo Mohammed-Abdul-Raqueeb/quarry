@@ -107,3 +107,9 @@ fn fold_char(ch: char) -> Option<&'static str> {
         _ => return None,
     })
 }
+
+/// Whether folding would change `input`.
+#[must_use]
+pub fn needs_folding(input: &str) -> bool {
+    input.chars().any(|c| fold_char(c).is_some())
+}
