@@ -98,3 +98,9 @@ pub struct EdgeNgramTokenizer {
     /// Longest prefix emitted.
     pub max: usize,
 }
+
+impl Default for EdgeNgramTokenizer {
+    fn default() -> Self {
+        Self { min: 2, max: 12 }
+    }
+}
