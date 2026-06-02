@@ -84,3 +84,23 @@ impl PostingList {
     pub fn total_term_freq(&self) -> u64 {
         self.postings.iter().map(|p| u64::from(p.term_freq)).sum()
     }
+
+    /// Whether the list holds no postings.
+    #[must_use]
+    pub fn is_empty(&self) -> bool {
+        self.postings.is_empty()
+    }
+
+    /// Appends a posting, which must have a higher document id than the last.
+    pub fn push(&mut self, posting: Posting) -> Result<()> {
+        if let Some(last) = self.postings.last() {
+            if posting.doc <= last.doc {
+                return Err(Error::corrupt(format!(
+                    "posting for doc {} follows doc {}",
+                    posting.doc, last.doc
+                )));
+            }
+        }
+        self.postings.push(posting);
+        Ok(())
+    }
