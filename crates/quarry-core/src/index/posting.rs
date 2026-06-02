@@ -125,3 +125,32 @@ impl PostingList {
     pub fn doc_ids(&self) -> Vec<DocId> {
         self.postings.iter().map(|p| p.doc).collect()
     }
+
+    /// Writes the list as gap-encoded varints.
+    ///
+    /// Document ids become gaps from the previous id, and positions become gaps
+    /// within each document. A list of a million documents whose ids differ by
+    /// small amounts costs about a byte each instead of four.
+    pub fn encode(&self, out: &mut BlobWriter) {
+        out.varint(u64::from(self.field));
+        out.varint(self.postings.len() as u64);
+
+        let mut previous_doc = 0u32;
+        for posting in &self.postings {
+            out.varint(u64::from(posting.doc - previous_doc));
+            out.varint(u64::from(posting.term_freq));
+            out.sorted_u32(&posting.positions);
+            previous_doc = posting.doc;
+        }
+    }
+
+    /// Reads what [`PostingList::encode`] wrote.
+    pub fn decode(input: &mut BlobReader<'_>) -> Result<Self> {
+        let field = u16::try_from(input.varint()?)
+            .map_err(|_| Error::corrupt("field id does not fit in u16"))?;
+        let count = input.varint()? as usize;
+
+        // Clamped so a corrupt count cannot request a huge allocation before
+        // the first read fails.
+        let mut postings = Vec::with_capacity(count.min(4096));
+        let mut doc = 0u32;
