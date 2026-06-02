@@ -60,3 +60,27 @@ pub struct PostingList {
     /// Postings, ascending by document id.
     pub postings: Vec<Posting>,
 }
+
+impl PostingList {
+    /// An empty list for a field.
+    #[must_use]
+    pub fn new(field: FieldId) -> Self {
+        Self {
+            field,
+            postings: Vec::new(),
+        }
+    }
+
+    /// How many documents contain the term.
+    ///
+    /// This is the document frequency that BM25's IDF term is computed from.
+    #[must_use]
+    pub fn doc_freq(&self) -> u32 {
+        self.postings.len() as u32
+    }
+
+    /// Total occurrences across every document.
+    #[must_use]
+    pub fn total_term_freq(&self) -> u64 {
+        self.postings.iter().map(|p| u64::from(p.term_freq)).sum()
+    }
