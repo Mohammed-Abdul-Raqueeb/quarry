@@ -29,3 +29,12 @@ impl TermKey {
         }
     }
 }
+
+/// Per-field length bookkeeping, needed by BM25.
+#[derive(Debug, Clone, Default, PartialEq)]
+pub struct FieldStats {
+    /// How many documents have any value for the field.
+    pub doc_count: u64,
+    /// Total terms across every document, counting repeats.
+    pub total_length: u64,
+}
