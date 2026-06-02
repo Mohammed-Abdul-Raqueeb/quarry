@@ -143,3 +143,24 @@ impl Tokenizer for EdgeNgramTokenizer {
         tokens
     }
 }
+
+fn words_with_offsets(input: &str) -> Vec<(usize, &str)> {
+    let mut out = Vec::new();
+    let mut start: Option<usize> = None;
+
+    for (offset, ch) in input.char_indices() {
+        if ch.is_alphanumeric() {
+            if start.is_none() {
+                start = Some(offset);
+            }
+        } else if let Some(begin) = start.take() {
+            out.push((begin, &input[begin..offset]));
+        }
+    }
+
+    if let Some(begin) = start {
+        out.push((begin, &input[begin..]));
+    }
+
+    out
+}
