@@ -154,3 +154,30 @@ impl PostingList {
         // the first read fails.
         let mut postings = Vec::with_capacity(count.min(4096));
         let mut doc = 0u32;
+
+        for _ in 0..count {
+            let gap = input.varint_u32()?;
+            doc = doc
+                .checked_add(gap)
+                .ok_or_else(|| Error::corrupt("document id overflows u32"))?;
+            let term_freq = input.varint_u32()?;
+            let positions = input.sorted_u32()?;
+
+            postings.push(Posting {
+                doc,
+                term_freq,
+                positions,
+            });
+        }
+
+        Ok(Self { field, postings })
+    }
+
+    /// Documents present in both lists, with `self`'s postings.
+    ///
+    /// A linear merge rather than a hash join: both inputs are sorted, so this
+    /// is one pass with no allocation for a lookup table.
+    #[must_use]
+    pub fn intersect(&self, other: &Self) -> Vec<DocId> {
+        let mut out = Vec::new();
+        let (mut i, mut j) = (0, 0);
