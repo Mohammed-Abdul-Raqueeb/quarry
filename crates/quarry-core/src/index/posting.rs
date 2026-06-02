@@ -205,3 +205,29 @@ impl PostingList {
     pub fn union(&self, other: &Self) -> Vec<DocId> {
         let mut out = Vec::with_capacity(self.postings.len() + other.postings.len());
         let (mut i, mut j) = (0, 0);
+
+        while i < self.postings.len() && j < other.postings.len() {
+            let left = self.postings[i].doc;
+            let right = other.postings[j].doc;
+
+            match left.cmp(&right) {
+                std::cmp::Ordering::Equal => {
+                    out.push(left);
+                    i += 1;
+                    j += 1;
+                }
+                std::cmp::Ordering::Less => {
+                    out.push(left);
+                    i += 1;
+                }
+                std::cmp::Ordering::Greater => {
+                    out.push(right);
+                    j += 1;
+                }
+            }
+        }
+
+        out.extend(self.postings[i..].iter().map(|p| p.doc));
+        out.extend(other.postings[j..].iter().map(|p| p.doc));
+        out
+    }
