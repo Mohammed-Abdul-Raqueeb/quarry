@@ -38,3 +38,18 @@ pub struct FieldStats {
     /// Total terms across every document, counting repeats.
     pub total_length: u64,
 }
+
+impl FieldStats {
+    /// Mean field length, which BM25 normalises against.
+    ///
+    /// Returns 1.0 rather than 0.0 for an empty field so the caller never
+    /// divides by zero; with no documents the normaliser is unused anyway.
+    #[must_use]
+    pub fn average_length(&self) -> f64 {
+        if self.doc_count == 0 {
+            1.0
+        } else {
+            self.total_length as f64 / self.doc_count as f64
+        }
+    }
+}
