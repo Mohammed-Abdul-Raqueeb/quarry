@@ -104,3 +104,24 @@ impl PostingList {
         self.postings.push(posting);
         Ok(())
     }
+
+    /// The posting for `doc`, found by binary search.
+    #[must_use]
+    pub fn get(&self, doc: DocId) -> Option<&Posting> {
+        self.postings
+            .binary_search_by_key(&doc, |p| p.doc)
+            .ok()
+            .map(|i| &self.postings[i])
+    }
+
+    /// Whether `doc` contains the term.
+    #[must_use]
+    pub fn contains(&self, doc: DocId) -> bool {
+        self.postings.binary_search_by_key(&doc, |p| p.doc).is_ok()
+    }
+
+    /// Document ids, ascending.
+    #[must_use]
+    pub fn doc_ids(&self) -> Vec<DocId> {
+        self.postings.iter().map(|p| p.doc).collect()
+    }
