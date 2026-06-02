@@ -104,3 +104,15 @@ impl Default for EdgeNgramTokenizer {
         Self { min: 2, max: 12 }
     }
 }
+
+impl EdgeNgramTokenizer {
+    /// An edge n-gram tokenizer over a prefix-length range.
+    #[must_use]
+    pub fn new(min: usize, max: usize) -> Self {
+        let min = min.max(1);
+        Self {
+            min,
+            max: max.max(min),
+        }
+    }
+}
