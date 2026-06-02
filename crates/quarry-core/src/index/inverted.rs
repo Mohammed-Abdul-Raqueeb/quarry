@@ -18,3 +18,14 @@ pub struct TermKey {
     /// The analyzed term.
     pub text: String,
 }
+
+impl TermKey {
+    /// A key for a field and term.
+    #[must_use]
+    pub fn new(field: FieldId, text: impl Into<String>) -> Self {
+        Self {
+            field,
+            text: text.into(),
+        }
+    }
+}
