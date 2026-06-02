@@ -181,3 +181,27 @@ impl PostingList {
     pub fn intersect(&self, other: &Self) -> Vec<DocId> {
         let mut out = Vec::new();
         let (mut i, mut j) = (0, 0);
+
+        while i < self.postings.len() && j < other.postings.len() {
+            let left = self.postings[i].doc;
+            let right = other.postings[j].doc;
+
+            match left.cmp(&right) {
+                std::cmp::Ordering::Equal => {
+                    out.push(left);
+                    i += 1;
+                    j += 1;
+                }
+                std::cmp::Ordering::Less => i += 1,
+                std::cmp::Ordering::Greater => j += 1,
+            }
+        }
+
+        out
+    }
+
+    /// Documents present in either list.
+    #[must_use]
+    pub fn union(&self, other: &Self) -> Vec<DocId> {
+        let mut out = Vec::with_capacity(self.postings.len() + other.postings.len());
+        let (mut i, mut j) = (0, 0);
