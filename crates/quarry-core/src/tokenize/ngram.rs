@@ -116,3 +116,30 @@ impl EdgeNgramTokenizer {
         }
     }
 }
+
+impl Tokenizer for EdgeNgramTokenizer {
+    fn tokenize(&self, input: &str) -> Vec<Token> {
+        let mut tokens = Vec::new();
+
+        for (position, (word_start, word)) in words_with_offsets(input).into_iter().enumerate() {
+            let position = position as u32;
+            let chars: Vec<(usize, char)> = word.char_indices().collect();
+
+            for width in self.min..=self.max.min(chars.len()) {
+                let end_byte = chars[width - 1].0 + chars[width - 1].1.len_utf8();
+                let text = &word[..end_byte];
+                tokens.push(Token::new(
+                    text,
+                    position,
+                    word_start,
+                    word_start + end_byte,
+                ));
+            }
+
+            // Every prefix of one word shares a position, so they are
+            // alternatives at the same slot rather than a sequence.
+        }
+
+        tokens
+    }
+}
