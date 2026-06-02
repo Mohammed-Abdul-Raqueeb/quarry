@@ -231,3 +231,26 @@ impl PostingList {
         out.extend(other.postings[j..].iter().map(|p| p.doc));
         out
     }
+
+    /// Documents in `self` but not in `other`.
+    #[must_use]
+    pub fn difference(&self, other: &Self) -> Vec<DocId> {
+        let mut out = Vec::new();
+        let (mut i, mut j) = (0, 0);
+
+        while i < self.postings.len() {
+            let left = self.postings[i].doc;
+
+            while j < other.postings.len() && other.postings[j].doc < left {
+                j += 1;
+            }
+
+            if j >= other.postings.len() || other.postings[j].doc != left {
+                out.push(left);
+            }
+            i += 1;
+        }
+
+        out
+    }
+}
