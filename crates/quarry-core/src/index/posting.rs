@@ -47,3 +47,16 @@ impl Posting {
         !self.positions.is_empty()
     }
 }
+
+/// Every posting for one term in one field, ordered by document id.
+///
+/// The ordering is load-bearing: it is what lets intersection walk two lists
+/// once rather than hashing one of them, and what makes the gap encoding in
+/// [`PostingList::encode`] small.
+#[derive(Debug, Clone, Default, PartialEq, Eq)]
+pub struct PostingList {
+    /// Which field these postings belong to.
+    pub field: FieldId,
+    /// Postings, ascending by document id.
+    pub postings: Vec<Posting>,
+}
