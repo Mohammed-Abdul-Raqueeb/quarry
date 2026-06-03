@@ -139,3 +139,27 @@ impl DocStore {
             }
         }
     }
+
+    /// Reads what [`DocStore::encode`] wrote.
+    pub fn decode(input: &mut BlobReader<'_>) -> Result<Self> {
+        let count = input.varint()? as usize;
+        let mut docs = BTreeMap::new();
+        let mut id = 0u32;
+
+        for _ in 0..count {
+            let gap = input.varint_u32()?;
+            id = id
+                .checked_add(gap)
+                .ok_or_else(|| Error::corrupt("stored doc id overflows u32"))?;
+
+            let value_count = input.varint()? as usize;
+            let mut values = Vec::with_capacity(value_count.min(256));
+
+            for _ in 0..value_count {
+                let field = u16::try_from(input.varint()?)
+                    .map_err(|_| Error::corrupt("stored field id does not fit in u16"))?;
+                values.push((field, decode_value(input)?));
+            }
+
+            docs.insert(id, values);
+        }
