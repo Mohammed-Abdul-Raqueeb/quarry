@@ -218,3 +218,30 @@ impl InvertedIndex {
         fields.sort_unstable();
         fields
     }
+
+    /// Installs a complete posting list for a term.
+    ///
+    /// Used by the segment reader and the merger, which build lists whole
+    /// rather than one occurrence at a time. It replaces any existing list, so
+    /// it is not a substitute for [`InvertedIndex::add_term`] during indexing.
+    pub fn insert_list(&mut self, key: TermKey, list: PostingList) {
+        self.terms.insert(key, list);
+    }
+
+    /// Sets a field length without touching the aggregate statistics.
+    ///
+    /// The merger needs this because it sums the per-segment statistics
+    /// directly; replaying lengths through [`InvertedIndex::record_field_length`]
+    /// would count every document twice.
+    pub fn set_field_length(&mut self, doc: DocId, field: FieldId, length: u32) {
+        self.doc_lengths.insert((doc, field), length);
+    }
+
+    /// Replaces the field statistics wholesale.
+    ///
+    /// The segment reader needs this because [`InvertedIndex::record_field_length`]
+    /// accumulates statistics as a side effect, so replaying lengths would
+    /// double-count what the segment already stored.
+    pub fn set_field_stats(&mut self, stats: HashMap<FieldId, FieldStats>) {
+        self.field_stats = stats;
+    }
