@@ -58,3 +58,19 @@ impl DocStore {
             self.docs.insert(id, values);
         }
     }
+
+    /// Inserts already-filtered values under a new id.
+    ///
+    /// Used by the merger, which is re-keying values that were filtered against
+    /// the schema when they were first stored.
+    pub fn put_raw(&mut self, id: DocId, values: Vec<(FieldId, Value)>) {
+        if !values.is_empty() {
+            self.docs.insert(id, values);
+        }
+    }
+
+    /// The stored values for a document.
+    #[must_use]
+    pub fn get(&self, id: DocId) -> Option<&[(FieldId, Value)]> {
+        self.docs.get(&id).map(Vec::as_slice)
+    }
