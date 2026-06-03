@@ -93,3 +93,24 @@ impl InvertedIndex {
     pub fn is_empty(&self) -> bool {
         self.doc_count == 0
     }
+
+    /// Records that a document exists, returning its id.
+    ///
+    /// Ids are assigned densely in insertion order, which is what allows the
+    /// gap encoding in the posting codec.
+    pub fn allocate_doc(&mut self) -> DocId {
+        let id = self.doc_count;
+        self.doc_count += 1;
+        id
+    }
+
+    /// Adds one occurrence of a term.
+    ///
+    /// Takes the position as an `Option` so a field indexed without positions
+    /// does not pay for an empty vector per posting.
+    pub fn add_term(&mut self, field: FieldId, text: &str, doc: DocId, position: Option<u32>) {
+        let key = TermKey::new(field, text);
+        let list = self
+            .terms
+            .entry(key)
+            .or_insert_with(|| PostingList::new(field));
