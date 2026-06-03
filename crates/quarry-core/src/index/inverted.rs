@@ -245,3 +245,29 @@ impl InvertedIndex {
     pub fn set_field_stats(&mut self, stats: HashMap<FieldId, FieldStats>) {
         self.field_stats = stats;
     }
+
+    /// Sets the document count directly, for a merged index.
+    pub fn set_doc_count(&mut self, count: u32) {
+        self.doc_count = count;
+    }
+
+    /// Rough in-memory footprint, in bytes.
+    ///
+    /// Used to decide when to flush a segment. An estimate rather than a
+    /// measurement: walking every allocation exactly would cost more than the
+    /// decision is worth.
+    #[must_use]
+    pub fn estimated_bytes(&self) -> usize {
+        const POSTING_OVERHEAD: usize = 16;
+        const ENTRY_OVERHEAD: usize = 48;
+
+        self.terms
+            .iter()
+            .map(|(key, list)| {
+                let positions: usize = list.postings.iter().map(|p| p.positions.len() * 4).sum();
+                key.text.len() + ENTRY_OVERHEAD + list.postings.len() * POSTING_OVERHEAD + positions
+            })
+            .sum::<usize>()
+            + self.doc_lengths.len() * 16
+    }
+}
