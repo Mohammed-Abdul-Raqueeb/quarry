@@ -9,3 +9,9 @@ use crate::doc::{DocId, Document, Value};
 use crate::error::{Error, Result};
 use crate::schema::{FieldId, FieldType, Schema};
 use std::collections::BTreeMap;
+
+/// Stored values, keyed by document.
+#[derive(Debug, Clone, Default, PartialEq)]
+pub struct DocStore {
+    docs: BTreeMap<DocId, Vec<(FieldId, Value)>>,
+}
