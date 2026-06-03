@@ -141,3 +141,32 @@ impl InvertedIndex {
         stats.doc_count += 1;
         stats.total_length += u64::from(length);
     }
+
+    /// The posting list for a field and term.
+    #[must_use]
+    pub fn postings(&self, field: FieldId, text: &str) -> Option<&PostingList> {
+        self.terms.get(&TermKey::new(field, text))
+    }
+
+    /// How many documents contain a term.
+    #[must_use]
+    pub fn doc_freq(&self, field: FieldId, text: &str) -> u32 {
+        self.postings(field, text).map_or(0, PostingList::doc_freq)
+    }
+
+    /// Length of one field of one document, in terms.
+    #[must_use]
+    pub fn field_length(&self, doc: DocId, field: FieldId) -> u32 {
+        self.doc_lengths.get(&(doc, field)).copied().unwrap_or(0)
+    }
+
+    /// Statistics for a field.
+    #[must_use]
+    pub fn field_stats(&self, field: FieldId) -> FieldStats {
+        self.field_stats.get(&field).cloned().unwrap_or_default()
+    }
+
+    /// Every term, in sorted order.
+    pub fn iter_terms(&self) -> impl Iterator<Item = (&TermKey, &PostingList)> {
+        self.terms.iter()
+    }
