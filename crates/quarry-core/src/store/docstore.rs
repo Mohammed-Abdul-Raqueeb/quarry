@@ -74,3 +74,28 @@ impl DocStore {
     pub fn get(&self, id: DocId) -> Option<&[(FieldId, Value)]> {
         self.docs.get(&id).map(Vec::as_slice)
     }
+
+    /// The stored value of one field of one document.
+    #[must_use]
+    pub fn field(&self, id: DocId, field: FieldId) -> Option<&Value> {
+        self.docs
+            .get(&id)?
+            .iter()
+            .find(|(f, _)| *f == field)
+            .map(|(_, v)| v)
+    }
+
+    /// Every stored value of one field of one document.
+    #[must_use]
+    pub fn field_values(&self, id: DocId, field: FieldId) -> Vec<&Value> {
+        self.docs
+            .get(&id)
+            .map(|values| {
+                values
+                    .iter()
+                    .filter(|(f, _)| *f == field)
+                    .map(|(_, v)| v)
+                    .collect()
+            })
+            .unwrap_or_default()
+    }
