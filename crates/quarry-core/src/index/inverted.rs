@@ -195,3 +195,26 @@ impl InvertedIndex {
             .map(|(key, _)| key.text.as_str())
             .collect()
     }
+
+    /// Terms ordered by how many documents contain them, descending.
+    #[must_use]
+    pub fn most_frequent_terms(&self, field: FieldId, limit: usize) -> Vec<(&str, u32)> {
+        let mut terms: Vec<(&str, u32)> = self
+            .terms
+            .iter()
+            .filter(|(key, _)| key.field == field)
+            .map(|(key, list)| (key.text.as_str(), list.doc_freq()))
+            .collect();
+
+        terms.sort_by(|a, b| b.1.cmp(&a.1).then_with(|| a.0.cmp(b.0)));
+        terms.truncate(limit);
+        terms
+    }
+
+    /// Fields that have had anything indexed.
+    #[must_use]
+    pub fn active_fields(&self) -> Vec<FieldId> {
+        let mut fields: Vec<FieldId> = self.field_stats.keys().copied().collect();
+        fields.sort_unstable();
+        fields
+    }
