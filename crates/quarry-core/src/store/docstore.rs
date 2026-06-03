@@ -99,3 +99,25 @@ impl DocStore {
             })
             .unwrap_or_default()
     }
+
+    /// Rebuilds a [`Document`] from what was stored.
+    #[must_use]
+    pub fn document(&self, id: DocId) -> Option<Document> {
+        let values = self.docs.get(&id)?;
+        let mut doc = Document::new();
+        for (field, value) in values {
+            doc.add(*field, value.clone());
+        }
+        Some(doc)
+    }
+
+    /// Document ids present, ascending.
+    #[must_use]
+    pub fn doc_ids(&self) -> Vec<DocId> {
+        self.docs.keys().copied().collect()
+    }
+
+    /// Removes a document's stored values.
+    pub fn remove(&mut self, id: DocId) -> bool {
+        self.docs.remove(&id).is_some()
+    }
