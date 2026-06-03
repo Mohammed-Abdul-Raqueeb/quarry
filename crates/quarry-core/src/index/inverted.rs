@@ -53,3 +53,18 @@ impl FieldStats {
         }
     }
 }
+
+/// An inverted index held in memory.
+///
+/// Terms live in a [`BTreeMap`] rather than a `HashMap` so iteration is in
+/// sorted order. That ordering is what the segment writer relies on to
+/// front-code the dictionary and what makes a prefix scan a contiguous range
+/// instead of a full walk.
+#[derive(Debug, Clone, Default)]
+pub struct InvertedIndex {
+    terms: BTreeMap<TermKey, PostingList>,
+    doc_count: u32,
+    field_stats: HashMap<FieldId, FieldStats>,
+    /// Length of each field of each document, for BM25's length normalisation.
+    doc_lengths: HashMap<(DocId, FieldId), u32>,
+}
