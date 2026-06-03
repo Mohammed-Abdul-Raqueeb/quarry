@@ -114,3 +114,30 @@ impl InvertedIndex {
             .terms
             .entry(key)
             .or_insert_with(|| PostingList::new(field));
+
+        // Documents arrive in id order, so an existing posting for this doc is
+        // always the last one — no search needed.
+        match list.postings.last_mut() {
+            Some(last) if last.doc == doc => {
+                last.term_freq += 1;
+                if let Some(pos) = position {
+                    last.positions.push(pos);
+                }
+            }
+            _ => {
+                let mut posting = Posting::new(doc, 1);
+                if let Some(pos) = position {
+                    posting.positions.push(pos);
+                }
+                list.postings.push(posting);
+            }
+        }
+    }
+
+    /// Records the analyzed length of one field of one document.
+    pub fn record_field_length(&mut self, doc: DocId, field: FieldId, length: u32) {
+        self.doc_lengths.insert((doc, field), length);
+        let stats = self.field_stats.entry(field).or_default();
+        stats.doc_count += 1;
+        stats.total_length += u64::from(length);
+    }
