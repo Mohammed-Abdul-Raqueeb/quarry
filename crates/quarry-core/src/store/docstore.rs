@@ -163,3 +163,25 @@ impl DocStore {
 
             docs.insert(id, values);
         }
+
+        Ok(Self { docs })
+    }
+
+    /// Rough footprint in bytes, for deciding when to flush.
+    #[must_use]
+    pub fn estimated_bytes(&self) -> usize {
+        self.docs
+            .values()
+            .map(|values| {
+                values
+                    .iter()
+                    .map(|(_, v)| match v {
+                        Value::Text(s) | Value::Keyword(s) => s.len() + 24,
+                        Value::Number(_) => 16,
+                    })
+                    .sum::<usize>()
+                    + 32
+            })
+            .sum()
+    }
+}
