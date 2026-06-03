@@ -15,3 +15,22 @@ use std::collections::BTreeMap;
 pub struct DocStore {
     docs: BTreeMap<DocId, Vec<(FieldId, Value)>>,
 }
+
+impl DocStore {
+    /// An empty store.
+    #[must_use]
+    pub fn new() -> Self {
+        Self::default()
+    }
+
+    /// How many documents are stored.
+    #[must_use]
+    pub fn len(&self) -> usize {
+        self.docs.len()
+    }
+
+    /// Whether nothing is stored.
+    #[must_use]
+    pub fn is_empty(&self) -> bool {
+        self.docs.is_empty()
+    }
