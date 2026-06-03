@@ -34,3 +34,27 @@ impl DocStore {
     pub fn is_empty(&self) -> bool {
         self.docs.is_empty()
     }
+
+    /// Stores the values of `doc` that the schema marks as stored.
+    ///
+    /// Filtering here rather than at read time means an unstored field never
+    /// reaches the disk, which is the point of the option.
+    pub fn put(&mut self, id: DocId, doc: &Document, schema: &Schema) {
+        let mut values = Vec::new();
+
+        for (field, field_values) in doc.iter() {
+            let Some(definition) = schema.field_by_id(field) else {
+                continue;
+            };
+            if !definition.options.stored {
+                continue;
+            }
+            for value in field_values {
+                values.push((field, value.clone()));
+            }
+        }
+
+        if !values.is_empty() {
+            self.docs.insert(id, values);
+        }
+    }
