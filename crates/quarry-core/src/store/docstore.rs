@@ -185,3 +185,6 @@ impl DocStore {
             .sum()
     }
 }
+
+/// Tag byte identifying a value's variant on disk.
+const TAG_TEXT: u8 = 1;
