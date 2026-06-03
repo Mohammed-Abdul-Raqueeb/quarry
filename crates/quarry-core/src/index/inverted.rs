@@ -68,3 +68,28 @@ pub struct InvertedIndex {
     /// Length of each field of each document, for BM25's length normalisation.
     doc_lengths: HashMap<(DocId, FieldId), u32>,
 }
+
+impl InvertedIndex {
+    /// An empty index.
+    #[must_use]
+    pub fn new() -> Self {
+        Self::default()
+    }
+
+    /// How many documents have been added.
+    #[must_use]
+    pub fn doc_count(&self) -> u32 {
+        self.doc_count
+    }
+
+    /// How many distinct field/term pairs exist.
+    #[must_use]
+    pub fn term_count(&self) -> usize {
+        self.terms.len()
+    }
+
+    /// Whether nothing has been indexed.
+    #[must_use]
+    pub fn is_empty(&self) -> bool {
+        self.doc_count == 0
+    }
