@@ -121,3 +121,21 @@ impl DocStore {
     pub fn remove(&mut self, id: DocId) -> bool {
         self.docs.remove(&id).is_some()
     }
+
+    /// Writes the store.
+    pub fn encode(&self, out: &mut BlobWriter) {
+        out.varint(self.docs.len() as u64);
+
+        let mut previous_id = 0u32;
+        for (id, values) in &self.docs {
+            // Ids ascend, so gaps keep the common case to one byte.
+            out.varint(u64::from(*id - previous_id));
+            previous_id = *id;
+
+            out.varint(values.len() as u64);
+            for (field, value) in values {
+                out.varint(u64::from(*field));
+                encode_value(out, value);
+            }
+        }
+    }
