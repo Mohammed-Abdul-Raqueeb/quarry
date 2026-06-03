@@ -170,3 +170,28 @@ impl InvertedIndex {
     pub fn iter_terms(&self) -> impl Iterator<Item = (&TermKey, &PostingList)> {
         self.terms.iter()
     }
+
+    /// Terms in one field that start with `prefix`.
+    ///
+    /// A bounded range over the sorted map, so the cost is proportional to the
+    /// number of matches rather than to the size of the dictionary.
+    #[must_use]
+    pub fn terms_with_prefix(&self, field: FieldId, prefix: &str) -> Vec<&str> {
+        let start = TermKey::new(field, prefix);
+
+        self.terms
+            .range(start..)
+            .take_while(|(key, _)| key.field == field && key.text.starts_with(prefix))
+            .map(|(key, _)| key.text.as_str())
+            .collect()
+    }
+
+    /// Every term in one field.
+    #[must_use]
+    pub fn terms_in_field(&self, field: FieldId) -> Vec<&str> {
+        self.terms
+            .range(TermKey::new(field, "")..)
+            .take_while(|(key, _)| key.field == field)
+            .map(|(key, _)| key.text.as_str())
+            .collect()
+    }
