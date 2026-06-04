@@ -97,3 +97,35 @@ impl Segment {
     pub fn is_empty(&self) -> bool {
         self.meta.doc_count == 0
     }
+
+    /// Serializes the segment.
+    #[must_use]
+    pub fn write(&self) -> Vec<u8> {
+        let mut body = BlobWriter::new();
+
+        body.u64(self.meta.schema_digest);
+        body.varint(u64::from(self.meta.doc_count));
+
+        // Field statistics.
+        let fields = self.index.active_fields();
+        body.varint(fields.len() as u64);
+        for field in &fields {
+            let stats = self.index.field_stats(*field);
+            body.varint(u64::from(*field));
+            body.varint(stats.doc_count);
+            body.varint(stats.total_length);
+        }
+
+        // Per-document field lengths, grouped by field so document ids ascend
+        // within each group and gap-code well.
+        body.varint(fields.len() as u64);
+        for field in &fields {
+            body.varint(u64::from(*field));
+
+            let mut lengths: Vec<(DocId, u32)> = (0..self.meta.doc_count)
+                .filter_map(|doc| {
+                    let len = self.index.field_length(doc, *field);
+                    (len > 0).then_some((doc, len))
+                })
+                .collect();
+            lengths.sort_unstable_by_key(|(doc, _)| *doc);
