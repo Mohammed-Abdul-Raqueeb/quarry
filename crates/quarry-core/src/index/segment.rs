@@ -41,3 +41,5 @@ use std::collections::HashMap;
 pub const MAGIC_START: &[u8; 4] = b"QRYS";
 /// Trailing magic.
 pub const MAGIC_END: &[u8; 4] = b"QRYE";
+/// Format version this build writes and reads.
+pub const FORMAT_VERSION: u32 = 4;
