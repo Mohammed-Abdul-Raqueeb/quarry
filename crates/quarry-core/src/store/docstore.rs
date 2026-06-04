@@ -209,3 +209,12 @@ fn encode_value(out: &mut BlobWriter, value: &Value) {
         }
     }
 }
+
+fn decode_value(input: &mut BlobReader<'_>) -> Result<Value> {
+    match input.u8()? {
+        TAG_TEXT => Ok(Value::Text(input.string()?.to_string())),
+        TAG_KEYWORD => Ok(Value::Keyword(input.string()?.to_string())),
+        TAG_NUMBER => Ok(Value::Number(f64::from_bits(input.u64()?))),
+        tag => Err(Error::corrupt(format!("unknown value tag {tag}"))),
+    }
+}
