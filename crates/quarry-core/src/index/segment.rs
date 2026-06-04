@@ -45,3 +45,16 @@ pub const MAGIC_END: &[u8; 4] = b"QRYE";
 pub const FORMAT_VERSION: u32 = 4;
 /// Smallest possible well-formed segment: both magics, version and checksum.
 pub const MIN_SEGMENT_LEN: usize = 16;
+
+/// What a segment records about itself.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub struct SegmentMeta {
+    /// Format version the file was written with.
+    pub version: u32,
+    /// Documents in the segment.
+    pub doc_count: u32,
+    /// Distinct field/term pairs.
+    pub term_count: u32,
+    /// Hash of the schema it was written against.
+    pub schema_digest: u64,
+}
