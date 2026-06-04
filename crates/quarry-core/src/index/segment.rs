@@ -36,3 +36,6 @@ use crate::store::blob::{BlobReader, BlobWriter};
 use crate::store::checksum::{crc32, fnv1a};
 use crate::store::docstore::DocStore;
 use std::collections::HashMap;
+
+/// Leading magic.
+pub const MAGIC_START: &[u8; 4] = b"QRYS";
