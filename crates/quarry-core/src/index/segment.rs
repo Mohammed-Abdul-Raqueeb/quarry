@@ -69,3 +69,31 @@ pub struct Segment {
     /// Stored field values.
     pub store: DocStore,
 }
+
+impl Segment {
+    /// Builds a segment from an in-memory index and store.
+    #[must_use]
+    pub fn new(index: InvertedIndex, store: DocStore, schema: &Schema) -> Self {
+        Self {
+            meta: SegmentMeta {
+                version: FORMAT_VERSION,
+                doc_count: index.doc_count(),
+                term_count: index.term_count() as u32,
+                schema_digest: schema_digest(schema),
+            },
+            index,
+            store,
+        }
+    }
+
+    /// Documents in the segment.
+    #[must_use]
+    pub fn doc_count(&self) -> u32 {
+        self.meta.doc_count
+    }
+
+    /// Whether the segment holds no documents.
+    #[must_use]
+    pub fn is_empty(&self) -> bool {
+        self.meta.doc_count == 0
+    }
