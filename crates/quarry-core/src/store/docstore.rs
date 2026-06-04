@@ -218,3 +218,30 @@ fn decode_value(input: &mut BlobReader<'_>) -> Result<Value> {
         tag => Err(Error::corrupt(format!("unknown value tag {tag}"))),
     }
 }
+
+/// Checks a value is the right shape for its field.
+///
+/// Called when reading a segment written by an older build whose schema may
+/// have differed, so a type change is reported rather than silently reinterpreted.
+pub fn validate(schema: &Schema, field: FieldId, value: &Value) -> Result<()> {
+    let definition = schema
+        .field_by_id(field)
+        .ok_or_else(|| Error::corrupt(format!("stored field {field} is not in the schema")))?;
+
+    let ok = matches!(
+        (definition.ty, value),
+        (FieldType::Text, Value::Text(_))
+            | (FieldType::Keyword, Value::Keyword(_))
+            | (FieldType::Numeric, Value::Number(_))
+    );
+
+    if ok {
+        Ok(())
+    } else {
+        Err(Error::corrupt(format!(
+            "stored value for {} is not {}",
+            definition.name,
+            definition.ty.as_str()
+        )))
+    }
+}
