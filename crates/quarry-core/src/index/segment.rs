@@ -43,3 +43,5 @@ pub const MAGIC_START: &[u8; 4] = b"QRYS";
 pub const MAGIC_END: &[u8; 4] = b"QRYE";
 /// Format version this build writes and reads.
 pub const FORMAT_VERSION: u32 = 4;
+/// Smallest possible well-formed segment: both magics, version and checksum.
+pub const MIN_SEGMENT_LEN: usize = 16;
