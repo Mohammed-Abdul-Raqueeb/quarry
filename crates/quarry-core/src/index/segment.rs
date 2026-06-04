@@ -58,3 +58,14 @@ pub struct SegmentMeta {
     /// Hash of the schema it was written against.
     pub schema_digest: u64,
 }
+
+/// One immutable index.
+#[derive(Debug, Clone)]
+pub struct Segment {
+    /// Self-description.
+    pub meta: SegmentMeta,
+    /// Dictionary and postings.
+    pub index: InvertedIndex,
+    /// Stored field values.
+    pub store: DocStore,
+}
