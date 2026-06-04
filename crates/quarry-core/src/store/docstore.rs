@@ -190,3 +190,22 @@ impl DocStore {
 const TAG_TEXT: u8 = 1;
 const TAG_KEYWORD: u8 = 2;
 const TAG_NUMBER: u8 = 3;
+
+fn encode_value(out: &mut BlobWriter, value: &Value) {
+    match value {
+        Value::Text(s) => {
+            out.u8(TAG_TEXT);
+            out.string(s);
+        }
+        Value::Keyword(s) => {
+            out.u8(TAG_KEYWORD);
+            out.string(s);
+        }
+        Value::Number(n) => {
+            out.u8(TAG_NUMBER);
+            // Raw bits rather than a decimal rendering, so the value survives a
+            // round trip exactly.
+            out.u64(n.to_bits());
+        }
+    }
+}
