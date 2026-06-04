@@ -2,3 +2,4 @@
 
 pub mod blob;
 pub mod checksum;
+pub mod docstore;
