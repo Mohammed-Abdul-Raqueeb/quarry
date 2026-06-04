@@ -26,3 +26,13 @@
 //! The trailing magic is what distinguishes a truncated file from a corrupt
 //! one: a write killed partway through has no footer at all, which is a clearer
 //! diagnosis than a checksum mismatch.
+
+use super::inverted::{FieldStats, InvertedIndex, TermKey};
+use super::posting::PostingList;
+use crate::doc::DocId;
+use crate::error::{Error, Result};
+use crate::schema::{FieldId, Schema};
+use crate::store::blob::{BlobReader, BlobWriter};
+use crate::store::checksum::{crc32, fnv1a};
+use crate::store::docstore::DocStore;
+use std::collections::HashMap;
