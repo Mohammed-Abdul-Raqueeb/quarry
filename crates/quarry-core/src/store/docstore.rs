@@ -189,3 +189,4 @@ impl DocStore {
 /// Tag byte identifying a value's variant on disk.
 const TAG_TEXT: u8 = 1;
 const TAG_KEYWORD: u8 = 2;
+const TAG_NUMBER: u8 = 3;
