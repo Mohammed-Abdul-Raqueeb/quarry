@@ -39,3 +39,5 @@ use std::collections::HashMap;
 
 /// Leading magic.
 pub const MAGIC_START: &[u8; 4] = b"QRYS";
+/// Trailing magic.
+pub const MAGIC_END: &[u8; 4] = b"QRYE";
