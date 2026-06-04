@@ -1,0 +1,28 @@
+//! The on-disk segment format.
+//!
+//! A segment is one immutable, self-contained index: dictionary, postings,
+//! stored fields and statistics in a single file. Immutability is what makes
+//! the design simple — nothing is ever updated in place, so there is no
+//! locking, no partial-write window, and a reader never sees a half-applied
+//! change. New documents go into a new segment, and [`super::merge()`] folds
+//! segments together in the background.
+//!
+//! Layout:
+//!
+//! ```text
+//! magic "QRYS"      4 bytes
+//! version           4 bytes
+//! body              varint-coded sections:
+//!                     schema digest
+//!                     doc count
+//!                     field statistics
+//!                     document field lengths
+//!                     term dictionary + postings
+//!                     stored fields
+//! body checksum     4 bytes  (CRC32 of the body)
+//! magic "QRYE"      4 bytes
+//! ```
+//!
+//! The trailing magic is what distinguishes a truncated file from a corrupt
+//! one: a write killed partway through has no footer at all, which is a clearer
+//! diagnosis than a checksum mismatch.
