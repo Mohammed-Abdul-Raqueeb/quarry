@@ -259,3 +259,34 @@ impl Segment {
             let field = read_field_id(&mut reader)?;
             let shared = reader.varint()? as usize;
             let suffix = reader.string()?;
+
+            if shared > previous_text.len() {
+                return Err(Error::corrupt(format!(
+                    "front-coded prefix of {shared} exceeds the previous term"
+                )));
+            }
+            // `previous_text` is built from valid UTF-8 suffixes, but a corrupt
+            // shared length could land mid-character.
+            if !previous_text.is_char_boundary(shared) {
+                return Err(Error::corrupt(
+                    "front-coded prefix splits a utf-8 character",
+                ));
+            }
+
+            let text = format!("{}{}", &previous_text[..shared], suffix);
+            let list = PostingList::decode(&mut reader)?;
+
+            for posting in &list.postings {
+                if posting.doc >= doc_count {
+                    return Err(Error::corrupt(format!(
+                        "posting references doc {} but the segment has {doc_count}",
+                        posting.doc
+                    )));
+                }
+            }
+
+            index.insert_list(TermKey::new(field, text.clone()), list);
+            previous_text = text;
+        }
+
+        let store = DocStore::decode(&mut reader)?;
