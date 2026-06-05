@@ -13,3 +13,12 @@ use crate::tokenize::Analyzer;
 pub const DEFAULT_MAX_BUFFERED_DOCS: u32 = 50_000;
 /// Approximate bytes buffered before the writer insists on a flush.
 pub const DEFAULT_MAX_BUFFERED_BYTES: usize = 64 * 1024 * 1024;
+
+/// How the writer decides when a segment is full.
+#[derive(Debug, Clone, Copy)]
+pub struct WriterConfig {
+    /// Documents after which [`IndexWriter::should_flush`] returns true.
+    pub max_buffered_docs: u32,
+    /// Estimated bytes after which [`IndexWriter::should_flush`] returns true.
+    pub max_buffered_bytes: usize,
+}
