@@ -326,3 +326,22 @@ impl Segment {
 fn read_field_id(reader: &mut BlobReader<'_>) -> Result<FieldId> {
     u16::try_from(reader.varint()?).map_err(|_| Error::corrupt("field id does not fit in u16"))
 }
+
+/// Length of the shared prefix of two strings, on a character boundary.
+#[must_use]
+pub fn shared_prefix_len(a: &str, b: &str) -> usize {
+    let limit = a.len().min(b.len());
+    let (a_bytes, b_bytes) = (a.as_bytes(), b.as_bytes());
+
+    let mut i = 0;
+    while i < limit && a_bytes[i] == b_bytes[i] {
+        i += 1;
+    }
+
+    // Back off to a boundary so slicing the prefix is always valid.
+    while i > 0 && !a.is_char_boundary(i) {
+        i -= 1;
+    }
+
+    i
+}
