@@ -178,3 +178,23 @@ impl Segment {
                 bytes.len()
             )));
         }
+
+        if &bytes[..4] != MAGIC_START {
+            return Err(Error::corrupt("missing leading magic; not a segment file"));
+        }
+
+        // Checked before the version, so a half-written file reports what it
+        // actually is rather than a nonsense version number read from the gap.
+        if &bytes[bytes.len() - 4..] != MAGIC_END {
+            return Err(Error::corrupt(
+                "missing trailing magic; the segment was truncated mid-write",
+            ));
+        }
+
+        let version = u32::from_le_bytes([bytes[4], bytes[5], bytes[6], bytes[7]]);
+        if version != FORMAT_VERSION {
+            return Err(Error::Version {
+                found: version,
+                expected: FORMAT_VERSION,
+            });
+        }
