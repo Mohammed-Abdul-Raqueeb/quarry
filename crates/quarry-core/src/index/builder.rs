@@ -8,3 +8,6 @@ use crate::json::Json;
 use crate::schema::{FieldType, Schema};
 use crate::store::docstore::DocStore;
 use crate::tokenize::Analyzer;
+
+/// Documents accepted before the writer insists on a flush.
+pub const DEFAULT_MAX_BUFFERED_DOCS: u32 = 50_000;
