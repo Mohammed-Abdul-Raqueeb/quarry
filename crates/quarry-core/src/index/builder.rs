@@ -95,3 +95,26 @@ impl IndexWriter {
     pub fn doc_count(&self) -> u32 {
         self.index.doc_count()
     }
+
+    /// Whether nothing has been buffered.
+    #[must_use]
+    pub fn is_empty(&self) -> bool {
+        self.index.is_empty()
+    }
+
+    /// Whether a threshold has been crossed.
+    #[must_use]
+    pub fn should_flush(&self) -> bool {
+        self.index.doc_count() >= self.config.max_buffered_docs
+            || self.estimated_bytes() >= self.config.max_buffered_bytes
+    }
+
+    /// Rough memory held by the buffer.
+    #[must_use]
+    pub fn estimated_bytes(&self) -> usize {
+        self.index.estimated_bytes() + self.store.estimated_bytes()
+    }
+
+    /// Indexes a document, returning its id.
+    pub fn add(&mut self, doc: &Document) -> Result<DocId> {
+        let id = self.index.allocate_doc();
