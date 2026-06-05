@@ -31,3 +31,19 @@ impl Default for WriterConfig {
         }
     }
 }
+
+/// Accumulates documents into one segment.
+///
+/// Everything is buffered in memory until [`IndexWriter::flush`]. That is what
+/// makes a segment immutable and the write path lock-free, and it is why
+/// `should_flush` exists: the caller decides when to pay the cost, because only
+/// the caller knows whether it is mid-batch.
+#[derive(Debug)]
+pub struct IndexWriter {
+    schema: Schema,
+    analyzer: Analyzer,
+    keyword_analyzer: Analyzer,
+    index: InvertedIndex,
+    store: DocStore,
+    config: WriterConfig,
+}
