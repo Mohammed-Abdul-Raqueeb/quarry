@@ -322,3 +322,7 @@ impl Segment {
         }
     }
 }
+
+fn read_field_id(reader: &mut BlobReader<'_>) -> Result<FieldId> {
+    u16::try_from(reader.varint()?).map_err(|_| Error::corrupt("field id does not fit in u16"))
+}
