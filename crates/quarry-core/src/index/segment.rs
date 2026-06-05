@@ -235,3 +235,27 @@ impl Segment {
                 },
             );
         }
+
+        let length_groups = reader.varint()? as usize;
+        for _ in 0..length_groups {
+            let field = read_field_id(&mut reader)?;
+            let entries = reader.varint()? as usize;
+            let mut doc = 0u32;
+
+            for _ in 0..entries {
+                let gap = reader.varint_u32()?;
+                doc = doc
+                    .checked_add(gap)
+                    .ok_or_else(|| Error::corrupt("length entry doc id overflows u32"))?;
+                let length = reader.varint_u32()?;
+                index.record_field_length(doc, field, length);
+            }
+        }
+
+        let term_count = reader.varint()? as usize;
+        let mut previous_text = String::new();
+
+        for _ in 0..term_count {
+            let field = read_field_id(&mut reader)?;
+            let shared = reader.varint()? as usize;
+            let suffix = reader.string()?;
