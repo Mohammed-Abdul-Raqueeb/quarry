@@ -198,3 +198,22 @@ impl Segment {
                 expected: FORMAT_VERSION,
             });
         }
+
+        let body = &bytes[8..bytes.len() - 8];
+        let stored_checksum = u32::from_le_bytes([
+            bytes[bytes.len() - 8],
+            bytes[bytes.len() - 7],
+            bytes[bytes.len() - 6],
+            bytes[bytes.len() - 5],
+        ]);
+        BlobReader::verify_checksum(body, stored_checksum)?;
+
+        let mut reader = BlobReader::new(body);
+
+        let schema_digest = reader.u64()?;
+        let doc_count = reader.varint_u32()?;
+
+        let mut index = InvertedIndex::new();
+        for _ in 0..doc_count {
+            index.allocate_doc();
+        }
