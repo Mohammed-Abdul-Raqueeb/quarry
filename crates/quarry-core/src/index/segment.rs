@@ -217,3 +217,21 @@ impl Segment {
         for _ in 0..doc_count {
             index.allocate_doc();
         }
+
+        // Field statistics are read into a map first and applied after the
+        // lengths, because `record_field_length` accumulates them and would
+        // otherwise double-count.
+        let stat_count = reader.varint()? as usize;
+        let mut stats = HashMap::with_capacity(stat_count);
+        for _ in 0..stat_count {
+            let field = read_field_id(&mut reader)?;
+            let doc_count = reader.varint()?;
+            let total_length = reader.varint()?;
+            stats.insert(
+                field,
+                FieldStats {
+                    doc_count,
+                    total_length,
+                },
+            );
+        }
