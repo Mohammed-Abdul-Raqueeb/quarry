@@ -22,3 +22,12 @@ pub struct WriterConfig {
     /// Estimated bytes after which [`IndexWriter::should_flush`] returns true.
     pub max_buffered_bytes: usize,
 }
+
+impl Default for WriterConfig {
+    fn default() -> Self {
+        Self {
+            max_buffered_docs: DEFAULT_MAX_BUFFERED_DOCS,
+            max_buffered_bytes: DEFAULT_MAX_BUFFERED_BYTES,
+        }
+    }
+}
