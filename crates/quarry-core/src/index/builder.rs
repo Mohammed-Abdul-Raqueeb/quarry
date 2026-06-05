@@ -70,3 +70,28 @@ impl IndexWriter {
             config: WriterConfig::default(),
         }
     }
+
+    /// Replaces the flush thresholds.
+    #[must_use]
+    pub fn with_config(mut self, config: WriterConfig) -> Self {
+        self.config = config;
+        self
+    }
+
+    /// The schema being indexed against.
+    #[must_use]
+    pub fn schema(&self) -> &Schema {
+        &self.schema
+    }
+
+    /// The analyzer used for text fields.
+    #[must_use]
+    pub fn analyzer(&self) -> &Analyzer {
+        &self.analyzer
+    }
+
+    /// Documents buffered so far.
+    #[must_use]
+    pub fn doc_count(&self) -> u32 {
+        self.index.doc_count()
+    }
