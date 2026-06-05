@@ -129,3 +129,34 @@ impl Segment {
                 })
                 .collect();
             lengths.sort_unstable_by_key(|(doc, _)| *doc);
+
+            body.varint(lengths.len() as u64);
+            let mut previous = 0u32;
+            for (doc, len) in lengths {
+                body.varint(u64::from(doc - previous));
+                body.varint(u64::from(len));
+                previous = doc;
+            }
+        }
+
+        // Term dictionary with front coding, then each posting list.
+        //
+        // Terms arrive sorted, so adjacent entries share a prefix far more
+        // often than not: storing the shared length plus the suffix is most of
+        // the dictionary's compression.
+        let terms: Vec<(&TermKey, &PostingList)> = self.index.iter_terms().collect();
+        body.varint(terms.len() as u64);
+
+        let mut previous_text = String::new();
+        for (key, list) in terms {
+            let shared = shared_prefix_len(&previous_text, &key.text);
+            body.varint(u64::from(key.field));
+            body.varint(shared as u64);
+            body.string(&key.text[shared..]);
+            list.encode(&mut body);
+            previous_text.clone_from(&key.text);
+        }
+
+        self.store.encode(&mut body);
+
+        let body = body.finish();
