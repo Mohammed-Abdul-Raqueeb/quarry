@@ -290,3 +290,35 @@ impl Segment {
         }
 
         let store = DocStore::decode(&mut reader)?;
+
+        index.set_field_stats(stats);
+
+        Ok(Self {
+            meta: SegmentMeta {
+                version,
+                doc_count,
+                term_count: term_count as u32,
+                schema_digest,
+            },
+            index,
+            store,
+        })
+    }
+
+    /// Confirms the segment was written against `schema`.
+    ///
+    /// Field ids are positional, so reading a segment with a schema whose
+    /// fields were reordered would silently attribute terms to the wrong field.
+    /// This turns that into an error.
+    pub fn check_schema(&self, schema: &Schema) -> Result<()> {
+        let expected = schema_digest(schema);
+        if self.meta.schema_digest == expected {
+            Ok(())
+        } else {
+            Err(Error::schema(format!(
+                "segment was written against a different schema (digest {:#018x}, expected {:#018x})",
+                self.meta.schema_digest, expected
+            )))
+        }
+    }
+}
