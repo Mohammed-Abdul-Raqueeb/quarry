@@ -11,3 +11,5 @@ use crate::tokenize::Analyzer;
 
 /// Documents accepted before the writer insists on a flush.
 pub const DEFAULT_MAX_BUFFERED_DOCS: u32 = 50_000;
+/// Approximate bytes buffered before the writer insists on a flush.
+pub const DEFAULT_MAX_BUFFERED_BYTES: usize = 64 * 1024 * 1024;
