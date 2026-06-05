@@ -47,3 +47,26 @@ pub struct IndexWriter {
     store: DocStore,
     config: WriterConfig,
 }
+
+impl IndexWriter {
+    /// A writer over `schema` with the default English analyzer.
+    #[must_use]
+    pub fn new(schema: Schema) -> Self {
+        Self::with_analyzer(schema, Analyzer::english())
+    }
+
+    /// A writer with an explicit analyzer for text fields.
+    #[must_use]
+    pub fn with_analyzer(schema: Schema, analyzer: Analyzer) -> Self {
+        Self {
+            schema,
+            analyzer,
+            // Keyword fields get their own fixed pipeline: lowercasing a tag is
+            // wanted, stemming it is not, so this must not follow the text
+            // analyzer's configuration.
+            keyword_analyzer: Analyzer::keyword(),
+            index: InvertedIndex::new(),
+            store: DocStore::new(),
+            config: WriterConfig::default(),
+        }
+    }
