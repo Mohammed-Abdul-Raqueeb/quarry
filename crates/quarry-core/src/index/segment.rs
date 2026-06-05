@@ -160,3 +160,21 @@ impl Segment {
         self.store.encode(&mut body);
 
         let body = body.finish();
+
+        let mut out = Vec::with_capacity(body.len() + MIN_SEGMENT_LEN);
+        out.extend_from_slice(MAGIC_START);
+        out.extend_from_slice(&FORMAT_VERSION.to_le_bytes());
+        out.extend_from_slice(&body);
+        out.extend_from_slice(&crc32(&body).to_le_bytes());
+        out.extend_from_slice(MAGIC_END);
+        out
+    }
+
+    /// Parses a segment, verifying its framing and checksum.
+    pub fn read(bytes: &[u8]) -> Result<Self> {
+        if bytes.len() < MIN_SEGMENT_LEN {
+            return Err(Error::corrupt(format!(
+                "segment is {} bytes, shorter than the {MIN_SEGMENT_LEN} byte minimum",
+                bytes.len()
+            )));
+        }
