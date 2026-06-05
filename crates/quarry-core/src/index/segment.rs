@@ -345,3 +345,26 @@ pub fn shared_prefix_len(a: &str, b: &str) -> usize {
 
     i
 }
+
+/// A hash of the schema's shape.
+///
+/// Covers names, types and the options that change how a term is indexed.
+/// `stored` and `boost` are deliberately excluded: changing either does not
+/// invalidate existing postings, so including them would force a needless
+/// reindex.
+#[must_use]
+pub fn schema_digest(schema: &Schema) -> u64 {
+    let mut buffer = Vec::new();
+
+    for field in schema.fields() {
+        buffer.extend_from_slice(&field.id.to_le_bytes());
+        buffer.extend_from_slice(field.name.as_bytes());
+        buffer.push(0);
+        buffer.extend_from_slice(field.ty.as_str().as_bytes());
+        buffer.push(u8::from(field.options.indexed));
+        buffer.push(u8::from(field.options.positions));
+        buffer.push(0xFF);
+    }
+
+    fnv1a(&buffer)
+}
