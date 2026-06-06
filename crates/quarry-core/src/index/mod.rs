@@ -2,3 +2,4 @@
 
 pub mod builder;
 pub mod inverted;
+pub mod merge;
