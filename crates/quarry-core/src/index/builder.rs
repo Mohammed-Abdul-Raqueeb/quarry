@@ -139,3 +139,31 @@ impl IndexWriter {
             }
 
             let mut length = 0u32;
+
+            for value in values {
+                match field.ty {
+                    FieldType::Text => {
+                        let text = value.as_text();
+                        for token in self.analyzer.analyze(&text) {
+                            let position = field.options.positions.then_some(token.position);
+                            self.index.add_term(field_id, &token.text, id, position);
+                            length += 1;
+                        }
+                    }
+                    FieldType::Keyword => {
+                        let text = value.as_text();
+                        for token in self.keyword_analyzer.analyze(&text) {
+                            self.index.add_term(field_id, &token.text, id, None);
+                            length += 1;
+                        }
+                    }
+                    FieldType::Numeric => {
+                        // Indexed as its canonical decimal form, so an exact
+                        // match works. Range queries read the stored value
+                        // instead, which is why numeric fields must be stored.
+                        let text = value.as_text();
+                        self.index.add_term(field_id, &text, id, None);
+                        length += 1;
+                    }
+                }
+            }
