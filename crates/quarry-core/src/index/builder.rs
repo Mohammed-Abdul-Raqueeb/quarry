@@ -167,3 +167,33 @@ impl IndexWriter {
                     }
                 }
             }
+
+            if length > 0 {
+                self.index.record_field_length(id, field_id, length);
+            }
+        }
+
+        self.store.put(id, doc, &self.schema);
+        Ok(id)
+    }
+
+    /// Parses JSON into a document and indexes it.
+    pub fn add_json(&mut self, json: &Json) -> Result<DocId> {
+        let doc = Document::from_json(&self.schema, json)?;
+        self.add(&doc)
+    }
+
+    /// Parses a JSON string and indexes it.
+    pub fn add_json_str(&mut self, raw: &str) -> Result<DocId> {
+        let json = crate::json::parse(raw)?;
+        self.add_json(&json)
+    }
+
+    /// Indexes every document in a JSON array.
+    ///
+    /// Stops at the first rejected document and reports its index, so a caller
+    /// can fix that one rather than guessing which of a thousand failed.
+    pub fn add_json_array(&mut self, json: &Json) -> Result<Vec<DocId>> {
+        let items = json
+            .as_array()
+            .ok_or_else(|| Error::json("expected an array of documents"))?;
