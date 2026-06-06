@@ -197,3 +197,31 @@ impl IndexWriter {
         let items = json
             .as_array()
             .ok_or_else(|| Error::json("expected an array of documents"))?;
+
+        let mut ids = Vec::with_capacity(items.len());
+        for (i, item) in items.iter().enumerate() {
+            let id = self
+                .add_json(item)
+                .map_err(|e| Error::schema(format!("document {i}: {e}")))?;
+            ids.push(id);
+        }
+
+        Ok(ids)
+    }
+
+    /// Convenience for a single-text-field document.
+    pub fn add_text(&mut self, field: &str, text: &str) -> Result<DocId> {
+        let field_id = self.schema.field_id(field)?;
+        let mut doc = Document::new();
+        doc.add(field_id, Value::Text(text.to_string()));
+        self.add(&doc)
+    }
+
+    /// Seals the buffer into a segment and resets the writer.
+    ///
+    /// Returns `None` when nothing was buffered, so a caller can flush
+    /// unconditionally in a loop without producing empty segments.
+    pub fn flush(&mut self) -> Option<Segment> {
+        if self.index.is_empty() {
+            return None;
+        }
