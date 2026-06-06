@@ -18,3 +18,18 @@ use crate::error::{Error, Result};
 use crate::schema::{FieldId, Schema};
 use crate::store::docstore::DocStore;
 use std::collections::HashMap;
+
+/// When merging is worth doing.
+#[derive(Debug, Clone, Copy)]
+pub struct MergePolicy {
+    /// Merge once there are at least this many segments.
+    pub min_segments: usize,
+    /// Never merge more than this many at once.
+    pub max_segments_per_merge: usize,
+    /// Leave a segment alone once it is this large, in documents.
+    ///
+    /// Rewriting a large segment to absorb a small one copies the large one for
+    /// almost no read benefit, so past this size a segment stops being a
+    /// candidate.
+    pub max_merged_docs: u32,
+}
