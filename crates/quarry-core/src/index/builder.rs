@@ -118,3 +118,24 @@ impl IndexWriter {
     /// Indexes a document, returning its id.
     pub fn add(&mut self, doc: &Document) -> Result<DocId> {
         let id = self.index.allocate_doc();
+
+        for (field_id, values) in doc.iter() {
+            let field = self.schema.field_by_id(field_id).ok_or_else(|| {
+                Error::schema(format!("field id {field_id} is not in the schema"))
+            })?;
+
+            for value in values {
+                if !value.matches(field.ty) {
+                    return Err(Error::schema(format!(
+                        "field {} is {} but was given a different value type",
+                        field.name,
+                        field.ty.as_str()
+                    )));
+                }
+            }
+
+            if !field.options.indexed {
+                continue;
+            }
+
+            let mut length = 0u32;
