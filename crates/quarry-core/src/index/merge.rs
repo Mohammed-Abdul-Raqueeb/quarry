@@ -206,3 +206,20 @@ pub struct MergeReport {
     /// Output size in bytes.
     pub bytes_after: usize,
 }
+
+impl MergeReport {
+    /// Fraction of bytes saved, or 0.0 if the merge grew the index.
+    #[must_use]
+    pub fn bytes_saved_ratio(&self) -> f64 {
+        if self.bytes_before == 0 || self.bytes_after >= self.bytes_before {
+            return 0.0;
+        }
+        1.0 - (self.bytes_after as f64 / self.bytes_before as f64)
+    }
+
+    /// Term entries eliminated by combining duplicates across segments.
+    #[must_use]
+    pub fn terms_collapsed(&self) -> usize {
+        self.terms_before.saturating_sub(self.terms_after)
+    }
+}
