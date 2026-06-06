@@ -75,3 +75,27 @@ impl MergePolicy {
         selected
     }
 }
+
+/// Merges segments into one.
+///
+/// Every input must have been written against `schema`; a mismatch is an error
+/// rather than a best-effort merge, because field ids are positional and
+/// silently mixing two schemas would attribute terms to the wrong fields.
+pub fn merge(segments: &[Segment], schema: &Schema) -> Result<Segment> {
+    if segments.is_empty() {
+        return Err(Error::corrupt("nothing to merge"));
+    }
+
+    for segment in segments {
+        segment.check_schema(schema)?;
+    }
+
+    if segments.len() == 1 {
+        return Ok(segments[0].clone());
+    }
+
+    let total_docs: u32 = segments
+        .iter()
+        .map(Segment::doc_count)
+        .try_fold(0u32, u32::checked_add)
+        .ok_or_else(|| Error::limit("merged segment would exceed u32 document ids"))?;
