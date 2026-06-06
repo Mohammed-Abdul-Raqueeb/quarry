@@ -99,3 +99,24 @@ pub fn merge(segments: &[Segment], schema: &Schema) -> Result<Segment> {
         .map(Segment::doc_count)
         .try_fold(0u32, u32::checked_add)
         .ok_or_else(|| Error::limit("merged segment would exceed u32 document ids"))?;
+
+    // Each segment's ids shift up by everything before it.
+    let mut offsets = Vec::with_capacity(segments.len());
+    let mut running = 0u32;
+    for segment in segments {
+        offsets.push(running);
+        running += segment.doc_count();
+    }
+
+    let mut index = InvertedIndex::new();
+    index.set_doc_count(total_docs);
+
+    let mut store = DocStore::new();
+    let mut stats: HashMap<FieldId, FieldStats> = HashMap::new();
+    let mut merged_terms: HashMap<TermKey, PostingList> = HashMap::new();
+
+    for (segment, offset) in segments.iter().zip(offsets.iter().copied()) {
+        for (key, list) in segment.index.iter_terms() {
+            let entry = merged_terms
+                .entry(key.clone())
+                .or_insert_with(|| PostingList::new(key.field));
