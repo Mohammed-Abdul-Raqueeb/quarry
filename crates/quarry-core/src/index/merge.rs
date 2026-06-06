@@ -169,3 +169,23 @@ pub fn merge(segments: &[Segment], schema: &Schema) -> Result<Segment> {
 
     Ok(Segment::new(index, store, schema))
 }
+
+/// Merges, then reports how much the merge saved.
+pub fn merge_with_report(segments: &[Segment], schema: &Schema) -> Result<(Segment, MergeReport)> {
+    let before: usize = segments.iter().map(|s| s.write().len()).sum();
+    let before_terms: usize = segments.iter().map(|s| s.index.term_count()).sum();
+
+    let merged = merge(segments, schema)?;
+    let after = merged.write().len();
+
+    let report = MergeReport {
+        segments_in: segments.len(),
+        docs: merged.doc_count(),
+        terms_before: before_terms,
+        terms_after: merged.index.term_count(),
+        bytes_before: before,
+        bytes_after: after,
+    };
+
+    Ok((merged, report))
+}
