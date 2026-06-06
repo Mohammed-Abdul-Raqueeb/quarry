@@ -225,3 +225,28 @@ impl IndexWriter {
         if self.index.is_empty() {
             return None;
         }
+
+        let index = std::mem::take(&mut self.index);
+        let store = std::mem::take(&mut self.store);
+
+        Some(Segment::new(index, store, &self.schema))
+    }
+
+    /// Discards everything buffered.
+    pub fn clear(&mut self) {
+        self.index = InvertedIndex::new();
+        self.store = DocStore::new();
+    }
+
+    /// Borrows the buffer for inspection, without flushing.
+    #[must_use]
+    pub fn index(&self) -> &InvertedIndex {
+        &self.index
+    }
+
+    /// Borrows the stored fields, without flushing.
+    #[must_use]
+    pub fn store(&self) -> &DocStore {
+        &self.store
+    }
+}
