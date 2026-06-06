@@ -145,3 +145,27 @@ pub fn merge(segments: &[Segment], schema: &Schema) -> Result<Segment> {
                 }
             }
         }
+
+        for doc in segment.store.doc_ids() {
+            if let Some(values) = segment.store.get(doc) {
+                store.put_raw(doc + offset, values.to_vec());
+            }
+        }
+    }
+
+    // Postings were appended segment by segment, and segments are visited in
+    // order, so each list is already ascending. Sorting anyway costs little and
+    // means a caller passing segments out of order still gets a valid index
+    // rather than a subtly broken one.
+    for list in merged_terms.values_mut() {
+        list.postings.sort_unstable_by_key(|p| p.doc);
+    }
+
+    for (key, list) in merged_terms {
+        index.insert_list(key, list);
+    }
+
+    index.set_field_stats(stats);
+
+    Ok(Segment::new(index, store, schema))
+}
