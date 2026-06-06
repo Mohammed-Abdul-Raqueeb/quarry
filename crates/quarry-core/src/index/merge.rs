@@ -43,3 +43,35 @@ impl Default for MergePolicy {
         }
     }
 }
+
+impl MergePolicy {
+    /// Which segments to merge next, as indices into `segments`.
+    ///
+    /// Picks the smallest candidates first. Merging small segments together is
+    /// where almost all of the benefit is: it removes the most segments from
+    /// the read path per byte rewritten.
+    #[must_use]
+    pub fn select(&self, segments: &[Segment]) -> Vec<usize> {
+        if segments.len() < self.min_segments {
+            return Vec::new();
+        }
+
+        let mut candidates: Vec<(usize, u32)> = segments
+            .iter()
+            .enumerate()
+            .filter(|(_, s)| s.doc_count() < self.max_merged_docs)
+            .map(|(i, s)| (i, s.doc_count()))
+            .collect();
+
+        if candidates.len() < 2 {
+            return Vec::new();
+        }
+
+        candidates.sort_by_key(|(_, count)| *count);
+        candidates.truncate(self.max_segments_per_merge);
+
+        let mut selected: Vec<usize> = candidates.into_iter().map(|(i, _)| i).collect();
+        selected.sort_unstable();
+        selected
+    }
+}
