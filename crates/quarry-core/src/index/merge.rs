@@ -189,3 +189,20 @@ pub fn merge_with_report(segments: &[Segment], schema: &Schema) -> Result<(Segme
 
     Ok((merged, report))
 }
+
+/// What a merge accomplished.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub struct MergeReport {
+    /// Segments merged.
+    pub segments_in: usize,
+    /// Documents in the result.
+    pub docs: u32,
+    /// Term entries across the inputs, counting duplicates.
+    pub terms_before: usize,
+    /// Distinct term entries in the result.
+    pub terms_after: usize,
+    /// Total input size in bytes.
+    pub bytes_before: usize,
+    /// Output size in bytes.
+    pub bytes_after: usize,
+}
