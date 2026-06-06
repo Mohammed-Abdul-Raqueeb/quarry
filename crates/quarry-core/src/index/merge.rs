@@ -33,3 +33,13 @@ pub struct MergePolicy {
     /// candidate.
     pub max_merged_docs: u32,
 }
+
+impl Default for MergePolicy {
+    fn default() -> Self {
+        Self {
+            min_segments: 4,
+            max_segments_per_merge: 10,
+            max_merged_docs: 5_000_000,
+        }
+    }
+}
