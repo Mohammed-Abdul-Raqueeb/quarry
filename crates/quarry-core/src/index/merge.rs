@@ -120,3 +120,28 @@ pub fn merge(segments: &[Segment], schema: &Schema) -> Result<Segment> {
             let entry = merged_terms
                 .entry(key.clone())
                 .or_insert_with(|| PostingList::new(key.field));
+
+            for posting in &list.postings {
+                entry.postings.push(Posting {
+                    doc: posting.doc + offset,
+                    term_freq: posting.term_freq,
+                    positions: posting.positions.clone(),
+                });
+            }
+        }
+
+        for field in segment.index.active_fields() {
+            let segment_stats = segment.index.field_stats(field);
+            let entry = stats.entry(field).or_default();
+            entry.doc_count += segment_stats.doc_count;
+            entry.total_length += segment_stats.total_length;
+
+            for doc in 0..segment.doc_count() {
+                let length = segment.index.field_length(doc, field);
+                if length > 0 {
+                    // Set directly rather than via `record_field_length`, which
+                    // would accumulate statistics that are already summed above.
+                    index.set_field_length(doc + offset, field, length);
+                }
+            }
+        }
