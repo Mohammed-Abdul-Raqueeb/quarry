@@ -63,3 +63,24 @@ impl Bm25 {
             b: 0.0,
         }
     }
+
+    /// The IDF weight of a term.
+    ///
+    /// Uses the probabilistic form with the `+0.5` smoothing, then `+1.0`
+    /// inside the logarithm. Without that last term a word appearing in more
+    /// than half the documents gets a *negative* weight, so adding it to a
+    /// query would push matching documents down the ranking.
+    #[must_use]
+    pub fn idf(doc_count: u64, doc_freq: u64) -> f64 {
+        if doc_count == 0 {
+            return 0.0;
+        }
+
+        let n = doc_count as f64;
+        // A document frequency above the corpus size means corrupt statistics;
+        // clamping keeps the logarithm's argument positive.
+        let df = (doc_freq as f64).min(n);
+
+        (1.0 + (n - df + 0.5) / (df + 0.5)).ln()
+    }
+}
