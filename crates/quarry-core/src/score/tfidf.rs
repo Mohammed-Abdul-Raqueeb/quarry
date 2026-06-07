@@ -21,3 +21,12 @@ pub struct TfIdf {
     /// Whether to divide by the square root of field length.
     pub normalize_length: bool,
 }
+
+impl Default for TfIdf {
+    fn default() -> Self {
+        Self {
+            sublinear_tf: true,
+            normalize_length: true,
+        }
+    }
+}
