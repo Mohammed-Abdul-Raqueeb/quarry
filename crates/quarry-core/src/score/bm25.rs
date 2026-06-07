@@ -100,3 +100,23 @@ impl Scorer for Bm25 {
 
         let tf = f64::from(term_freq);
         let idf = Self::idf(doc_count, doc_freq);
+
+        // Guard against a zero average, which a corrupt or empty statistics
+        // block could produce.
+        let average = if average_field_length > 0.0 {
+            average_field_length
+        } else {
+            1.0
+        };
+        let length_ratio = f64::from(field_length) / average;
+
+        let numerator = tf * (self.k1 + 1.0);
+        let denominator = tf + self.k1 * (1.0 - self.b + self.b * length_ratio);
+
+        (idf * numerator / denominator) as f32
+    }
+
+    fn name(&self) -> &'static str {
+        "bm25"
+    }
+}
