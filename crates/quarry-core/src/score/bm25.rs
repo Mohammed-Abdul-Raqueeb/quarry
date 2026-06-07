@@ -84,3 +84,19 @@ impl Bm25 {
         (1.0 + (n - df + 0.5) / (df + 0.5)).ln()
     }
 }
+
+impl Scorer for Bm25 {
+    fn score(
+        &self,
+        term_freq: u32,
+        doc_freq: u64,
+        doc_count: u64,
+        field_length: u32,
+        average_field_length: f64,
+    ) -> f32 {
+        if term_freq == 0 || doc_count == 0 {
+            return 0.0;
+        }
+
+        let tf = f64::from(term_freq);
+        let idf = Self::idf(doc_count, doc_freq);
