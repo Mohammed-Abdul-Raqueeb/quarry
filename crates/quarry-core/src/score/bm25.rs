@@ -37,3 +37,29 @@ impl Default for Bm25 {
         }
     }
 }
+
+impl Bm25 {
+    /// BM25 with explicit parameters.
+    ///
+    /// `k1` is clamped non-negative and `b` to `0..=1`; outside those ranges the
+    /// formula stops being monotonic in term frequency, which produces rankings
+    /// that look arbitrary rather than merely badly tuned.
+    #[must_use]
+    pub fn new(k1: f64, b: f64) -> Self {
+        Self {
+            k1: k1.max(0.0),
+            b: b.clamp(0.0, 1.0),
+        }
+    }
+
+    /// Ignores field length entirely.
+    ///
+    /// Right for fields of uniform size, where normalising adds noise instead
+    /// of removing it.
+    #[must_use]
+    pub fn without_length_normalization() -> Self {
+        Self {
+            k1: DEFAULT_K1,
+            b: 0.0,
+        }
+    }
