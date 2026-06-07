@@ -6,3 +6,6 @@
 //! the tests assert a ranking with a stub scorer whose output is predictable.
 
 pub mod bm25;
+pub mod tfidf;
+
+use std::fmt::Debug;
