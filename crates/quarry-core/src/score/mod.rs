@@ -9,3 +9,29 @@ pub mod bm25;
 pub mod tfidf;
 
 use std::fmt::Debug;
+
+/// Produces a relevance contribution for one term in one document.
+///
+/// Called once per matching term per document, so it is on the hot path of
+/// every query. It takes primitives rather than a struct because everything it
+/// needs is already in registers by the time the executor reaches it.
+pub trait Scorer: Debug + Send + Sync {
+    /// Scores a single term occurrence set.
+    ///
+    /// - `term_freq` — occurrences of the term in this document's field
+    /// - `doc_freq` — documents containing the term at all
+    /// - `doc_count` — documents in the index
+    /// - `field_length` — length of this document's field, in terms
+    /// - `average_field_length` — mean length of the field across the index
+    fn score(
+        &self,
+        term_freq: u32,
+        doc_freq: u64,
+        doc_count: u64,
+        field_length: u32,
+        average_field_length: f64,
+    ) -> f32;
+
+    /// Short name, reported in query explanations.
+    fn name(&self) -> &'static str;
+}
