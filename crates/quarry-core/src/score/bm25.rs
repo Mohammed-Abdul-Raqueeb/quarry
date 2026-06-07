@@ -14,3 +14,6 @@
 //! BM25 and Beyond", 2009.
 
 use super::Scorer;
+
+/// Term-frequency saturation. Higher means frequency keeps mattering for longer.
+pub const DEFAULT_K1: f64 = 1.2;
