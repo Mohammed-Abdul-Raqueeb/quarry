@@ -28,3 +28,12 @@ pub struct Bm25 {
     /// Length normalisation parameter.
     pub b: f64,
 }
+
+impl Default for Bm25 {
+    fn default() -> Self {
+        Self {
+            k1: DEFAULT_K1,
+            b: DEFAULT_B,
+        }
+    }
+}
