@@ -17,3 +17,5 @@ use super::Scorer;
 
 /// Term-frequency saturation. Higher means frequency keeps mattering for longer.
 pub const DEFAULT_K1: f64 = 1.2;
+/// Length normalisation strength. 0 ignores length, 1 fully normalises.
+pub const DEFAULT_B: f64 = 0.75;
