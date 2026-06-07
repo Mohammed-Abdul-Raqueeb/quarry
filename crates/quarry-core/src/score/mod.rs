@@ -35,3 +35,11 @@ pub trait Scorer: Debug + Send + Sync {
     /// Short name, reported in query explanations.
     fn name(&self) -> &'static str;
 }
+
+/// Counts a match as 1.0 regardless of frequency or rarity.
+///
+/// For a filter rather than a ranking: when results are sorted by a field, the
+/// relevance score is computed and then thrown away, so computing a real one is
+/// wasted work.
+#[derive(Debug, Clone, Copy, Default)]
+pub struct ConstantScorer;
