@@ -19,3 +19,12 @@ use super::Scorer;
 pub const DEFAULT_K1: f64 = 1.2;
 /// Length normalisation strength. 0 ignores length, 1 fully normalises.
 pub const DEFAULT_B: f64 = 0.75;
+
+/// The BM25 ranking function.
+#[derive(Debug, Clone, Copy, PartialEq)]
+pub struct Bm25 {
+    /// Saturation parameter.
+    pub k1: f64,
+    /// Length normalisation parameter.
+    pub b: f64,
+}
