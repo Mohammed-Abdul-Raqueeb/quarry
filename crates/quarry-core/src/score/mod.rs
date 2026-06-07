@@ -43,3 +43,17 @@ pub trait Scorer: Debug + Send + Sync {
 /// wasted work.
 #[derive(Debug, Clone, Copy, Default)]
 pub struct ConstantScorer;
+
+impl Scorer for ConstantScorer {
+    fn score(&self, term_freq: u32, _: u64, _: u64, _: u32, _: f64) -> f32 {
+        if term_freq > 0 {
+            1.0
+        } else {
+            0.0
+        }
+    }
+
+    fn name(&self) -> &'static str {
+        "constant"
+    }
+}
