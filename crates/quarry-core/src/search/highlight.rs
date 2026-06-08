@@ -36,3 +36,25 @@ impl Default for HighlightOptions {
         }
     }
 }
+
+impl HighlightOptions {
+    /// Options that mark matches with `*asterisks*`, for terminal output.
+    #[must_use]
+    pub fn terminal() -> Self {
+        Self {
+            open: "\u{1b}[1;33m".to_string(),
+            close: "\u{1b}[0m".to_string(),
+            ..Self::default()
+        }
+    }
+
+    /// Options that wrap matches in plain brackets, for tests and plain text.
+    #[must_use]
+    pub fn brackets() -> Self {
+        Self {
+            open: "[".to_string(),
+            close: "]".to_string(),
+            ..Self::default()
+        }
+    }
+}
