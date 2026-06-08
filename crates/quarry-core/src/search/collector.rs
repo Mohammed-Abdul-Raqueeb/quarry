@@ -144,3 +144,22 @@ impl TopK {
 pub struct CountCollector {
     count: u64,
 }
+
+impl CountCollector {
+    /// A fresh counter.
+    #[must_use]
+    pub fn new() -> Self {
+        Self::default()
+    }
+
+    /// Counts a match.
+    pub fn collect(&mut self, _doc: DocId, _score: f32) {
+        self.count += 1;
+    }
+
+    /// How many matches were seen.
+    #[must_use]
+    pub fn count(&self) -> u64 {
+        self.count
+    }
+}
