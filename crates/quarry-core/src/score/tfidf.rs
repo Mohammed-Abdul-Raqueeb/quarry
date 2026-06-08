@@ -30,3 +30,27 @@ impl Default for TfIdf {
         }
     }
 }
+
+impl TfIdf {
+    /// Textbook TF-IDF: raw frequency, no length normalisation.
+    #[must_use]
+    pub fn raw() -> Self {
+        Self {
+            sublinear_tf: false,
+            normalize_length: false,
+        }
+    }
+
+    /// The IDF weight of a term.
+    ///
+    /// `1 + ln(N / (df + 1))`. The leading `1` keeps the weight positive even
+    /// for a term in every document, so adding a common word to a query never
+    /// penalises a match.
+    #[must_use]
+    pub fn idf(doc_count: u64, doc_freq: u64) -> f64 {
+        if doc_count == 0 {
+            return 0.0;
+        }
+        1.0 + (doc_count as f64 / (doc_freq as f64 + 1.0)).ln()
+    }
+}
