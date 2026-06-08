@@ -20,3 +20,5 @@ impl ScoredDoc {
         Self { doc, score }
     }
 }
+
+impl Eq for ScoredDoc {}
