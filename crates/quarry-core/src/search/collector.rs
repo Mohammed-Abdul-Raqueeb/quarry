@@ -12,3 +12,11 @@ pub struct ScoredDoc {
     /// Its relevance score.
     pub score: f32,
 }
+
+impl ScoredDoc {
+    /// A scored match.
+    #[must_use]
+    pub fn new(doc: DocId, score: f32) -> Self {
+        Self { doc, score }
+    }
+}
