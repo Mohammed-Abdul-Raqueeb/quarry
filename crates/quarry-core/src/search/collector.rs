@@ -73,3 +73,24 @@ impl TopK {
     /// Offers a document to the collector.
     pub fn collect(&mut self, doc: DocId, score: f32) {
         self.total_hits += 1;
+
+        if self.limit == 0 {
+            return;
+        }
+
+        let candidate = std::cmp::Reverse(ScoredDoc::new(doc, score));
+
+        if self.heap.len() < self.limit {
+            self.heap.push(candidate);
+            return;
+        }
+
+        // `peek` on the inverted heap is the *worst* kept document, so one
+        // comparison decides whether the candidate belongs at all.
+        if let Some(worst) = self.heap.peek() {
+            if candidate.0 > worst.0 {
+                self.heap.pop();
+                self.heap.push(candidate);
+            }
+        }
+    }
