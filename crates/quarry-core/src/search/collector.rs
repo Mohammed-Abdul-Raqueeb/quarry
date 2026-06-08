@@ -22,3 +22,18 @@ impl ScoredDoc {
 }
 
 impl Eq for ScoredDoc {}
+
+impl Ord for ScoredDoc {
+    /// Orders by score, then by *descending* document id.
+    ///
+    /// Two deliberate choices. `total_cmp` rather than `partial_cmp` so a NaN
+    /// score — which a pathological boost could produce — orders consistently
+    /// instead of panicking or silently breaking the heap's invariant. And the
+    /// id tiebreak is reversed so that, once the heap is inverted for top-k,
+    /// equal scores come out lowest-id-first, which makes results stable.
+    fn cmp(&self, other: &Self) -> Ordering {
+        self.score
+            .total_cmp(&other.score)
+            .then_with(|| other.doc.cmp(&self.doc))
+    }
+}
