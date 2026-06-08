@@ -24,3 +24,15 @@ pub struct HighlightOptions {
     /// Most snippets to return per field.
     pub max_snippets: usize,
 }
+
+impl Default for HighlightOptions {
+    fn default() -> Self {
+        Self {
+            width: 160,
+            open: "<mark>".to_string(),
+            close: "</mark>".to_string(),
+            ellipsis: "…".to_string(),
+            max_snippets: 1,
+        }
+    }
+}
