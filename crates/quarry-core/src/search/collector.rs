@@ -56,3 +56,20 @@ pub struct TopK {
     limit: usize,
     total_hits: u64,
 }
+
+impl TopK {
+    /// A collector keeping the best `limit` documents.
+    #[must_use]
+    pub fn new(limit: usize) -> Self {
+        Self {
+            // `limit + 1` because a candidate is pushed before the worst is
+            // popped, so the heap momentarily holds one extra.
+            heap: BinaryHeap::with_capacity(limit.saturating_add(1).min(4096)),
+            limit,
+            total_hits: 0,
+        }
+    }
+
+    /// Offers a document to the collector.
+    pub fn collect(&mut self, doc: DocId, score: f32) {
+        self.total_hits += 1;
