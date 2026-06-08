@@ -9,3 +9,18 @@
 //! yields byte offsets for each term, then pick the densest window of matches.
 
 use crate::tokenize::Analyzer;
+
+/// How a snippet is built.
+#[derive(Debug, Clone)]
+pub struct HighlightOptions {
+    /// Target snippet width in characters.
+    pub width: usize,
+    /// Inserted before a matched term.
+    pub open: String,
+    /// Inserted after a matched term.
+    pub close: String,
+    /// Inserted where text was cut.
+    pub ellipsis: String,
+    /// Most snippets to return per field.
+    pub max_snippets: usize,
+}
