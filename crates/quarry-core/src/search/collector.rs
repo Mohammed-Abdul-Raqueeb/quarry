@@ -112,3 +112,26 @@ impl TopK {
     pub fn is_empty(&self) -> bool {
         self.heap.is_empty()
     }
+
+    /// The lowest score currently kept, once the heap is full.
+    ///
+    /// A query executor can use this to skip documents that cannot make the
+    /// cut, which is where the win from a bounded collector actually shows up.
+    #[must_use]
+    pub fn threshold(&self) -> Option<f32> {
+        if self.heap.len() < self.limit {
+            None
+        } else {
+            self.heap.peek().map(|worst| worst.0.score)
+        }
+    }
+
+    /// The kept documents, best first.
+    #[must_use]
+    pub fn into_sorted(self) -> Vec<ScoredDoc> {
+        let mut docs: Vec<ScoredDoc> = self.heap.into_iter().map(|r| r.0).collect();
+        // Descending by score; ties by ascending id, hence the reversed `cmp`.
+        docs.sort_by(|a, b| b.cmp(a));
+        docs
+    }
+}
