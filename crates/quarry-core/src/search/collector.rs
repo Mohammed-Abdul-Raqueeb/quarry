@@ -94,3 +94,21 @@ impl TopK {
             }
         }
     }
+
+    /// Matches offered, including those not kept.
+    #[must_use]
+    pub fn total_hits(&self) -> u64 {
+        self.total_hits
+    }
+
+    /// How many documents are being kept.
+    #[must_use]
+    pub fn len(&self) -> usize {
+        self.heap.len()
+    }
+
+    /// Whether nothing has been kept.
+    #[must_use]
+    pub fn is_empty(&self) -> bool {
+        self.heap.is_empty()
+    }
