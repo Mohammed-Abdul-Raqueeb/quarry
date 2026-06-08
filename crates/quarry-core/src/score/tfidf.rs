@@ -54,3 +54,36 @@ impl TfIdf {
         1.0 + (doc_count as f64 / (doc_freq as f64 + 1.0)).ln()
     }
 }
+
+impl Scorer for TfIdf {
+    fn score(
+        &self,
+        term_freq: u32,
+        doc_freq: u64,
+        doc_count: u64,
+        field_length: u32,
+        _average_field_length: f64,
+    ) -> f32 {
+        if term_freq == 0 || doc_count == 0 {
+            return 0.0;
+        }
+
+        let tf = if self.sublinear_tf {
+            f64::from(term_freq).sqrt()
+        } else {
+            f64::from(term_freq)
+        };
+
+        let mut score = tf * Self::idf(doc_count, doc_freq);
+
+        if self.normalize_length && field_length > 0 {
+            score /= f64::from(field_length).sqrt();
+        }
+
+        score as f32
+    }
+
+    fn name(&self) -> &'static str {
+        "tfidf"
+    }
+}
