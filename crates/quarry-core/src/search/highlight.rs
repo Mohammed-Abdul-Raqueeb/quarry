@@ -58,3 +58,12 @@ impl HighlightOptions {
         }
     }
 }
+
+/// A byte range in the original text that matched.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub struct Span {
+    /// Inclusive start.
+    pub start: usize,
+    /// Exclusive end.
+    pub end: usize,
+}
