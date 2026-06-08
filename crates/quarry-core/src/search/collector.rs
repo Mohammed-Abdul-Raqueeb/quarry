@@ -43,3 +43,16 @@ impl PartialOrd for ScoredDoc {
         Some(self.cmp(other))
     }
 }
+
+/// Keeps the `k` highest-scoring documents seen.
+///
+/// A min-heap of size `k`, so memory is bounded by `k` rather than by the
+/// number of matches. Sorting every match and truncating would be simpler but
+/// allocates proportional to the result set — on a query matching a million
+/// documents for the top ten, that is the whole cost of the query.
+#[derive(Debug)]
+pub struct TopK {
+    heap: BinaryHeap<std::cmp::Reverse<ScoredDoc>>,
+    limit: usize,
+    total_hits: u64,
+}
