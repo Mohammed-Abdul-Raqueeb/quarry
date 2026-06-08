@@ -135,3 +135,12 @@ impl TopK {
         docs
     }
 }
+
+/// Collects every match, unordered.
+///
+/// For a count or a filter, where ranking is irrelevant and the heap would be
+/// pure overhead.
+#[derive(Debug, Default)]
+pub struct CountCollector {
+    count: u64,
+}
