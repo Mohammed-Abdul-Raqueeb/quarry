@@ -67,3 +67,24 @@ pub struct Span {
     /// Exclusive end.
     pub end: usize,
 }
+
+/// Finds the spans of `text` whose analyzed form is in `terms`.
+///
+/// `terms` must already be analyzed — the caller passes the same terms the
+/// query was turned into, so a query for `running` highlights `Running`.
+#[must_use]
+pub fn find_spans(analyzer: &Analyzer, text: &str, terms: &[String]) -> Vec<Span> {
+    if terms.is_empty() {
+        return Vec::new();
+    }
+
+    analyzer
+        .analyze(text)
+        .into_iter()
+        .filter(|token| terms.contains(&token.text))
+        .map(|token| Span {
+            start: token.start,
+            end: token.end,
+        })
+        .collect()
+}
