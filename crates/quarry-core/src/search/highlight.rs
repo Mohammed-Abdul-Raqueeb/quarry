@@ -88,3 +88,20 @@ pub fn find_spans(analyzer: &Analyzer, text: &str, terms: &[String]) -> Vec<Span
         })
         .collect()
 }
+
+/// Builds a highlighted snippet, or `None` when nothing matched.
+#[must_use]
+pub fn snippet(
+    analyzer: &Analyzer,
+    text: &str,
+    terms: &[String],
+    options: &HighlightOptions,
+) -> Option<String> {
+    let spans = find_spans(analyzer, text, terms);
+    if spans.is_empty() {
+        return None;
+    }
+
+    let window = best_window(text, &spans, options.width);
+    Some(render(text, &spans, window, options))
+}
