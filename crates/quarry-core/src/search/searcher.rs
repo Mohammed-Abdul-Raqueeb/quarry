@@ -35,3 +35,23 @@ pub struct Results {
     /// How long the query took.
     pub elapsed: std::time::Duration,
 }
+
+impl Results {
+    /// Whether nothing matched.
+    #[must_use]
+    pub fn is_empty(&self) -> bool {
+        self.hits.is_empty()
+    }
+
+    /// How many matches were returned.
+    #[must_use]
+    pub fn len(&self) -> usize {
+        self.hits.len()
+    }
+
+    /// The best score, if anything matched.
+    #[must_use]
+    pub fn max_score(&self) -> Option<f32> {
+        self.hits.first().map(|h| h.score)
+    }
+}
