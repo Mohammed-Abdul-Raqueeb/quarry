@@ -186,3 +186,17 @@ impl BooleanQuery {
         terms
     }
 }
+
+/// Terms that must appear adjacently and in order.
+#[derive(Debug, Clone, PartialEq)]
+pub struct PhraseQuery {
+    /// Which field.
+    pub field: FieldId,
+    /// The analyzed terms, in order.
+    pub terms: Vec<String>,
+    /// Extra positions allowed between adjacent terms.
+    ///
+    /// Zero demands strict adjacency. A slop of 1 lets one unexpected token sit
+    /// between them, which is what makes a phrase survive a dropped stopword.
+    pub slop: u32,
+}
