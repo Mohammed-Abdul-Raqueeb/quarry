@@ -122,3 +122,25 @@ pub fn prefix_snippet(text: &str, options: &HighlightOptions) -> String {
     }
     text[..end].to_string()
 }
+
+/// The byte window containing the most match spans.
+///
+/// Walks each span as a candidate start and counts how many fit within `width`
+/// of it. Quadratic in the number of spans in the worst case, which is fine:
+/// the span count is bounded by the matches in one field of one document, and
+/// snippets are only built for the handful of results actually returned.
+fn best_window(text: &str, spans: &[Span], width: usize) -> Span {
+    let byte_width = width.saturating_mul(2).max(width);
+
+    let mut best = Span {
+        start: spans[0].start,
+        end: spans[0].end,
+    };
+    let mut best_count = 0;
+
+    for anchor in spans {
+        // Centre the window on the anchor rather than starting at it, so a
+        // match in the middle of a sentence keeps its lead-in.
+        let half = byte_width / 2;
+        let start = anchor.start.saturating_sub(half);
+        let end = (start + byte_width).min(text.len());
