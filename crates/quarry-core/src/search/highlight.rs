@@ -185,3 +185,25 @@ fn snap_left(text: &str, mut offset: usize) -> usize {
 
     offset
 }
+
+/// Moves an offset right to a character boundary, preferring a word boundary.
+fn snap_right(text: &str, mut offset: usize) -> usize {
+    offset = offset.min(text.len());
+    while offset < text.len() && !text.is_char_boundary(offset) {
+        offset += 1;
+    }
+    if offset >= text.len() {
+        return text.len();
+    }
+
+    let limit = (offset + 24).min(text.len());
+    let mut candidate = offset;
+    while candidate < limit {
+        if text.as_bytes()[candidate].is_ascii_whitespace() {
+            return candidate;
+        }
+        candidate += 1;
+    }
+
+    offset
+}
