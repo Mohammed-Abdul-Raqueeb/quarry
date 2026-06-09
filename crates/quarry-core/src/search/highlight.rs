@@ -105,3 +105,20 @@ pub fn snippet(
     let window = best_window(text, &spans, options.width);
     Some(render(text, &spans, window, options))
 }
+
+/// Returns the leading `width` characters, marking any matches in them.
+///
+/// Used when a document matched on another field: there is nothing to centre
+/// on here, but the start of the text is still worth showing.
+#[must_use]
+pub fn prefix_snippet(text: &str, options: &HighlightOptions) -> String {
+    let mut end = text.len();
+    if text.chars().count() > options.width {
+        end = text
+            .char_indices()
+            .nth(options.width)
+            .map_or(text.len(), |(i, _)| i);
+        return format!("{}{}", &text[..end], options.ellipsis);
+    }
+    text[..end].to_string()
+}
