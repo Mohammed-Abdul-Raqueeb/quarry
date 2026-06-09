@@ -66,3 +66,22 @@ pub struct TermQuery {
     /// Multiplier on this term's contribution.
     pub boost: f32,
 }
+
+impl TermQuery {
+    /// A term query with no boost.
+    #[must_use]
+    pub fn new(field: FieldId, term: impl Into<String>) -> Self {
+        Self {
+            field,
+            term: term.into(),
+            boost: 1.0,
+        }
+    }
+
+    /// The same query with a boost applied.
+    #[must_use]
+    pub fn boosted(mut self, boost: f32) -> Self {
+        self.boost = boost;
+        self
+    }
+}
