@@ -55,3 +55,14 @@ impl Results {
         self.hits.first().map(|h| h.score)
     }
 }
+
+/// A term to look for, already analyzed.
+#[derive(Debug, Clone, PartialEq)]
+pub struct TermQuery {
+    /// Which field.
+    pub field: FieldId,
+    /// The analyzed term.
+    pub term: String,
+    /// Multiplier on this term's contribution.
+    pub boost: f32,
+}
