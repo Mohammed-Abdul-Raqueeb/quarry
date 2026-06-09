@@ -148,3 +148,20 @@ impl BooleanQuery {
         self.must_not.push(term);
         self
     }
+
+    /// Adds a required phrase.
+    #[must_use]
+    pub fn phrase(mut self, phrase: PhraseQuery) -> Self {
+        self.phrases.push(phrase);
+        self
+    }
+
+    /// Whether the query has no clauses at all.
+    #[must_use]
+    pub fn is_empty(&self) -> bool {
+        self.must.is_empty()
+            && self.must_any.is_empty()
+            && self.should.is_empty()
+            && self.must_not.is_empty()
+            && self.phrases.is_empty()
+    }
