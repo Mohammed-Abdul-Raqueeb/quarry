@@ -165,3 +165,24 @@ impl BooleanQuery {
             && self.must_not.is_empty()
             && self.phrases.is_empty()
     }
+
+    /// Every term mentioned, for highlighting.
+    #[must_use]
+    pub fn all_terms(&self) -> Vec<String> {
+        let mut terms: Vec<String> = self
+            .must
+            .iter()
+            .chain(&self.should)
+            .chain(self.must_any.iter().flatten())
+            .map(|t| t.term.clone())
+            .collect();
+
+        for phrase in &self.phrases {
+            terms.extend(phrase.terms.iter().cloned());
+        }
+
+        terms.sort();
+        terms.dedup();
+        terms
+    }
+}
