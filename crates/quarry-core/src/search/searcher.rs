@@ -24,3 +24,14 @@ pub struct Hit {
     /// The id inside its segment, for looking up stored fields.
     pub local_doc: DocId,
 }
+
+/// A query's results.
+#[derive(Debug, Clone, Default)]
+pub struct Results {
+    /// Matches, best first.
+    pub hits: Vec<Hit>,
+    /// Documents matched, including those beyond the requested limit.
+    pub total_hits: u64,
+    /// How long the query took.
+    pub elapsed: std::time::Duration,
+}
