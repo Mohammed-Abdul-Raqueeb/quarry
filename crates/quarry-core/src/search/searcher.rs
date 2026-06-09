@@ -111,3 +111,17 @@ pub struct BooleanQuery {
     /// How many `should` clauses must match when there are no `must` clauses.
     pub minimum_should_match: usize,
 }
+
+impl BooleanQuery {
+    /// An empty query, matching nothing.
+    #[must_use]
+    pub fn new() -> Self {
+        Self::default()
+    }
+
+    /// Adds a required term.
+    #[must_use]
+    pub fn must(mut self, term: TermQuery) -> Self {
+        self.must.push(term);
+        self
+    }
