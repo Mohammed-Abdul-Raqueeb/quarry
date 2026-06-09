@@ -207,3 +207,33 @@ fn snap_right(text: &str, mut offset: usize) -> usize {
 
     offset
 }
+
+/// Assembles the snippet string with markers inserted.
+fn render(text: &str, spans: &[Span], window: Span, options: &HighlightOptions) -> String {
+    let mut out = String::with_capacity(window.end - window.start + 32);
+
+    if window.start > 0 {
+        out.push_str(&options.ellipsis);
+    }
+
+    let mut cursor = window.start;
+
+    for span in spans {
+        if span.start < cursor || span.end > window.end {
+            continue;
+        }
+        out.push_str(&text[cursor..span.start]);
+        out.push_str(&options.open);
+        out.push_str(&text[span.start..span.end]);
+        out.push_str(&options.close);
+        cursor = span.end;
+    }
+
+    out.push_str(&text[cursor..window.end]);
+
+    if window.end < text.len() {
+        out.push_str(&options.ellipsis);
+    }
+
+    out
+}
