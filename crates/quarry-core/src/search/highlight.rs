@@ -144,3 +144,20 @@ fn best_window(text: &str, spans: &[Span], width: usize) -> Span {
         let half = byte_width / 2;
         let start = anchor.start.saturating_sub(half);
         let end = (start + byte_width).min(text.len());
+
+        let count = spans
+            .iter()
+            .filter(|s| s.start >= start && s.end <= end)
+            .count();
+
+        if count > best_count {
+            best_count = count;
+            best = Span { start, end };
+        }
+    }
+
+    Span {
+        start: snap_left(text, best.start),
+        end: snap_right(text, best.end),
+    }
+}
