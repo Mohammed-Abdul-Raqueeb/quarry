@@ -85,3 +85,29 @@ impl TermQuery {
         self
     }
 }
+
+/// What a document must, may and must not match.
+///
+/// Modelled on the three-clause boolean rather than a nested expression tree,
+/// because that is what the executor can run in one pass: `must` drives the
+/// candidate set, `should` only contributes score, and `must_not` filters.
+#[derive(Debug, Clone, Default)]
+pub struct BooleanQuery {
+    /// Every one of these must match.
+    pub must: Vec<TermQuery>,
+    /// Each group must have at least one matching term.
+    ///
+    /// This is what a bare term across several default fields means: the word
+    /// has to appear in *one* of title or body, not in both. Without a group
+    /// like this, expanding one term into several `must` clauses silently
+    /// demands that every field contain it.
+    pub must_any: Vec<Vec<TermQuery>>,
+    /// Any of these may match, and matching raises the score.
+    pub should: Vec<TermQuery>,
+    /// None of these may match.
+    pub must_not: Vec<TermQuery>,
+    /// Phrases whose terms must appear adjacently, in order.
+    pub phrases: Vec<PhraseQuery>,
+    /// How many `should` clauses must match when there are no `must` clauses.
+    pub minimum_should_match: usize,
+}
