@@ -161,3 +161,27 @@ fn best_window(text: &str, spans: &[Span], width: usize) -> Span {
         end: snap_right(text, best.end),
     }
 }
+
+/// Moves an offset left to a character boundary, preferring a word boundary.
+fn snap_left(text: &str, mut offset: usize) -> usize {
+    offset = offset.min(text.len());
+    while offset > 0 && !text.is_char_boundary(offset) {
+        offset -= 1;
+    }
+    if offset == 0 {
+        return 0;
+    }
+
+    // Cutting mid-word looks like a typo, so back up to whitespace if one is
+    // within a short distance.
+    let limit = offset.saturating_sub(24);
+    let mut candidate = offset;
+    while candidate > limit {
+        if text.as_bytes()[candidate].is_ascii_whitespace() {
+            return candidate + 1;
+        }
+        candidate -= 1;
+    }
+
+    offset
+}
