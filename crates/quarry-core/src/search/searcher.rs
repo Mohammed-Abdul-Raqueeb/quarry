@@ -125,3 +125,26 @@ impl BooleanQuery {
         self.must.push(term);
         self
     }
+
+    /// Adds a group of which at least one term must match.
+    #[must_use]
+    pub fn must_any(mut self, terms: Vec<TermQuery>) -> Self {
+        if !terms.is_empty() {
+            self.must_any.push(terms);
+        }
+        self
+    }
+
+    /// Adds an optional term.
+    #[must_use]
+    pub fn should(mut self, term: TermQuery) -> Self {
+        self.should.push(term);
+        self
+    }
+
+    /// Adds a forbidden term.
+    #[must_use]
+    pub fn must_not(mut self, term: TermQuery) -> Self {
+        self.must_not.push(term);
+        self
+    }
