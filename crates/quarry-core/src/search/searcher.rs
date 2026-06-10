@@ -363,3 +363,27 @@ impl<'a> Searcher<'a> {
                 return Ok(Vec::new());
             }
         }
+
+        for group in &query.must_any {
+            // Union within the group, intersect across groups: at least one
+            // term from each group has to match.
+            let mut union: Vec<DocId> = Vec::new();
+            for term in group {
+                if let Some(list) = segment.index.postings(term.field, &term.term) {
+                    union = union_sorted(&union, &list.doc_ids());
+                }
+            }
+
+            if union.is_empty() {
+                return Ok(Vec::new());
+            }
+
+            candidates = Some(match candidates {
+                None => union,
+                Some(existing) => intersect_sorted(&existing, &union),
+            });
+
+            if candidates.as_ref().is_some_and(Vec::is_empty) {
+                return Ok(Vec::new());
+            }
+        }
