@@ -457,3 +457,21 @@ impl<'a> Searcher<'a> {
         for field in segment.index.active_fields() {
             averages.insert(field, segment.index.field_stats(field).average_length());
         }
+
+        let offset = self.offsets[segment_index];
+
+        for doc in docs {
+            let mut score = 0.0f32;
+
+            for term in query
+                .must
+                .iter()
+                .chain(&query.should)
+                .chain(query.must_any.iter().flatten())
+            {
+                let Some(list) = segment.index.postings(term.field, &term.term) else {
+                    continue;
+                };
+                let Some(posting) = list.get(doc) else {
+                    continue;
+                };
