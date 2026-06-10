@@ -565,3 +565,20 @@ impl<'a> Searcher<'a> {
             .store
             .document(hit.local_doc)
     }
+
+    /// A highlighted snippet for one field of a hit.
+    #[must_use]
+    pub fn snippet(
+        &self,
+        hit: &Hit,
+        field: FieldId,
+        terms: &[String],
+        analyzer: &Analyzer,
+        options: &HighlightOptions,
+    ) -> Option<String> {
+        let segment = self.segments.get(hit.segment)?;
+        let value = segment.store.field(hit.local_doc, field)?;
+        let text = value.as_text();
+        highlight::snippet(analyzer, &text, terms, options)
+    }
+}
