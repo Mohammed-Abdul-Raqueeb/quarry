@@ -540,3 +540,28 @@ impl<'a> Searcher<'a> {
                 return Ok(Vec::new());
             }
         }
+
+        let mut matches = Vec::new();
+
+        for doc in candidates {
+            let positions: Vec<&[u32]> = lists
+                .iter()
+                .filter_map(|l| l.get(doc).map(|p| p.positions.as_slice()))
+                .collect();
+
+            if positions.len() == lists.len() && has_ordered_run(&positions, phrase.slop) {
+                matches.push(doc);
+            }
+        }
+
+        Ok(matches)
+    }
+
+    /// The stored document behind a hit.
+    #[must_use]
+    pub fn document(&self, hit: &Hit) -> Option<Document> {
+        self.segments
+            .get(hit.segment)?
+            .store
+            .document(hit.local_doc)
+    }
