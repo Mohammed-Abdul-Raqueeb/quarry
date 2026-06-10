@@ -272,3 +272,25 @@ impl<'a> Searcher<'a> {
     pub fn schema(&self) -> &Schema {
         self.schema
     }
+
+    /// Runs a boolean query, returning the best `limit` matches.
+    pub fn search(&self, query: &BooleanQuery, limit: usize) -> Result<Results> {
+        let started = std::time::Instant::now();
+
+        if query.is_empty() {
+            return Ok(Results {
+                elapsed: started.elapsed(),
+                ..Results::default()
+            });
+        }
+
+        let mut collector = TopK::new(limit);
+
+        for (segment_index, segment) in self.segments.iter().enumerate() {
+            self.search_segment(segment, segment_index, query, &mut collector)?;
+        }
+
+        // Read before consuming the collector: `into_sorted` yields only the
+        // documents that survived the top-k cut, so counting those would make
+        // `total_hits` equal to `limit` for every query that matched more.
+        let total_hits = collector.total_hits();
