@@ -475,3 +475,26 @@ impl<'a> Searcher<'a> {
                 let Some(posting) = list.get(doc) else {
                     continue;
                 };
+
+                let field_boost = self
+                    .schema
+                    .field_by_id(term.field)
+                    .map_or(1.0, |f| f.options.boost);
+
+                let average = averages.get(&term.field).copied().unwrap_or(1.0);
+
+                score += self.scorer.score(
+                    posting.term_freq,
+                    u64::from(list.doc_freq()),
+                    u64::from(segment.doc_count()),
+                    segment.index.field_length(doc, term.field),
+                    average,
+                ) * term.boost
+                    * field_boost;
+            }
+
+            // A pure phrase or pure filter query scores nothing above, but the
+            // document did match, so it must still be collected.
+            if score == 0.0 && !query.phrases.is_empty() {
+                score = 1.0;
+            }
