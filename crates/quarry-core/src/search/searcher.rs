@@ -251,3 +251,24 @@ impl<'a> Searcher<'a> {
             offsets.push(running);
             running += segment.doc_count();
         }
+
+        Self {
+            segments,
+            schema,
+            scorer,
+            offsets,
+            total_docs: u64::from(running),
+        }
+    }
+
+    /// Documents across every segment.
+    #[must_use]
+    pub fn doc_count(&self) -> u64 {
+        self.total_docs
+    }
+
+    /// The schema being searched.
+    #[must_use]
+    pub fn schema(&self) -> &Schema {
+        self.schema
+    }
