@@ -498,3 +498,27 @@ impl<'a> Searcher<'a> {
             if score == 0.0 && !query.phrases.is_empty() {
                 score = 1.0;
             }
+
+            collector.collect(doc + offset, score);
+        }
+
+        Ok(())
+    }
+
+    /// Documents where the phrase's terms appear in order.
+    fn phrase_matches(&self, segment: &Segment, phrase: &PhraseQuery) -> Result<Vec<DocId>> {
+        if phrase.terms.is_empty() {
+            return Ok(Vec::new());
+        }
+
+        let field = self
+            .schema
+            .field_by_id(phrase.field)
+            .ok_or_else(|| Error::corrupt(format!("phrase field {} is unknown", phrase.field)))?;
+
+        if !field.options.positions {
+            return Err(Error::schema(format!(
+                "field {} was indexed without positions, so it cannot be phrase-matched",
+                field.name
+            )));
+        }
