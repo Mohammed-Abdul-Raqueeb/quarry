@@ -294,3 +294,27 @@ impl<'a> Searcher<'a> {
         // documents that survived the top-k cut, so counting those would make
         // `total_hits` equal to `limit` for every query that matched more.
         let total_hits = collector.total_hits();
+
+        let scored = collector.into_sorted();
+        let hits = scored
+            .iter()
+            .map(|s| self.to_hit(*s))
+            .collect::<Result<Vec<_>>>()?;
+
+        Ok(Results {
+            total_hits,
+            hits,
+            elapsed: started.elapsed(),
+        })
+    }
+
+    /// Counts matches without ranking them.
+    pub fn count(&self, query: &BooleanQuery) -> Result<u64> {
+        let mut total = 0u64;
+
+        for segment in self.segments {
+            total += self.matching_docs(segment, query)?.len() as u64;
+        }
+
+        Ok(total)
+    }
