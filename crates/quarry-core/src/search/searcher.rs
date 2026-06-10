@@ -318,3 +318,26 @@ impl<'a> Searcher<'a> {
 
         Ok(total)
     }
+
+    fn to_hit(&self, scored: ScoredDoc) -> Result<Hit> {
+        // Map the global id back to a segment by finding the last offset that
+        // does not exceed it.
+        let segment = self
+            .offsets
+            .iter()
+            .rposition(|offset| *offset <= scored.doc)
+            .ok_or_else(|| Error::corrupt(format!("doc {} is in no segment", scored.doc)))?;
+
+        Ok(Hit {
+            doc: scored.doc,
+            score: scored.score,
+            segment,
+            local_doc: scored.doc - self.offsets[segment],
+        })
+    }
+
+    /// Candidate documents in one segment, before scoring.
+    fn matching_docs(&self, segment: &Segment, query: &BooleanQuery) -> Result<Vec<DocId>> {
+        // `must` clauses are intersected first because they shrink the
+        // candidate set fastest; the rarest term is used to seed it.
+        let mut candidates: Option<Vec<DocId>> = None;
