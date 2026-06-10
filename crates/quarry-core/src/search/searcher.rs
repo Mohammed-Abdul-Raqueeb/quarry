@@ -219,3 +219,14 @@ impl PhraseQuery {
         self
     }
 }
+
+/// Executes queries over a set of segments.
+#[derive(Debug)]
+pub struct Searcher<'a> {
+    segments: &'a [Segment],
+    schema: &'a Schema,
+    scorer: Box<dyn Scorer>,
+    /// Running document total, so hits carry an index-wide id.
+    offsets: Vec<DocId>,
+    total_docs: u64,
+}
