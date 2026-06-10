@@ -582,3 +582,21 @@ impl<'a> Searcher<'a> {
         highlight::snippet(analyzer, &text, terms, options)
     }
 }
+
+/// Whether one occurrence of each term appears in order within `slop`.
+///
+/// Walks the first term's positions and then, for each later term, looks for a
+/// position in the allowed window. Each list is sorted, so the search is a
+/// binary search rather than a scan — which matters because a common word in a
+/// long document can have thousands of positions.
+#[must_use]
+pub fn has_ordered_run(positions: &[&[u32]], slop: u32) -> bool {
+    if positions.is_empty() {
+        return false;
+    }
+    if positions.len() == 1 {
+        return !positions[0].is_empty();
+    }
+
+    'anchor: for &start in positions[0] {
+        let mut expected = start;
