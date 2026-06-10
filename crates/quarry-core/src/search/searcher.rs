@@ -387,3 +387,28 @@ impl<'a> Searcher<'a> {
                 return Ok(Vec::new());
             }
         }
+
+        for phrase in &query.phrases {
+            let docs = self.phrase_matches(segment, phrase)?;
+            if docs.is_empty() {
+                return Ok(Vec::new());
+            }
+            candidates = Some(match candidates {
+                None => docs,
+                Some(existing) => intersect_sorted(&existing, &docs),
+            });
+        }
+
+        let mut docs = if let Some(docs) = candidates {
+            docs
+        } else {
+            // No required clauses: the candidate set is the union of the
+            // optional ones.
+            let mut union: Vec<DocId> = Vec::new();
+            for term in &query.should {
+                if let Some(list) = segment.index.postings(term.field, &term.term) {
+                    union = union_sorted(&union, &list.doc_ids());
+                }
+            }
+            union
+        };
