@@ -522,3 +522,21 @@ impl<'a> Searcher<'a> {
                 field.name
             )));
         }
+
+        let mut lists = Vec::with_capacity(phrase.terms.len());
+        for term in &phrase.terms {
+            match segment.index.postings(phrase.field, term) {
+                Some(list) => lists.push(list),
+                // One missing term means the phrase cannot occur.
+                None => return Ok(Vec::new()),
+            }
+        }
+
+        // Start from the documents containing every term, then check order.
+        let mut candidates = lists[0].doc_ids();
+        for list in &lists[1..] {
+            candidates = intersect_sorted(&candidates, &list.doc_ids());
+            if candidates.is_empty() {
+                return Ok(Vec::new());
+            }
+        }
