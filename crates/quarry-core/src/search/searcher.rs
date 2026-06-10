@@ -341,3 +341,25 @@ impl<'a> Searcher<'a> {
         // `must` clauses are intersected first because they shrink the
         // candidate set fastest; the rarest term is used to seed it.
         let mut candidates: Option<Vec<DocId>> = None;
+
+        for term in &query.must {
+            let docs = segment
+                .index
+                .postings(term.field, &term.term)
+                .map(PostingList::doc_ids)
+                .unwrap_or_default();
+
+            // A missing required term means the whole segment cannot match.
+            if docs.is_empty() {
+                return Ok(Vec::new());
+            }
+
+            candidates = Some(match candidates {
+                None => docs,
+                Some(existing) => intersect_sorted(&existing, &docs),
+            });
+
+            if candidates.as_ref().is_some_and(Vec::is_empty) {
+                return Ok(Vec::new());
+            }
+        }
