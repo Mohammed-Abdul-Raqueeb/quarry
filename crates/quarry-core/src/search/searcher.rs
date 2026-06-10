@@ -412,3 +412,25 @@ impl<'a> Searcher<'a> {
             }
             union
         };
+
+        if !query.should.is_empty() && query.must.is_empty() && query.minimum_should_match > 1 {
+            docs.retain(|doc| {
+                let matched = query
+                    .should
+                    .iter()
+                    .filter(|t| {
+                        segment
+                            .index
+                            .postings(t.field, &t.term)
+                            .is_some_and(|l| l.contains(*doc))
+                    })
+                    .count();
+                matched >= query.minimum_should_match
+            });
+        }
+
+        for term in &query.must_not {
+            if let Some(list) = segment.index.postings(term.field, &term.term) {
+                docs.retain(|doc| !list.contains(*doc));
+            }
+        }
