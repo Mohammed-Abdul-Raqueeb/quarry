@@ -230,3 +230,24 @@ pub struct Searcher<'a> {
     offsets: Vec<DocId>,
     total_docs: u64,
 }
+
+impl<'a> Searcher<'a> {
+    /// A searcher over `segments`, scoring with BM25.
+    #[must_use]
+    pub fn new(segments: &'a [Segment], schema: &'a Schema) -> Self {
+        Self::with_scorer(segments, schema, Box::new(Bm25::default()))
+    }
+
+    /// A searcher with an explicit scorer.
+    #[must_use]
+    pub fn with_scorer(
+        segments: &'a [Segment],
+        schema: &'a Schema,
+        scorer: Box<dyn Scorer>,
+    ) -> Self {
+        let mut offsets = Vec::with_capacity(segments.len());
+        let mut running = 0u32;
+        for segment in segments {
+            offsets.push(running);
+            running += segment.doc_count();
+        }
