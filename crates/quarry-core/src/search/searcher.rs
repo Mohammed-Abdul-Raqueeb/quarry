@@ -200,3 +200,22 @@ pub struct PhraseQuery {
     /// between them, which is what makes a phrase survive a dropped stopword.
     pub slop: u32,
 }
+
+impl PhraseQuery {
+    /// A strict phrase.
+    #[must_use]
+    pub fn new(field: FieldId, terms: Vec<String>) -> Self {
+        Self {
+            field,
+            terms,
+            slop: 0,
+        }
+    }
+
+    /// A phrase tolerating gaps.
+    #[must_use]
+    pub fn with_slop(mut self, slop: u32) -> Self {
+        self.slop = slop;
+        self
+    }
+}
