@@ -600,3 +600,26 @@ pub fn has_ordered_run(positions: &[&[u32]], slop: u32) -> bool {
 
     'anchor: for &start in positions[0] {
         let mut expected = start;
+
+        for list in &positions[1..] {
+            expected += 1;
+            let lower = expected;
+            let upper = expected + slop;
+
+            // The first position at or after `lower`.
+            let found = match list.binary_search(&lower) {
+                Ok(i) => Some(list[i]),
+                Err(i) => list.get(i).copied(),
+            };
+
+            match found {
+                Some(pos) if pos <= upper => expected = pos,
+                _ => continue 'anchor,
+            }
+        }
+
+        return true;
+    }
+
+    false
+}
