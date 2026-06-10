@@ -434,3 +434,26 @@ impl<'a> Searcher<'a> {
                 docs.retain(|doc| !list.contains(*doc));
             }
         }
+
+        Ok(docs)
+    }
+
+    fn search_segment(
+        &self,
+        segment: &Segment,
+        segment_index: usize,
+        query: &BooleanQuery,
+        collector: &mut TopK,
+    ) -> Result<()> {
+        let docs = self.matching_docs(segment, query)?;
+        if docs.is_empty() {
+            return Ok(());
+        }
+
+        // Field statistics are per-segment; a global average would be more
+        // accurate but would mean reading every segment before scoring any,
+        // and the difference is small once segments are merged.
+        let mut averages: HashMap<FieldId, f64> = HashMap::new();
+        for field in segment.index.active_fields() {
+            averages.insert(field, segment.index.field_stats(field).average_length());
+        }
