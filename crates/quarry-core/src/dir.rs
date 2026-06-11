@@ -38,3 +38,23 @@ pub struct IndexDir {
     schema: Schema,
     segments: Vec<Segment>,
 }
+
+impl IndexDir {
+    /// Creates a new index directory.
+    ///
+    /// Refuses to proceed if a schema is already there, so an accidental
+    /// re-create cannot silently orphan existing segments by replacing the
+    /// schema they were written against.
+    pub fn create(path: impl AsRef<Path>, schema: &Schema) -> Result<Self> {
+        let path = path.as_ref().to_path_buf();
+        fs::create_dir_all(&path)?;
+
+        let schema_path = path.join(SCHEMA_FILE);
+        if schema_path.exists() {
+            return Err(Error::schema(format!(
+                "{} already holds an index; open it instead",
+                path.display()
+            )));
+        }
+
+        fs::write(&schema_path, schema_to_json(schema).to_string())?;
