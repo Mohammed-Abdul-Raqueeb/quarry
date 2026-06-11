@@ -106,3 +106,21 @@ impl IndexDir {
             Self::create(path, schema)
         }
     }
+
+    /// Where the index lives.
+    #[must_use]
+    pub fn path(&self) -> &Path {
+        &self.path
+    }
+
+    /// The schema the index was created with.
+    #[must_use]
+    pub fn schema(&self) -> &Schema {
+        &self.schema
+    }
+
+    /// The loaded segments.
+    #[must_use]
+    pub fn segments(&self) -> &[Segment] {
+        &self.segments
+    }
