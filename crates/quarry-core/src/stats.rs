@@ -20,3 +20,26 @@ pub struct IndexStats {
     /// Fields defined in the schema.
     pub fields: usize,
 }
+
+impl IndexStats {
+    /// Gathers statistics from a set of segments.
+    #[must_use]
+    pub fn collect(segments: &[Segment], schema: &Schema) -> Self {
+        Self {
+            segments: segments.len(),
+            docs: segments.iter().map(Segment::doc_count).sum(),
+            terms: segments.iter().map(|s| s.index.term_count()).sum(),
+            bytes: segments.iter().map(|s| s.write().len()).sum(),
+            fields: schema.len(),
+        }
+    }
+
+    /// Mean bytes per document, or 0.0 for an empty index.
+    #[must_use]
+    pub fn bytes_per_doc(&self) -> f64 {
+        if self.docs == 0 {
+            0.0
+        } else {
+            self.bytes as f64 / f64::from(self.docs)
+        }
+    }
