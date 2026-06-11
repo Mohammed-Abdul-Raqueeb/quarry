@@ -58,3 +58,25 @@ impl IndexDir {
         }
 
         fs::write(&schema_path, schema_to_json(schema).to_string())?;
+
+        Ok(Self {
+            path,
+            schema: schema.clone(),
+            segments: Vec::new(),
+        })
+    }
+
+    /// Opens an existing index directory, loading every segment.
+    pub fn open(path: impl AsRef<Path>) -> Result<Self> {
+        let path = path.as_ref().to_path_buf();
+
+        let schema_path = path.join(SCHEMA_FILE);
+        let raw = fs::read_to_string(&schema_path).map_err(|err| {
+            if err.kind() == std::io::ErrorKind::NotFound {
+                Error::schema(format!("{} is not a Quarry index", path.display()))
+            } else {
+                Error::Io(err)
+            }
+        })?;
+
+        let schema = schema_from_json(&json::parse(&raw)?)?;
