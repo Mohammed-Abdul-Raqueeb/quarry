@@ -623,3 +623,24 @@ pub fn has_ordered_run(positions: &[&[u32]], slop: u32) -> bool {
 
     false
 }
+
+/// Intersects two ascending slices.
+#[must_use]
+pub fn intersect_sorted(a: &[DocId], b: &[DocId]) -> Vec<DocId> {
+    let mut out = Vec::with_capacity(a.len().min(b.len()));
+    let (mut i, mut j) = (0, 0);
+
+    while i < a.len() && j < b.len() {
+        match a[i].cmp(&b[j]) {
+            std::cmp::Ordering::Equal => {
+                out.push(a[i]);
+                i += 1;
+                j += 1;
+            }
+            std::cmp::Ordering::Less => i += 1,
+            std::cmp::Ordering::Greater => j += 1,
+        }
+    }
+
+    out
+}
