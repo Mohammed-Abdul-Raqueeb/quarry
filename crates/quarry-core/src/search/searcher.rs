@@ -644,3 +644,32 @@ pub fn intersect_sorted(a: &[DocId], b: &[DocId]) -> Vec<DocId> {
 
     out
 }
+
+/// Unions two ascending slices, dropping duplicates.
+#[must_use]
+pub fn union_sorted(a: &[DocId], b: &[DocId]) -> Vec<DocId> {
+    let mut out = Vec::with_capacity(a.len() + b.len());
+    let (mut i, mut j) = (0, 0);
+
+    while i < a.len() && j < b.len() {
+        match a[i].cmp(&b[j]) {
+            std::cmp::Ordering::Equal => {
+                out.push(a[i]);
+                i += 1;
+                j += 1;
+            }
+            std::cmp::Ordering::Less => {
+                out.push(a[i]);
+                i += 1;
+            }
+            std::cmp::Ordering::Greater => {
+                out.push(b[j]);
+                j += 1;
+            }
+        }
+    }
+
+    out.extend_from_slice(&a[i..]);
+    out.extend_from_slice(&b[j..]);
+    out
+}
