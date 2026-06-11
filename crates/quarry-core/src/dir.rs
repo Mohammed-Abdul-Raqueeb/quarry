@@ -147,3 +147,25 @@ impl IndexDir {
         self.segments.push(segment);
         Ok(final_path)
     }
+
+    /// Merges every segment into one, replacing the files on disk.
+    ///
+    /// The merged segment is written and verified before any input is deleted,
+    /// so a failure partway through leaves the original index intact.
+    pub fn merge_all(&mut self) -> Result<Option<PathBuf>> {
+        if self.segments.len() < 2 {
+            return Ok(None);
+        }
+
+        let merged = merge(&self.segments, &self.schema)?;
+        let existing = segment_paths(&self.path)?;
+
+        let temp_path = self.path.join(format!("merged.{SEGMENT_EXT}.tmp"));
+        fs::write(&temp_path, merged.write())?;
+
+        // Read it back before discarding the inputs. A merge bug that produced
+        // an unreadable segment would otherwise destroy the whole index.
+        let written = fs::read(&temp_path)?;
+        Segment::read(&written)?;
+
+        let final_path = self.path.join(format!("{:08}.{SEGMENT_EXT}", 1));
