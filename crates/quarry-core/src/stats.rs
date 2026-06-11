@@ -43,3 +43,23 @@ impl IndexStats {
             self.bytes as f64 / f64::from(self.docs)
         }
     }
+
+    /// Mean documents per segment.
+    #[must_use]
+    pub fn docs_per_segment(&self) -> f64 {
+        if self.segments == 0 {
+            0.0
+        } else {
+            f64::from(self.docs) / self.segments as f64
+        }
+    }
+
+    /// Whether the segment count warrants a merge.
+    ///
+    /// A rough signal for the CLI to suggest one; the real decision belongs to
+    /// [`crate::index::MergePolicy`].
+    #[must_use]
+    pub fn should_merge(&self) -> bool {
+        self.segments >= 4
+    }
+}
