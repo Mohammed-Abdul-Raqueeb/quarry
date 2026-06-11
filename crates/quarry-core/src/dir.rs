@@ -25,3 +25,6 @@ use crate::schema::{FieldOptions, FieldType, Schema};
 use std::collections::BTreeMap;
 use std::fs;
 use std::path::{Path, PathBuf};
+
+/// Name of the schema file inside an index directory.
+pub const SCHEMA_FILE: &str = "schema.json";
