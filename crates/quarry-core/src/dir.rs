@@ -80,3 +80,29 @@ impl IndexDir {
         })?;
 
         let schema = schema_from_json(&json::parse(&raw)?)?;
+
+        let mut segments = Vec::new();
+        for segment_path in segment_paths(&path)? {
+            let bytes = fs::read(&segment_path)?;
+            let segment = Segment::read(&bytes)
+                .map_err(|err| Error::corrupt(format!("{}: {err}", segment_path.display())))?;
+            segment.check_schema(&schema)?;
+            segments.push(segment);
+        }
+
+        Ok(Self {
+            path,
+            schema,
+            segments,
+        })
+    }
+
+    /// Opens the index, creating it with `schema` if it is not there yet.
+    pub fn open_or_create(path: impl AsRef<Path>, schema: &Schema) -> Result<Self> {
+        let path = path.as_ref();
+        if path.join(SCHEMA_FILE).exists() {
+            Self::open(path)
+        } else {
+            Self::create(path, schema)
+        }
+    }
