@@ -28,3 +28,5 @@ use std::path::{Path, PathBuf};
 
 /// Name of the schema file inside an index directory.
 pub const SCHEMA_FILE: &str = "schema.json";
+/// Extension given to segment files.
+pub const SEGMENT_EXT: &str = "qseg";
