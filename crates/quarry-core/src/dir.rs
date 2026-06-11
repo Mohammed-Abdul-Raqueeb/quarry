@@ -124,3 +124,26 @@ impl IndexDir {
     pub fn segments(&self) -> &[Segment] {
         &self.segments
     }
+
+    /// Documents across every segment.
+    #[must_use]
+    pub fn doc_count(&self) -> u32 {
+        self.segments.iter().map(Segment::doc_count).sum()
+    }
+
+    /// Writes a segment into the directory and keeps it loaded.
+    pub fn append(&mut self, segment: Segment) -> Result<PathBuf> {
+        segment.check_schema(&self.schema)?;
+
+        let next = self.next_segment_number()?;
+        let final_path = self.path.join(format!("{next:08}.{SEGMENT_EXT}"));
+        let temp_path = self.path.join(format!("{next:08}.{SEGMENT_EXT}.tmp"));
+
+        // Write to a temporary name, then rename: a rename within one
+        // directory is atomic, so a reader never sees a partial segment.
+        fs::write(&temp_path, segment.write())?;
+        fs::rename(&temp_path, &final_path)?;
+
+        self.segments.push(segment);
+        Ok(final_path)
+    }
