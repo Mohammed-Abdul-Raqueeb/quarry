@@ -30,3 +30,11 @@ use std::path::{Path, PathBuf};
 pub const SCHEMA_FILE: &str = "schema.json";
 /// Extension given to segment files.
 pub const SEGMENT_EXT: &str = "qseg";
+
+/// An index directory.
+#[derive(Debug)]
+pub struct IndexDir {
+    path: PathBuf,
+    schema: Schema,
+    segments: Vec<Segment>,
+}
