@@ -70,3 +70,6 @@ pub use score::{bm25::Bm25, Scorer};
 pub use search::{BooleanQuery, Hit, PhraseQuery, Results, Searcher, TermQuery};
 pub use stats::IndexStats;
 pub use tokenize::{Analyzer, Token};
+
+/// The version of this crate, from Cargo.
+pub const VERSION: &str = env!("CARGO_PKG_VERSION");
