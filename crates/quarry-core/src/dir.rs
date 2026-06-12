@@ -169,3 +169,27 @@ impl IndexDir {
         Segment::read(&written)?;
 
         let final_path = self.path.join(format!("{:08}.{SEGMENT_EXT}", 1));
+
+        for path in existing {
+            fs::remove_file(path)?;
+        }
+        fs::rename(&temp_path, &final_path)?;
+
+        self.segments = vec![merged];
+        Ok(Some(final_path))
+    }
+
+    /// Deletes any `.tmp` files left by an interrupted write.
+    pub fn clean_temp_files(&self) -> Result<usize> {
+        let mut removed = 0;
+
+        for entry in fs::read_dir(&self.path)? {
+            let path = entry?.path();
+            if path.extension().is_some_and(|ext| ext == "tmp") {
+                fs::remove_file(&path)?;
+                removed += 1;
+            }
+        }
+
+        Ok(removed)
+    }
