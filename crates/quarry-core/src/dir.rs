@@ -236,3 +236,27 @@ fn segment_paths(path: &Path) -> Result<Vec<PathBuf>> {
     paths.sort();
     Ok(paths)
 }
+
+/// Serializes a schema.
+#[must_use]
+pub fn schema_to_json(schema: &Schema) -> Json {
+    let fields: Vec<Json> = schema
+        .fields()
+        .iter()
+        .map(|field| {
+            JsonBuilder::new()
+                .str("name", field.name.clone())
+                .str("type", field.ty.as_str())
+                .bool("indexed", field.options.indexed)
+                .bool("stored", field.options.stored)
+                .bool("positions", field.options.positions)
+                .num("boost", f64::from(field.options.boost))
+                .build()
+        })
+        .collect();
+
+    let mut map = BTreeMap::new();
+    map.insert("version".to_string(), Json::Number(1.0));
+    map.insert("fields".to_string(), Json::Array(fields));
+    Json::Object(map)
+}
