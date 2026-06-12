@@ -55,3 +55,4 @@ pub mod index;
 pub mod json;
 pub mod schema;
 pub mod score;
+pub mod search;
