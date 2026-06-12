@@ -217,3 +217,22 @@ impl IndexDir {
         Ok(highest + 1)
     }
 }
+
+/// Segment files in a directory, in numeric order.
+///
+/// Sorted by name, which is why the numbers are zero-padded: without padding,
+/// `10.qseg` would sort before `9.qseg` and merged segments would be stitched
+/// together in the wrong document order.
+fn segment_paths(path: &Path) -> Result<Vec<PathBuf>> {
+    let mut paths = Vec::new();
+
+    for entry in fs::read_dir(path)? {
+        let entry_path = entry?.path();
+        if entry_path.extension().is_some_and(|ext| ext == SEGMENT_EXT) {
+            paths.push(entry_path);
+        }
+    }
+
+    paths.sort();
+    Ok(paths)
+}
