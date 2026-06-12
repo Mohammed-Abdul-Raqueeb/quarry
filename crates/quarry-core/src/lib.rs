@@ -56,3 +56,4 @@ pub mod json;
 pub mod schema;
 pub mod score;
 pub mod search;
+pub mod stats;
