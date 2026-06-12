@@ -53,3 +53,4 @@ pub mod doc;
 pub mod error;
 pub mod index;
 pub mod json;
+pub mod schema;
