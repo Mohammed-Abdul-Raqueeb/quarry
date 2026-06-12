@@ -260,3 +260,25 @@ pub fn schema_to_json(schema: &Schema) -> Json {
     map.insert("fields".to_string(), Json::Array(fields));
     Json::Object(map)
 }
+
+/// Parses what [`schema_to_json`] wrote.
+pub fn schema_from_json(json: &Json) -> Result<Schema> {
+    let fields = json
+        .get("fields")
+        .and_then(Json::as_array)
+        .ok_or_else(|| Error::schema("schema file has no \"fields\" array"))?;
+
+    let mut builder = Schema::builder();
+
+    for field in fields {
+        let name = field
+            .get("name")
+            .and_then(Json::as_str)
+            .ok_or_else(|| Error::schema("a field has no name"))?;
+
+        let ty = FieldType::parse(
+            field
+                .get("type")
+                .and_then(Json::as_str)
+                .ok_or_else(|| Error::schema(format!("field {name} has no type")))?,
+        )?;
