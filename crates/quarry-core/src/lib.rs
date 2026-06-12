@@ -51,3 +51,4 @@
 pub mod dir;
 pub mod doc;
 pub mod error;
+pub mod index;
