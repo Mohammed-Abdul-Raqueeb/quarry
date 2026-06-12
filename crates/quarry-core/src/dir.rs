@@ -193,3 +193,27 @@ impl IndexDir {
 
         Ok(removed)
     }
+
+    /// Total size of the segment files on disk.
+    pub fn size_on_disk(&self) -> Result<u64> {
+        let mut total = 0;
+        for path in segment_paths(&self.path)? {
+            total += fs::metadata(path)?.len();
+        }
+        Ok(total)
+    }
+
+    fn next_segment_number(&self) -> Result<u32> {
+        let highest = segment_paths(&self.path)?
+            .iter()
+            .filter_map(|path| {
+                path.file_stem()
+                    .and_then(|stem| stem.to_str())
+                    .and_then(|stem| stem.parse::<u32>().ok())
+            })
+            .max()
+            .unwrap_or(0);
+
+        Ok(highest + 1)
+    }
+}
