@@ -58,3 +58,15 @@ pub mod score;
 pub mod search;
 pub mod stats;
 pub mod store;
+pub mod tokenize;
+
+pub use dir::IndexDir;
+pub use doc::{DocId, Document, Value};
+pub use error::{Error, Result};
+pub use index::{IndexWriter, Segment};
+pub use json::Json;
+pub use schema::{Field, FieldOptions, FieldType, Schema};
+pub use score::{bm25::Bm25, Scorer};
+pub use search::{BooleanQuery, Hit, PhraseQuery, Results, Searcher, TermQuery};
+pub use stats::IndexStats;
+pub use tokenize::{Analyzer, Token};
