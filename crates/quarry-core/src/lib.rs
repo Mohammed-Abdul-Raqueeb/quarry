@@ -47,3 +47,5 @@
 //! assert_eq!(results.len(), 1);
 //! # Ok::<(), quarry_core::Error>(())
 //! ```
+
+pub mod dir;
