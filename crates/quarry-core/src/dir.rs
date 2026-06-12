@@ -282,3 +282,19 @@ pub fn schema_from_json(json: &Json) -> Result<Schema> {
                 .and_then(Json::as_str)
                 .ok_or_else(|| Error::schema(format!("field {name} has no type")))?,
         )?;
+
+        let options = FieldOptions {
+            indexed: field.get("indexed").and_then(Json::as_bool).unwrap_or(true),
+            stored: field.get("stored").and_then(Json::as_bool).unwrap_or(true),
+            positions: field
+                .get("positions")
+                .and_then(Json::as_bool)
+                .unwrap_or(false),
+            boost: field.get("boost").and_then(Json::as_f64).unwrap_or(1.0) as f32,
+        };
+
+        builder = builder.add(name, ty, options)?;
+    }
+
+    builder.build()
+}
