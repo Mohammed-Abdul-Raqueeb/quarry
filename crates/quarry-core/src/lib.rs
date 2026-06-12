@@ -57,3 +57,4 @@ pub mod schema;
 pub mod score;
 pub mod search;
 pub mod stats;
+pub mod store;
