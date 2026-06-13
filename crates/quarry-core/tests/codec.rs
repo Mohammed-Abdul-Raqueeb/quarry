@@ -39,3 +39,10 @@ fn encodes_small_values_in_one_byte() {
         assert_eq!(buffer.len(), 1, "{value} should fit in one byte");
     }
 }
+
+#[test]
+fn switches_to_two_bytes_at_128() {
+    let mut buffer = Vec::new();
+    write_u64(&mut buffer, 128);
+    assert_eq!(buffer.len(), 2);
+}
