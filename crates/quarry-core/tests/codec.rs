@@ -29,3 +29,13 @@ fn encodes_zero_in_one_byte() {
     write_u64(&mut buffer, 0);
     assert_eq!(buffer, [0]);
 }
+
+#[test]
+fn encodes_small_values_in_one_byte() {
+    // This is the whole point: a document gap of 3 must not cost four bytes.
+    for value in [1u64, 42, 100, 127] {
+        let mut buffer = Vec::new();
+        write_u64(&mut buffer, value);
+        assert_eq!(buffer.len(), 1, "{value} should fit in one byte");
+    }
+}
