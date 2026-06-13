@@ -80,3 +80,10 @@ fn round_trips_a_spread_of_values() {
         value = value.wrapping_mul(3).wrapping_add(7);
     }
 }
+
+#[test]
+fn encodes_the_maximum_u64_in_ten_bytes() {
+    let mut buffer = Vec::new();
+    write_u64(&mut buffer, u64::MAX);
+    assert_eq!(buffer.len(), MAX_VARINT_LEN);
+}
