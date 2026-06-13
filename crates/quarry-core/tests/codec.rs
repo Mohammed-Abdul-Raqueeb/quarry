@@ -11,3 +11,14 @@ use quarry_core::store::varint::{
     encoded_len, read_i64, read_sorted_u32, read_u32, read_u64, write_i64, write_sorted_u32,
     write_u32, write_u64, zigzag_decode, zigzag_encode, MAX_VARINT_LEN,
 };
+
+fn round_trip_u64(value: u64) {
+    let mut buffer = Vec::new();
+    write_u64(&mut buffer, value);
+    let (decoded, used) = read_u64(&buffer).expect("should decode");
+
+    assert_eq!(decoded, value, "value did not round trip");
+    assert_eq!(used, buffer.len(), "decoder consumed the wrong length");
+}
+
+// ---- varint -------------------------------------------------------------
