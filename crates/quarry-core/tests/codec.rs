@@ -113,3 +113,8 @@ fn writes_several_values_back_to_back() {
 
     assert_eq!(offset, buffer.len());
 }
+
+#[test]
+fn rejects_an_empty_buffer() {
+    assert!(read_u64(&[]).is_err());
+}
