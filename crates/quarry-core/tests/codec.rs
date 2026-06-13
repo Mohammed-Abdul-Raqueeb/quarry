@@ -46,3 +46,21 @@ fn switches_to_two_bytes_at_128() {
     write_u64(&mut buffer, 128);
     assert_eq!(buffer.len(), 2);
 }
+
+#[test]
+fn round_trips_boundary_values() {
+    for value in [
+        0,
+        1,
+        127,
+        128,
+        255,
+        256,
+        16_383,
+        16_384,
+        u64::from(u32::MAX),
+        u64::MAX,
+    ] {
+        round_trip_u64(value);
+    }
+}
