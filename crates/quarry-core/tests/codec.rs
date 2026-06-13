@@ -143,3 +143,12 @@ fn read_u32_narrows_a_small_value() {
     write_u32(&mut buffer, 70_000);
     assert_eq!(read_u32(&buffer).map(|(v, _)| v).ok(), Some(70_000));
 }
+
+#[test]
+fn read_u32_rejects_a_value_that_does_not_fit() {
+    let mut buffer = Vec::new();
+    write_u64(&mut buffer, u64::from(u32::MAX) + 1);
+    assert!(read_u32(&buffer).is_err());
+}
+
+// ---- zigzag -------------------------------------------------------------
