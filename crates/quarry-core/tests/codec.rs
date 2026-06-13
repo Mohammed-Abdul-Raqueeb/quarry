@@ -157,3 +157,12 @@ fn read_u32_rejects_a_value_that_does_not_fit() {
 fn zigzag_maps_zero_to_zero() {
     assert_eq!(zigzag_encode(0), 0);
 }
+
+#[test]
+fn zigzag_keeps_small_negatives_small() {
+    // Two's complement would make -1 the largest possible u64, which is the
+    // worst case for a varint. Zigzag makes it 1.
+    assert_eq!(zigzag_encode(-1), 1);
+    assert_eq!(zigzag_encode(1), 2);
+    assert_eq!(zigzag_encode(-2), 3);
+}
