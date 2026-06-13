@@ -136,3 +136,10 @@ fn rejects_redundant_trailing_zero_padding() {
     // byte sequences mean the same value.
     assert!(read_u64(&[0x81, 0x00]).is_err());
 }
+
+#[test]
+fn read_u32_narrows_a_small_value() {
+    let mut buffer = Vec::new();
+    write_u32(&mut buffer, 70_000);
+    assert_eq!(read_u32(&buffer).map(|(v, _)| v).ok(), Some(70_000));
+}
