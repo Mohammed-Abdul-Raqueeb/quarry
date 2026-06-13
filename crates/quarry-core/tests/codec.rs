@@ -96,3 +96,20 @@ fn encoded_len_matches_what_was_written() {
         assert_eq!(encoded_len(value), buffer.len(), "length wrong for {value}");
     }
 }
+
+#[test]
+fn writes_several_values_back_to_back() {
+    let mut buffer = Vec::new();
+    for value in [1u64, 200, 70_000] {
+        write_u64(&mut buffer, value);
+    }
+
+    let mut offset = 0;
+    for expected in [1u64, 200, 70_000] {
+        let (decoded, used) = read_u64(&buffer[offset..]).expect("should decode");
+        assert_eq!(decoded, expected);
+        offset += used;
+    }
+
+    assert_eq!(offset, buffer.len());
+}
