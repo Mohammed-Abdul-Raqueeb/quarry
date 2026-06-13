@@ -124,3 +124,8 @@ fn rejects_an_unterminated_varint() {
     // Every byte has its continuation bit set, so the value never ends.
     assert!(read_u64(&[0x80, 0x80, 0x80]).is_err());
 }
+
+#[test]
+fn rejects_a_varint_longer_than_ten_bytes() {
+    assert!(read_u64(&[0x80; 12]).is_err());
+}
