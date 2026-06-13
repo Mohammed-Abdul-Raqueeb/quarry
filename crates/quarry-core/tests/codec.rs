@@ -152,3 +152,8 @@ fn read_u32_rejects_a_value_that_does_not_fit() {
 }
 
 // ---- zigzag -------------------------------------------------------------
+
+#[test]
+fn zigzag_maps_zero_to_zero() {
+    assert_eq!(zigzag_encode(0), 0);
+}
