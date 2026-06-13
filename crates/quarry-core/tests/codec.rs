@@ -166,3 +166,10 @@ fn zigzag_keeps_small_negatives_small() {
     assert_eq!(zigzag_encode(1), 2);
     assert_eq!(zigzag_encode(-2), 3);
 }
+
+#[test]
+fn zigzag_round_trips() {
+    for value in [0i64, 1, -1, 2, -2, 127, -128, i64::MAX, i64::MIN] {
+        assert_eq!(zigzag_decode(zigzag_encode(value)), value, "{value} failed");
+    }
+}
