@@ -22,3 +22,10 @@ fn round_trip_u64(value: u64) {
 }
 
 // ---- varint -------------------------------------------------------------
+
+#[test]
+fn encodes_zero_in_one_byte() {
+    let mut buffer = Vec::new();
+    write_u64(&mut buffer, 0);
+    assert_eq!(buffer, [0]);
+}
