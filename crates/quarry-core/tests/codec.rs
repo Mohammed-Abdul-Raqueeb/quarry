@@ -129,3 +129,10 @@ fn rejects_an_unterminated_varint() {
 fn rejects_a_varint_longer_than_ten_bytes() {
     assert!(read_u64(&[0x80; 12]).is_err());
 }
+
+#[test]
+fn rejects_redundant_trailing_zero_padding() {
+    // No honest encoder emits this, so accepting it would let two different
+    // byte sequences mean the same value.
+    assert!(read_u64(&[0x81, 0x00]).is_err());
+}
