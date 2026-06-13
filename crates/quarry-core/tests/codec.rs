@@ -71,3 +71,12 @@ fn round_trips_powers_of_two() {
         round_trip_u64(1u64 << shift);
     }
 }
+
+#[test]
+fn round_trips_a_spread_of_values() {
+    let mut value = 1u64;
+    for _ in 0..40 {
+        round_trip_u64(value);
+        value = value.wrapping_mul(3).wrapping_add(7);
+    }
+}
