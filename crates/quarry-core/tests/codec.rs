@@ -118,3 +118,9 @@ fn writes_several_values_back_to_back() {
 fn rejects_an_empty_buffer() {
     assert!(read_u64(&[]).is_err());
 }
+
+#[test]
+fn rejects_an_unterminated_varint() {
+    // Every byte has its continuation bit set, so the value never ends.
+    assert!(read_u64(&[0x80, 0x80, 0x80]).is_err());
+}
