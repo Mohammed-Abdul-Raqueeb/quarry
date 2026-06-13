@@ -87,3 +87,12 @@ fn encodes_the_maximum_u64_in_ten_bytes() {
     write_u64(&mut buffer, u64::MAX);
     assert_eq!(buffer.len(), MAX_VARINT_LEN);
 }
+
+#[test]
+fn encoded_len_matches_what_was_written() {
+    for value in [0u64, 1, 127, 128, 300, 70_000, u64::MAX] {
+        let mut buffer = Vec::new();
+        write_u64(&mut buffer, value);
+        assert_eq!(encoded_len(value), buffer.len(), "length wrong for {value}");
+    }
+}
