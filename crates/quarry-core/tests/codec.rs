@@ -64,3 +64,10 @@ fn round_trips_boundary_values() {
         round_trip_u64(value);
     }
 }
+
+#[test]
+fn round_trips_powers_of_two() {
+    for shift in 0..64 {
+        round_trip_u64(1u64 << shift);
+    }
+}
