@@ -245,3 +245,12 @@ fn round_trips_a_single_element_list() {
     write_sorted_u32(&mut buffer, &[7]);
     assert_eq!(read_sorted_u32(&buffer).map(|(v, _)| v).ok(), Some(vec![7]));
 }
+
+#[test]
+fn rejects_a_sorted_list_that_ends_early() {
+    // A length claiming more entries than the buffer holds.
+    let mut buffer = Vec::new();
+    write_u32(&mut buffer, 5);
+    write_u32(&mut buffer, 1);
+    assert!(read_sorted_u32(&buffer).is_err());
+}
