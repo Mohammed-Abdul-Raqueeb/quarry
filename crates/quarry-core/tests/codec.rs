@@ -265,3 +265,9 @@ fn rejects_a_sorted_list_whose_gaps_overflow() {
 }
 
 // ---- checksums ----------------------------------------------------------
+
+#[test]
+fn crc32_of_the_standard_check_string() {
+    // The published check value for CRC-32/ISO-HDLC.
+    assert_eq!(crc32(b"123456789"), 0xCBF4_3926);
+}
