@@ -198,3 +198,12 @@ fn round_trips_an_empty_sorted_list() {
     write_sorted_u32(&mut buffer, &[]);
     assert_eq!(read_sorted_u32(&buffer).map(|(v, _)| v).ok(), Some(vec![]));
 }
+
+#[test]
+fn round_trips_a_sorted_list() {
+    let values = vec![1u32, 5, 100, 1000];
+    let mut buffer = Vec::new();
+    write_sorted_u32(&mut buffer, &values);
+
+    assert_eq!(read_sorted_u32(&buffer).map(|(v, _)| v).ok(), Some(values));
+}
