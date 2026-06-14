@@ -287,3 +287,8 @@ fn crc32_detects_a_single_flipped_bit() {
     // The failure the checksum exists to catch.
     assert_ne!(crc32(b"segment"), crc32(b"segmenu"));
 }
+
+#[test]
+fn crc32_detects_transposed_bytes() {
+    assert_ne!(crc32(b"ab"), crc32(b"ba"));
+}
