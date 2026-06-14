@@ -313,3 +313,8 @@ fn incremental_crc32_handles_many_small_writes() {
     }
     assert_eq!(incremental.finish(), crc32(data));
 }
+
+#[test]
+fn crc32_default_matches_new() {
+    assert_eq!(Crc32::default().finish(), Crc32::new().finish());
+}
