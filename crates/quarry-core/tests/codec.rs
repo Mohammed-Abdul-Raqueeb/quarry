@@ -281,3 +281,9 @@ fn crc32_of_empty_input_is_zero() {
 fn crc32_differs_for_different_input() {
     assert_ne!(crc32(b"hello"), crc32(b"world"));
 }
+
+#[test]
+fn crc32_detects_a_single_flipped_bit() {
+    // The failure the checksum exists to catch.
+    assert_ne!(crc32(b"segment"), crc32(b"segmenu"));
+}
