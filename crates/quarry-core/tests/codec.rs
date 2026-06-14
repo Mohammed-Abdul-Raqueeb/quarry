@@ -292,3 +292,14 @@ fn crc32_detects_a_single_flipped_bit() {
 fn crc32_detects_transposed_bytes() {
     assert_ne!(crc32(b"ab"), crc32(b"ba"));
 }
+
+#[test]
+fn incremental_crc32_matches_the_one_shot() {
+    let whole = crc32(b"the quick brown fox");
+
+    let mut incremental = Crc32::new();
+    incremental.write(b"the quick ");
+    incremental.write(b"brown fox");
+
+    assert_eq!(incremental.finish(), whole);
+}
