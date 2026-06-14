@@ -191,3 +191,10 @@ fn signed_varint_keeps_minus_one_to_one_byte() {
 }
 
 // ---- sorted lists -------------------------------------------------------
+
+#[test]
+fn round_trips_an_empty_sorted_list() {
+    let mut buffer = Vec::new();
+    write_sorted_u32(&mut buffer, &[]);
+    assert_eq!(read_sorted_u32(&buffer).map(|(v, _)| v).ok(), Some(vec![]));
+}
