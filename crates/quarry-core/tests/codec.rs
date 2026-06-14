@@ -303,3 +303,13 @@ fn incremental_crc32_matches_the_one_shot() {
 
     assert_eq!(incremental.finish(), whole);
 }
+
+#[test]
+fn incremental_crc32_handles_many_small_writes() {
+    let data = b"abcdefghijklmnopqrstuvwxyz";
+    let mut incremental = Crc32::new();
+    for byte in data {
+        incremental.write(&[*byte]);
+    }
+    assert_eq!(incremental.finish(), crc32(data));
+}
