@@ -254,3 +254,14 @@ fn rejects_a_sorted_list_that_ends_early() {
     write_u32(&mut buffer, 1);
     assert!(read_sorted_u32(&buffer).is_err());
 }
+
+#[test]
+fn rejects_a_sorted_list_whose_gaps_overflow() {
+    let mut buffer = Vec::new();
+    write_u32(&mut buffer, 2);
+    write_u32(&mut buffer, u32::MAX);
+    write_u32(&mut buffer, u32::MAX);
+    assert!(read_sorted_u32(&buffer).is_err());
+}
+
+// ---- checksums ----------------------------------------------------------
