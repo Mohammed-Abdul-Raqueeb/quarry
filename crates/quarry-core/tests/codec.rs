@@ -207,3 +207,18 @@ fn round_trips_a_sorted_list() {
 
     assert_eq!(read_sorted_u32(&buffer).map(|(v, _)| v).ok(), Some(values));
 }
+
+#[test]
+fn gap_encoding_shrinks_a_dense_list() {
+    // The property the encoding exists for: adjacent ids cost about a byte
+    // each, not four.
+    let dense: Vec<u32> = (1_000_000..1_000_200).collect();
+    let mut buffer = Vec::new();
+    write_sorted_u32(&mut buffer, &dense);
+
+    assert!(
+        buffer.len() < dense.len() * 2,
+        "200 adjacent ids took {} bytes",
+        buffer.len()
+    );
+}
