@@ -238,3 +238,10 @@ fn round_trips_a_list_with_large_gaps() {
     write_sorted_u32(&mut buffer, &values);
     assert_eq!(read_sorted_u32(&buffer).map(|(v, _)| v).ok(), Some(values));
 }
+
+#[test]
+fn round_trips_a_single_element_list() {
+    let mut buffer = Vec::new();
+    write_sorted_u32(&mut buffer, &[7]);
+    assert_eq!(read_sorted_u32(&buffer).map(|(v, _)| v).ok(), Some(vec![7]));
+}
