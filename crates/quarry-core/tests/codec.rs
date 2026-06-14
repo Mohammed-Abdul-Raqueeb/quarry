@@ -222,3 +222,11 @@ fn gap_encoding_shrinks_a_dense_list() {
         buffer.len()
     );
 }
+
+#[test]
+fn round_trips_a_list_starting_at_zero() {
+    let values = vec![0u32, 1, 2];
+    let mut buffer = Vec::new();
+    write_sorted_u32(&mut buffer, &values);
+    assert_eq!(read_sorted_u32(&buffer).map(|(v, _)| v).ok(), Some(values));
+}
