@@ -318,3 +318,8 @@ fn incremental_crc32_handles_many_small_writes() {
 fn crc32_default_matches_new() {
     assert_eq!(Crc32::default().finish(), Crc32::new().finish());
 }
+
+#[test]
+fn fnv1a_is_deterministic() {
+    assert_eq!(fnv1a(b"quarry"), fnv1a(b"quarry"));
+}
