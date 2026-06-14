@@ -271,3 +271,8 @@ fn crc32_of_the_standard_check_string() {
     // The published check value for CRC-32/ISO-HDLC.
     assert_eq!(crc32(b"123456789"), 0xCBF4_3926);
 }
+
+#[test]
+fn crc32_of_empty_input_is_zero() {
+    assert_eq!(crc32(b""), 0);
+}
