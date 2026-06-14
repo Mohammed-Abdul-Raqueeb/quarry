@@ -323,3 +323,8 @@ fn crc32_default_matches_new() {
 fn fnv1a_is_deterministic() {
     assert_eq!(fnv1a(b"quarry"), fnv1a(b"quarry"));
 }
+
+#[test]
+fn fnv1a_differs_for_different_input() {
+    assert_ne!(fnv1a(b"title"), fnv1a(b"body"));
+}
