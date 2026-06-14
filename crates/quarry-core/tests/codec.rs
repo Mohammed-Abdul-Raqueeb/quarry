@@ -276,3 +276,8 @@ fn crc32_of_the_standard_check_string() {
 fn crc32_of_empty_input_is_zero() {
     assert_eq!(crc32(b""), 0);
 }
+
+#[test]
+fn crc32_differs_for_different_input() {
+    assert_ne!(crc32(b"hello"), crc32(b"world"));
+}
