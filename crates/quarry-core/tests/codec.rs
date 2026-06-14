@@ -182,3 +182,12 @@ fn signed_varint_round_trips() {
         assert_eq!(read_i64(&buffer).map(|(v, _)| v).ok(), Some(value));
     }
 }
+
+#[test]
+fn signed_varint_keeps_minus_one_to_one_byte() {
+    let mut buffer = Vec::new();
+    write_i64(&mut buffer, -1);
+    assert_eq!(buffer.len(), 1);
+}
+
+// ---- sorted lists -------------------------------------------------------
