@@ -173,3 +173,12 @@ fn zigzag_round_trips() {
         assert_eq!(zigzag_decode(zigzag_encode(value)), value, "{value} failed");
     }
 }
+
+#[test]
+fn signed_varint_round_trips() {
+    for value in [0i64, -1, 1, -1000, 1000, i64::MIN, i64::MAX] {
+        let mut buffer = Vec::new();
+        write_i64(&mut buffer, value);
+        assert_eq!(read_i64(&buffer).map(|(v, _)| v).ok(), Some(value));
+    }
+}
