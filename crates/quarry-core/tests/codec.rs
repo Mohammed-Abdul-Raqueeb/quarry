@@ -425,3 +425,13 @@ fn round_trips_a_mixed_sequence() {
     assert_eq!(reader.sorted_u32().ok(), Some(vec![1, 2, 9]));
     assert!(reader.is_empty());
 }
+
+#[test]
+fn writer_reports_its_length_and_offset() {
+    let mut writer = BlobWriter::new();
+    assert!(writer.is_empty());
+
+    writer.u32(1);
+    assert_eq!(writer.len(), 4);
+    assert_eq!(writer.offset(), 4);
+}
