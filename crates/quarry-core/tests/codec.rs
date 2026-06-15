@@ -456,3 +456,14 @@ fn writer_computes_a_checksum_over_what_it_holds() {
     writer.raw(b"123456789");
     assert_eq!(writer.checksum(), 0xCBF4_3926);
 }
+
+#[test]
+fn reader_reports_position_and_remaining() {
+    let bytes = [1u8, 2, 3, 4];
+    let mut reader = BlobReader::new(&bytes);
+
+    assert_eq!(reader.remaining(), 4);
+    let _ = reader.u8();
+    assert_eq!(reader.position(), 1);
+    assert_eq!(reader.remaining(), 3);
+}
