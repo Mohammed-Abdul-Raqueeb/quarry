@@ -491,3 +491,14 @@ fn reader_errors_rather_than_panicking_on_a_short_buffer() {
     let mut reader = BlobReader::new(&bytes);
     assert!(reader.u32().is_err());
 }
+
+#[test]
+fn reader_errors_on_a_truncated_string() {
+    let mut writer = BlobWriter::new();
+    writer.string("a long enough string");
+    let bytes = writer.finish();
+
+    // Cut it short, as an interrupted write would.
+    let mut reader = BlobReader::new(&bytes[..4]);
+    assert!(reader.string().is_err());
+}
