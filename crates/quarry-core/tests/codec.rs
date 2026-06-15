@@ -335,3 +335,18 @@ fn fnv1a_of_empty_input_is_the_offset_basis() {
 }
 
 // ---- BlobWriter / BlobReader --------------------------------------------
+
+#[test]
+fn round_trips_fixed_width_integers() {
+    let mut writer = BlobWriter::new();
+    writer.u8(7);
+    writer.u32(70_000);
+    writer.u64(5_000_000_000);
+
+    let bytes = writer.finish();
+    let mut reader = BlobReader::new(&bytes);
+
+    assert_eq!(reader.u8().ok(), Some(7));
+    assert_eq!(reader.u32().ok(), Some(70_000));
+    assert_eq!(reader.u64().ok(), Some(5_000_000_000));
+}
