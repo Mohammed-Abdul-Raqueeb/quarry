@@ -435,3 +435,10 @@ fn writer_reports_its_length_and_offset() {
     assert_eq!(writer.len(), 4);
     assert_eq!(writer.offset(), 4);
 }
+
+#[test]
+fn writer_with_capacity_behaves_like_new() {
+    let mut writer = BlobWriter::with_capacity(64);
+    writer.u8(1);
+    assert_eq!(writer.len(), 1);
+}
