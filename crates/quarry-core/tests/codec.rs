@@ -359,3 +359,12 @@ fn round_trips_a_float() {
     let bytes = writer.finish();
     assert_eq!(BlobReader::new(&bytes).f32().ok(), Some(1.5));
 }
+
+#[test]
+fn round_trips_a_string() {
+    let mut writer = BlobWriter::new();
+    writer.string("ownership");
+
+    let bytes = writer.finish();
+    assert_eq!(BlobReader::new(&bytes).string().ok(), Some("ownership"));
+}
