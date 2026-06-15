@@ -476,3 +476,9 @@ fn reader_seeks_to_an_absolute_offset() {
     assert!(reader.seek(2).is_ok());
     assert_eq!(reader.u8().ok(), Some(3));
 }
+
+#[test]
+fn reader_rejects_a_seek_past_the_end() {
+    let bytes = [1u8];
+    assert!(BlobReader::new(&bytes).seek(99).is_err());
+}
