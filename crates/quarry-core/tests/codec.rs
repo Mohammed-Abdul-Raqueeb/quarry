@@ -467,3 +467,12 @@ fn reader_reports_position_and_remaining() {
     assert_eq!(reader.position(), 1);
     assert_eq!(reader.remaining(), 3);
 }
+
+#[test]
+fn reader_seeks_to_an_absolute_offset() {
+    let bytes = [1u8, 2, 3, 4];
+    let mut reader = BlobReader::new(&bytes);
+
+    assert!(reader.seek(2).is_ok());
+    assert_eq!(reader.u8().ok(), Some(3));
+}
