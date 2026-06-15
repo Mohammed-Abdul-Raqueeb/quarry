@@ -482,3 +482,12 @@ fn reader_rejects_a_seek_past_the_end() {
     let bytes = [1u8];
     assert!(BlobReader::new(&bytes).seek(99).is_err());
 }
+
+#[test]
+fn reader_errors_rather_than_panicking_on_a_short_buffer() {
+    // The input is a file that may have been truncated, so a short read is an
+    // expected condition rather than a bug.
+    let bytes = [1u8, 2];
+    let mut reader = BlobReader::new(&bytes);
+    assert!(reader.u32().is_err());
+}
