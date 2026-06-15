@@ -377,3 +377,15 @@ fn round_trips_an_empty_string() {
     let bytes = writer.finish();
     assert_eq!(BlobReader::new(&bytes).string().ok(), Some(""));
 }
+
+#[test]
+fn round_trips_a_multibyte_string() {
+    let mut writer = BlobWriter::new();
+    writer.string("日本語 café 🙂");
+
+    let bytes = writer.finish();
+    assert_eq!(
+        BlobReader::new(&bytes).string().ok(),
+        Some("日本語 café 🙂")
+    );
+}
