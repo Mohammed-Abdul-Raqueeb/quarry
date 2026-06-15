@@ -449,3 +449,10 @@ fn writer_exposes_its_bytes_without_consuming_itself() {
     writer.u8(5);
     assert_eq!(writer.as_slice(), &[5]);
 }
+
+#[test]
+fn writer_computes_a_checksum_over_what_it_holds() {
+    let mut writer = BlobWriter::new();
+    writer.raw(b"123456789");
+    assert_eq!(writer.checksum(), 0xCBF4_3926);
+}
