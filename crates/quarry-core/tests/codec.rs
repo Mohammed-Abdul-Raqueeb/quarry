@@ -398,3 +398,12 @@ fn round_trips_raw_bytes() {
     let bytes = writer.finish();
     assert_eq!(BlobReader::new(&bytes).raw(3).ok(), Some(&[1u8, 2, 3][..]));
 }
+
+#[test]
+fn round_trips_a_length_prefixed_byte_string() {
+    let mut writer = BlobWriter::new();
+    writer.bytes(&[9, 8, 7]);
+
+    let bytes = writer.finish();
+    assert_eq!(BlobReader::new(&bytes).bytes().ok(), Some(&[9u8, 8, 7][..]));
+}
