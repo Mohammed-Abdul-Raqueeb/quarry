@@ -350,3 +350,12 @@ fn round_trips_fixed_width_integers() {
     assert_eq!(reader.u32().ok(), Some(70_000));
     assert_eq!(reader.u64().ok(), Some(5_000_000_000));
 }
+
+#[test]
+fn round_trips_a_float() {
+    let mut writer = BlobWriter::new();
+    writer.f32(1.5);
+
+    let bytes = writer.finish();
+    assert_eq!(BlobReader::new(&bytes).f32().ok(), Some(1.5));
+}
