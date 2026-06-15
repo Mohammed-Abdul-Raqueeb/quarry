@@ -389,3 +389,12 @@ fn round_trips_a_multibyte_string() {
         Some("日本語 café 🙂")
     );
 }
+
+#[test]
+fn round_trips_raw_bytes() {
+    let mut writer = BlobWriter::new();
+    writer.raw(&[1, 2, 3]);
+
+    let bytes = writer.finish();
+    assert_eq!(BlobReader::new(&bytes).raw(3).ok(), Some(&[1u8, 2, 3][..]));
+}
