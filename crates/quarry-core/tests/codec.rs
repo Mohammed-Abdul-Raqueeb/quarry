@@ -407,3 +407,21 @@ fn round_trips_a_length_prefixed_byte_string() {
     let bytes = writer.finish();
     assert_eq!(BlobReader::new(&bytes).bytes().ok(), Some(&[9u8, 8, 7][..]));
 }
+
+#[test]
+fn round_trips_a_mixed_sequence() {
+    let mut writer = BlobWriter::new();
+    writer.varint(300);
+    writer.string("term");
+    writer.u32(42);
+    writer.sorted_u32(&[1, 2, 9]);
+
+    let bytes = writer.finish();
+    let mut reader = BlobReader::new(&bytes);
+
+    assert_eq!(reader.varint().ok(), Some(300));
+    assert_eq!(reader.string().ok(), Some("term"));
+    assert_eq!(reader.u32().ok(), Some(42));
+    assert_eq!(reader.sorted_u32().ok(), Some(vec![1, 2, 9]));
+    assert!(reader.is_empty());
+}
