@@ -328,3 +328,10 @@ fn fnv1a_is_deterministic() {
 fn fnv1a_differs_for_different_input() {
     assert_ne!(fnv1a(b"title"), fnv1a(b"body"));
 }
+
+#[test]
+fn fnv1a_of_empty_input_is_the_offset_basis() {
+    assert_eq!(fnv1a(b""), 0xcbf2_9ce4_8422_2325);
+}
+
+// ---- BlobWriter / BlobReader --------------------------------------------
