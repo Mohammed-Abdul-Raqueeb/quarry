@@ -502,3 +502,12 @@ fn reader_errors_on_a_truncated_string() {
     let mut reader = BlobReader::new(&bytes[..4]);
     assert!(reader.string().is_err());
 }
+
+#[test]
+fn reader_errors_on_a_non_utf8_string() {
+    let mut writer = BlobWriter::new();
+    writer.bytes(&[0xFF, 0xFE]);
+    let bytes = writer.finish();
+
+    assert!(BlobReader::new(&bytes).string().is_err());
+}
