@@ -511,3 +511,9 @@ fn reader_errors_on_a_non_utf8_string() {
 
     assert!(BlobReader::new(&bytes).string().is_err());
 }
+
+#[test]
+fn reader_errors_on_a_raw_read_past_the_end() {
+    let bytes = [1u8];
+    assert!(BlobReader::new(&bytes).raw(10).is_err());
+}
