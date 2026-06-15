@@ -442,3 +442,10 @@ fn writer_with_capacity_behaves_like_new() {
     writer.u8(1);
     assert_eq!(writer.len(), 1);
 }
+
+#[test]
+fn writer_exposes_its_bytes_without_consuming_itself() {
+    let mut writer = BlobWriter::new();
+    writer.u8(5);
+    assert_eq!(writer.as_slice(), &[5]);
+}
