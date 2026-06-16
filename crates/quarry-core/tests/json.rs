@@ -85,3 +85,8 @@ fn rejects_a_leading_zero_before_more_digits() {
     rejects("01");
     rejects("-01");
 }
+
+#[test]
+fn rejects_a_bare_minus() {
+    rejects("-");
+}
