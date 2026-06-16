@@ -57,3 +57,9 @@ fn parses_an_exponent() {
     assert_eq!(parses("1e3"), Json::Number(1000.0));
     assert_eq!(parses("1E3"), Json::Number(1000.0));
 }
+
+#[test]
+fn parses_a_signed_exponent() {
+    assert_eq!(parses("1e+3"), Json::Number(1000.0));
+    assert_eq!(parses("1e-3"), Json::Number(0.001));
+}
