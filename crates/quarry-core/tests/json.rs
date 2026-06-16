@@ -78,3 +78,10 @@ fn parses_a_large_number() {
 fn rejects_a_leading_plus() {
     rejects("+1");
 }
+
+#[test]
+fn rejects_a_leading_zero_before_more_digits() {
+    // JSON forbids `01`, and accepting it invites octal confusion.
+    rejects("01");
+    rejects("-01");
+}
