@@ -31,3 +31,8 @@ fn parses_booleans() {
 fn parses_a_zero() {
     assert_eq!(parses("0"), Json::Number(0.0));
 }
+
+#[test]
+fn parses_a_positive_integer() {
+    assert_eq!(parses("42"), Json::Number(42.0));
+}
