@@ -527,3 +527,11 @@ fn verify_checksum_accepts_a_matching_value() {
 fn verify_checksum_rejects_a_mismatch() {
     assert!(BlobReader::verify_checksum(b"123456789", 0).is_err());
 }
+
+#[test]
+fn verify_checksum_mentions_both_values() {
+    let err = BlobReader::verify_checksum(b"x", 0x1234)
+        .unwrap_err()
+        .to_string();
+    assert!(err.contains("0x00001234"), "message was: {err}");
+}
