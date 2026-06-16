@@ -26,3 +26,8 @@ fn parses_booleans() {
     assert_eq!(parses("true"), Json::Bool(true));
     assert_eq!(parses("false"), Json::Bool(false));
 }
+
+#[test]
+fn parses_a_zero() {
+    assert_eq!(parses("0"), Json::Number(0.0));
+}
