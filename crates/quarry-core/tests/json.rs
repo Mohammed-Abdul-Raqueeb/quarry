@@ -15,3 +15,8 @@ fn rejects(input: &str) {
 }
 
 // ---- scalars ------------------------------------------------------------
+
+#[test]
+fn parses_null() {
+    assert_eq!(parses("null"), Json::Null);
+}
