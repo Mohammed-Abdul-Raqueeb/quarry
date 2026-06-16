@@ -51,3 +51,9 @@ fn parses_a_fraction() {
 fn parses_a_negative_fraction() {
     assert_eq!(parses("-0.25"), Json::Number(-0.25));
 }
+
+#[test]
+fn parses_an_exponent() {
+    assert_eq!(parses("1e3"), Json::Number(1000.0));
+    assert_eq!(parses("1E3"), Json::Number(1000.0));
+}
