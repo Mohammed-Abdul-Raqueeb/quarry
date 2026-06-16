@@ -41,3 +41,8 @@ fn parses_a_positive_integer() {
 fn parses_a_negative_integer() {
     assert_eq!(parses("-17"), Json::Number(-17.0));
 }
+
+#[test]
+fn parses_a_fraction() {
+    assert_eq!(parses("3.5"), Json::Number(3.5));
+}
