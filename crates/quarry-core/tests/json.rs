@@ -20,3 +20,9 @@ fn rejects(input: &str) {
 fn parses_null() {
     assert_eq!(parses("null"), Json::Null);
 }
+
+#[test]
+fn parses_booleans() {
+    assert_eq!(parses("true"), Json::Bool(true));
+    assert_eq!(parses("false"), Json::Bool(false));
+}
