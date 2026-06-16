@@ -73,3 +73,8 @@ fn parses_a_fraction_with_an_exponent() {
 fn parses_a_large_number() {
     assert_eq!(parses("1e308").as_f64().map(f64::is_finite), Some(true));
 }
+
+#[test]
+fn rejects_a_leading_plus() {
+    rejects("+1");
+}
