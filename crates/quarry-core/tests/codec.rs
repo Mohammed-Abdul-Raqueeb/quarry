@@ -522,3 +522,8 @@ fn reader_errors_on_a_raw_read_past_the_end() {
 fn verify_checksum_accepts_a_matching_value() {
     assert!(BlobReader::verify_checksum(b"123456789", 0xCBF4_3926).is_ok());
 }
+
+#[test]
+fn verify_checksum_rejects_a_mismatch() {
+    assert!(BlobReader::verify_checksum(b"123456789", 0).is_err());
+}
