@@ -517,3 +517,8 @@ fn reader_errors_on_a_raw_read_past_the_end() {
     let bytes = [1u8];
     assert!(BlobReader::new(&bytes).raw(10).is_err());
 }
+
+#[test]
+fn verify_checksum_accepts_a_matching_value() {
+    assert!(BlobReader::verify_checksum(b"123456789", 0xCBF4_3926).is_ok());
+}
