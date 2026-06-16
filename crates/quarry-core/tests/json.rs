@@ -9,3 +9,9 @@ use quarry_core::json::{parse, Json, JsonBuilder, MAX_DEPTH};
 fn parses(input: &str) -> Json {
     parse(input).unwrap_or_else(|err| panic!("{input} should parse, got {err}"))
 }
+
+fn rejects(input: &str) {
+    assert!(parse(input).is_err(), "{input} should have been rejected");
+}
+
+// ---- scalars ------------------------------------------------------------
