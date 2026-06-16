@@ -68,3 +68,8 @@ fn parses_a_signed_exponent() {
 fn parses_a_fraction_with_an_exponent() {
     assert_eq!(parses("1.5e2"), Json::Number(150.0));
 }
+
+#[test]
+fn parses_a_large_number() {
+    assert_eq!(parses("1e308").as_f64().map(f64::is_finite), Some(true));
+}
