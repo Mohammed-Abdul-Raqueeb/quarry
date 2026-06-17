@@ -100,3 +100,9 @@ fn rejects_a_trailing_decimal_point() {
 fn rejects_a_leading_decimal_point() {
     rejects(".5");
 }
+
+#[test]
+fn rejects_an_empty_exponent() {
+    rejects("1e");
+    rejects("1e+");
+}
