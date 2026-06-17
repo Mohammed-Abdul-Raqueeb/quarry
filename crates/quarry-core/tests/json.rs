@@ -172,3 +172,8 @@ fn parses_a_surrogate_pair_into_one_code_point() {
     // An astral character is spelled as two escapes and must be joined.
     assert_eq!(parses(r#""😀""#), Json::String("😀".to_string()));
 }
+
+#[test]
+fn rejects_a_lone_high_surrogate() {
+    rejects(r#""\ud83d""#);
+}
