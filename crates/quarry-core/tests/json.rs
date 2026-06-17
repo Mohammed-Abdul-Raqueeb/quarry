@@ -187,3 +187,8 @@ fn rejects_a_lone_low_surrogate() {
 fn rejects_a_high_surrogate_followed_by_a_non_surrogate() {
     rejects(r#""\ud83dA""#);
 }
+
+#[test]
+fn rejects_a_short_unicode_escape() {
+    rejects(r#""\u00""#);
+}
