@@ -111,3 +111,14 @@ fn rejects_an_empty_exponent() {
 fn rejects_hexadecimal() {
     rejects("0x10");
 }
+
+#[test]
+fn rejects_infinity_and_nan_spellings() {
+    // Neither is expressible in JSON, and accepting them would produce values
+    // that cannot be written back out.
+    rejects("Infinity");
+    rejects("NaN");
+    rejects("-Infinity");
+}
+
+// ---- strings ------------------------------------------------------------
