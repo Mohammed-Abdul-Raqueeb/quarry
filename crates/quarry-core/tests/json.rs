@@ -127,3 +127,8 @@ fn rejects_infinity_and_nan_spellings() {
 fn parses_an_empty_string() {
     assert_eq!(parses("\"\""), Json::String(String::new()));
 }
+
+#[test]
+fn parses_a_plain_string() {
+    assert_eq!(parses("\"hello\""), Json::String("hello".to_string()));
+}
