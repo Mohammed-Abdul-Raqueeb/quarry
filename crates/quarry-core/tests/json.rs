@@ -166,3 +166,9 @@ fn parses_a_unicode_escape() {
 fn parses_a_unicode_escape_above_ascii() {
     assert_eq!(parses(r#""é""#), Json::String("é".to_string()));
 }
+
+#[test]
+fn parses_a_surrogate_pair_into_one_code_point() {
+    // An astral character is spelled as two escapes and must be joined.
+    assert_eq!(parses(r#""😀""#), Json::String("😀".to_string()));
+}
