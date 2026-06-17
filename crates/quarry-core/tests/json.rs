@@ -90,3 +90,8 @@ fn rejects_a_leading_zero_before_more_digits() {
 fn rejects_a_bare_minus() {
     rejects("-");
 }
+
+#[test]
+fn rejects_a_trailing_decimal_point() {
+    rejects("1.");
+}
