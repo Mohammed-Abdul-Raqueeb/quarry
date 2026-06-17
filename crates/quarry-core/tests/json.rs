@@ -192,3 +192,8 @@ fn rejects_a_high_surrogate_followed_by_a_non_surrogate() {
 fn rejects_a_short_unicode_escape() {
     rejects(r#""\u00""#);
 }
+
+#[test]
+fn rejects_a_non_hex_unicode_escape() {
+    rejects(r#""\uZZZZ""#);
+}
