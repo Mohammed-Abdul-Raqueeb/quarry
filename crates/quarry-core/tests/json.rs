@@ -177,3 +177,8 @@ fn parses_a_surrogate_pair_into_one_code_point() {
 fn rejects_a_lone_high_surrogate() {
     rejects(r#""\ud83d""#);
 }
+
+#[test]
+fn rejects_a_lone_low_surrogate() {
+    rejects(r#""\ude00""#);
+}
