@@ -156,3 +156,8 @@ fn parses_the_control_escapes() {
     assert_eq!(parses(r#""a\bb""#), Json::String("a\u{08}b".to_string()));
     assert_eq!(parses(r#""a\fb""#), Json::String("a\u{0c}b".to_string()));
 }
+
+#[test]
+fn parses_a_unicode_escape() {
+    assert_eq!(parses(r#""A""#), Json::String("A".to_string()));
+}
