@@ -137,3 +137,8 @@ fn parses_a_plain_string() {
 fn parses_an_escaped_quote() {
     assert_eq!(parses(r#""a\"b""#), Json::String("a\"b".to_string()));
 }
+
+#[test]
+fn parses_an_escaped_backslash() {
+    assert_eq!(parses(r#""a\\b""#), Json::String("a\\b".to_string()));
+}
