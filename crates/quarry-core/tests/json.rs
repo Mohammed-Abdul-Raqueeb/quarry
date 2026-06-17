@@ -197,3 +197,8 @@ fn rejects_a_short_unicode_escape() {
 fn rejects_a_non_hex_unicode_escape() {
     rejects(r#""\uZZZZ""#);
 }
+
+#[test]
+fn rejects_an_unknown_escape() {
+    rejects(r#""\q""#);
+}
