@@ -106,3 +106,8 @@ fn rejects_an_empty_exponent() {
     rejects("1e");
     rejects("1e+");
 }
+
+#[test]
+fn rejects_hexadecimal() {
+    rejects("0x10");
+}
