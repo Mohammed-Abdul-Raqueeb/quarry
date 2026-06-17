@@ -182,3 +182,8 @@ fn rejects_a_lone_high_surrogate() {
 fn rejects_a_lone_low_surrogate() {
     rejects(r#""\ude00""#);
 }
+
+#[test]
+fn rejects_a_high_surrogate_followed_by_a_non_surrogate() {
+    rejects(r#""\ud83dA""#);
+}
