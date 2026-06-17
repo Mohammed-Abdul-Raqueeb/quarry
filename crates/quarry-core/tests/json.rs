@@ -147,3 +147,12 @@ fn parses_an_escaped_backslash() {
 fn parses_an_escaped_solidus() {
     assert_eq!(parses(r#""a\/b""#), Json::String("a/b".to_string()));
 }
+
+#[test]
+fn parses_the_control_escapes() {
+    assert_eq!(parses(r#""a\nb""#), Json::String("a\nb".to_string()));
+    assert_eq!(parses(r#""a\tb""#), Json::String("a\tb".to_string()));
+    assert_eq!(parses(r#""a\rb""#), Json::String("a\rb".to_string()));
+    assert_eq!(parses(r#""a\bb""#), Json::String("a\u{08}b".to_string()));
+    assert_eq!(parses(r#""a\fb""#), Json::String("a\u{0c}b".to_string()));
+}
