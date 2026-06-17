@@ -95,3 +95,8 @@ fn rejects_a_bare_minus() {
 fn rejects_a_trailing_decimal_point() {
     rejects("1.");
 }
+
+#[test]
+fn rejects_a_leading_decimal_point() {
+    rejects(".5");
+}
