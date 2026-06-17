@@ -161,3 +161,8 @@ fn parses_the_control_escapes() {
 fn parses_a_unicode_escape() {
     assert_eq!(parses(r#""A""#), Json::String("A".to_string()));
 }
+
+#[test]
+fn parses_a_unicode_escape_above_ascii() {
+    assert_eq!(parses(r#""é""#), Json::String("é".to_string()));
+}
