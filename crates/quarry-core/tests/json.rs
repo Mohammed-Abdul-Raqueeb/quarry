@@ -248,3 +248,9 @@ fn parses_an_array_of_numbers() {
         ])
     );
 }
+
+#[test]
+fn parses_an_array_with_mixed_types() {
+    let parsed = parses(r#"[1,"two",true,null]"#);
+    assert_eq!(parsed.as_array().map(<[Json]>::len), Some(4));
+}
