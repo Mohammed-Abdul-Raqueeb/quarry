@@ -214,3 +214,8 @@ fn rejects_a_raw_control_character_in_a_string() {
     rejects("\"a\nb\"");
     rejects("\"a\u{01}b\"");
 }
+
+#[test]
+fn parses_multibyte_characters_in_a_string() {
+    assert_eq!(parses("\"日本語\""), Json::String("日本語".to_string()));
+}
