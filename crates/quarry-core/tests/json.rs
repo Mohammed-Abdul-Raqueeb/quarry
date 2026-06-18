@@ -265,3 +265,8 @@ fn parses_a_nested_array() {
 fn parses_an_array_with_whitespace_everywhere() {
     assert_eq!(parses(" [ 1 , 2 ] ").as_array().map(<[Json]>::len), Some(2));
 }
+
+#[test]
+fn rejects_a_trailing_comma_in_an_array() {
+    rejects("[1,2,]");
+}
