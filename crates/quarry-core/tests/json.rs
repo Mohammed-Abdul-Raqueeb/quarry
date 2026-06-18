@@ -312,3 +312,15 @@ fn parses_an_object_with_several_pairs() {
         Some(3)
     );
 }
+
+#[test]
+fn parses_a_nested_object() {
+    let parsed = parses(r#"{"outer":{"inner":"value"}}"#);
+    assert_eq!(
+        parsed
+            .get("outer")
+            .and_then(|o| o.get("inner"))
+            .and_then(Json::as_str),
+        Some("value")
+    );
+}
