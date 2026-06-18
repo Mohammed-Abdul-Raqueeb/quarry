@@ -236,3 +236,15 @@ fn rejects_single_quoted_strings() {
 fn parses_an_empty_array() {
     assert_eq!(parses("[]"), Json::Array(vec![]));
 }
+
+#[test]
+fn parses_an_array_of_numbers() {
+    assert_eq!(
+        parses("[1,2,3]"),
+        Json::Array(vec![
+            Json::Number(1.0),
+            Json::Number(2.0),
+            Json::Number(3.0)
+        ])
+    );
+}
