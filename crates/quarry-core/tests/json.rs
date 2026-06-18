@@ -224,3 +224,10 @@ fn parses_multibyte_characters_in_a_string() {
 fn parses_an_emoji_in_a_string() {
     assert_eq!(parses("\"🙂\""), Json::String("🙂".to_string()));
 }
+
+#[test]
+fn rejects_single_quoted_strings() {
+    rejects("'hello'");
+}
+
+// ---- arrays -------------------------------------------------------------
