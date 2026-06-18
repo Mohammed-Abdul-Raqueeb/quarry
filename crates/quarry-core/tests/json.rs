@@ -275,3 +275,8 @@ fn rejects_a_trailing_comma_in_an_array() {
 fn rejects_a_leading_comma_in_an_array() {
     rejects("[,1]");
 }
+
+#[test]
+fn rejects_an_unterminated_array() {
+    rejects("[1,2");
+}
