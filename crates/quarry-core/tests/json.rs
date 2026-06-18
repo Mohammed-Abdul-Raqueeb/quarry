@@ -297,3 +297,9 @@ fn parses_an_empty_object() {
         Some(0)
     );
 }
+
+#[test]
+fn parses_an_object_with_one_pair() {
+    let parsed = parses(r#"{"a":1}"#);
+    assert_eq!(parsed.get("a"), Some(&Json::Number(1.0)));
+}
