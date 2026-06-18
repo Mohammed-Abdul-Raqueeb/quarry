@@ -287,3 +287,13 @@ fn rejects_a_missing_comma_in_an_array() {
 }
 
 // ---- objects ------------------------------------------------------------
+
+#[test]
+fn parses_an_empty_object() {
+    assert_eq!(
+        parses("{}")
+            .as_object()
+            .map(std::collections::BTreeMap::len),
+        Some(0)
+    );
+}
