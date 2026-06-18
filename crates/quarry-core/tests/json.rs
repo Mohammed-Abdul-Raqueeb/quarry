@@ -330,3 +330,10 @@ fn parses_an_object_with_whitespace_everywhere() {
     let parsed = parses(" { \"a\" : 1 } ");
     assert_eq!(parsed.get("a"), Some(&Json::Number(1.0)));
 }
+
+#[test]
+fn a_repeated_key_keeps_the_last_value() {
+    // What most parsers do, and the only choice that round-trips.
+    let parsed = parses(r#"{"a":1,"a":2}"#);
+    assert_eq!(parsed.get("a"), Some(&Json::Number(2.0)));
+}
