@@ -280,3 +280,10 @@ fn rejects_a_leading_comma_in_an_array() {
 fn rejects_an_unterminated_array() {
     rejects("[1,2");
 }
+
+#[test]
+fn rejects_a_missing_comma_in_an_array() {
+    rejects("[1 2]");
+}
+
+// ---- objects ------------------------------------------------------------
