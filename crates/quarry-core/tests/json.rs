@@ -260,3 +260,8 @@ fn parses_a_nested_array() {
     let parsed = parses("[[1],[2]]");
     assert_eq!(parsed.as_array().map(<[Json]>::len), Some(2));
 }
+
+#[test]
+fn parses_an_array_with_whitespace_everywhere() {
+    assert_eq!(parses(" [ 1 , 2 ] ").as_array().map(<[Json]>::len), Some(2));
+}
