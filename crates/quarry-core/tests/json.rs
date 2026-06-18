@@ -254,3 +254,9 @@ fn parses_an_array_with_mixed_types() {
     let parsed = parses(r#"[1,"two",true,null]"#);
     assert_eq!(parsed.as_array().map(<[Json]>::len), Some(4));
 }
+
+#[test]
+fn parses_a_nested_array() {
+    let parsed = parses("[[1],[2]]");
+    assert_eq!(parsed.as_array().map(<[Json]>::len), Some(2));
+}
