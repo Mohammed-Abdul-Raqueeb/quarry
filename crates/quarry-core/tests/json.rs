@@ -207,3 +207,10 @@ fn rejects_an_unknown_escape() {
 fn rejects_an_unterminated_string() {
     rejects("\"open");
 }
+
+#[test]
+fn rejects_a_raw_control_character_in_a_string() {
+    // Must be escaped; accepting it silently would round-trip wrongly.
+    rejects("\"a\nb\"");
+    rejects("\"a\u{01}b\"");
+}
