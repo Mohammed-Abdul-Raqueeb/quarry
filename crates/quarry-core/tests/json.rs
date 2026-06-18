@@ -270,3 +270,8 @@ fn parses_an_array_with_whitespace_everywhere() {
 fn rejects_a_trailing_comma_in_an_array() {
     rejects("[1,2,]");
 }
+
+#[test]
+fn rejects_a_leading_comma_in_an_array() {
+    rejects("[,1]");
+}
