@@ -219,3 +219,8 @@ fn rejects_a_raw_control_character_in_a_string() {
 fn parses_multibyte_characters_in_a_string() {
     assert_eq!(parses("\"日本語\""), Json::String("日本語".to_string()));
 }
+
+#[test]
+fn parses_an_emoji_in_a_string() {
+    assert_eq!(parses("\"🙂\""), Json::String("🙂".to_string()));
+}
