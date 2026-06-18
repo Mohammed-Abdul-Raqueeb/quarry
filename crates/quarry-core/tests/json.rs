@@ -303,3 +303,12 @@ fn parses_an_object_with_one_pair() {
     let parsed = parses(r#"{"a":1}"#);
     assert_eq!(parsed.get("a"), Some(&Json::Number(1.0)));
 }
+
+#[test]
+fn parses_an_object_with_several_pairs() {
+    let parsed = parses(r#"{"a":1,"b":2,"c":3}"#);
+    assert_eq!(
+        parsed.as_object().map(std::collections::BTreeMap::len),
+        Some(3)
+    );
+}
