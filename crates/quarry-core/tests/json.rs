@@ -231,3 +231,8 @@ fn rejects_single_quoted_strings() {
 }
 
 // ---- arrays -------------------------------------------------------------
+
+#[test]
+fn parses_an_empty_array() {
+    assert_eq!(parses("[]"), Json::Array(vec![]));
+}
