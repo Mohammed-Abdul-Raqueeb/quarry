@@ -324,3 +324,9 @@ fn parses_a_nested_object() {
         Some("value")
     );
 }
+
+#[test]
+fn parses_an_object_with_whitespace_everywhere() {
+    let parsed = parses(" { \"a\" : 1 } ");
+    assert_eq!(parsed.get("a"), Some(&Json::Number(1.0)));
+}
