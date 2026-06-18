@@ -202,3 +202,8 @@ fn rejects_a_non_hex_unicode_escape() {
 fn rejects_an_unknown_escape() {
     rejects(r#""\q""#);
 }
+
+#[test]
+fn rejects_an_unterminated_string() {
+    rejects("\"open");
+}
