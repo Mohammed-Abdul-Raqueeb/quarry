@@ -380,3 +380,11 @@ fn rejects_empty_input() {
 fn rejects_only_whitespace() {
     rejects("   ");
 }
+
+#[test]
+fn rejects_trailing_content_after_a_value() {
+    // A doubled or truncated payload must not silently half-parse.
+    rejects("1 2");
+    rejects("{} {}");
+    rejects(r#"{"a":1} trailing"#);
+}
