@@ -370,3 +370,8 @@ fn rejects_an_unterminated_object() {
 }
 
 // ---- document-level ------------------------------------------------------
+
+#[test]
+fn rejects_empty_input() {
+    rejects("");
+}
