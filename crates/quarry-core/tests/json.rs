@@ -337,3 +337,9 @@ fn a_repeated_key_keeps_the_last_value() {
     let parsed = parses(r#"{"a":1,"a":2}"#);
     assert_eq!(parsed.get("a"), Some(&Json::Number(2.0)));
 }
+
+#[test]
+fn parses_an_empty_key() {
+    let parsed = parses(r#"{"":1}"#);
+    assert_eq!(parsed.get(""), Some(&Json::Number(1.0)));
+}
