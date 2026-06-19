@@ -462,3 +462,10 @@ fn type_name_describes_every_variant() {
 }
 
 // ---- writing -------------------------------------------------------------
+
+#[test]
+fn writes_null_and_booleans() {
+    assert_eq!(Json::Null.to_string(), "null");
+    assert_eq!(Json::Bool(true).to_string(), "true");
+    assert_eq!(Json::Bool(false).to_string(), "false");
+}
