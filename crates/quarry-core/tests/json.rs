@@ -444,3 +444,9 @@ fn get_returns_none_for_a_non_object() {
 fn get_returns_none_for_a_missing_key() {
     assert_eq!(parses("{}").get("missing"), None);
 }
+
+#[test]
+fn is_null_identifies_null_only() {
+    assert!(Json::Null.is_null());
+    assert!(!Json::Bool(false).is_null());
+}
