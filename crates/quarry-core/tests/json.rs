@@ -388,3 +388,8 @@ fn rejects_trailing_content_after_a_value() {
     rejects("{} {}");
     rejects(r#"{"a":1} trailing"#);
 }
+
+#[test]
+fn accepts_trailing_whitespace() {
+    assert_eq!(parses("1  \n\t "), Json::Number(1.0));
+}
