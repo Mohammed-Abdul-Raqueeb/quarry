@@ -343,3 +343,8 @@ fn parses_an_empty_key() {
     let parsed = parses(r#"{"":1}"#);
     assert_eq!(parsed.get(""), Some(&Json::Number(1.0)));
 }
+
+#[test]
+fn rejects_an_unquoted_key() {
+    rejects("{a:1}");
+}
