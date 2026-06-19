@@ -348,3 +348,8 @@ fn parses_an_empty_key() {
 fn rejects_an_unquoted_key() {
     rejects("{a:1}");
 }
+
+#[test]
+fn rejects_a_trailing_comma_in_an_object() {
+    rejects(r#"{"a":1,}"#);
+}
