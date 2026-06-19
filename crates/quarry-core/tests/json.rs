@@ -434,3 +434,8 @@ fn accessors_return_none_for_the_wrong_type() {
     assert_eq!(Json::String("1".to_string()).as_f64(), None);
     assert_eq!(Json::Null.as_bool(), None);
 }
+
+#[test]
+fn get_returns_none_for_a_non_object() {
+    assert_eq!(Json::Number(1.0).get("a"), None);
+}
