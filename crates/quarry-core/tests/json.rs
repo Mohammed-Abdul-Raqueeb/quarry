@@ -439,3 +439,8 @@ fn accessors_return_none_for_the_wrong_type() {
 fn get_returns_none_for_a_non_object() {
     assert_eq!(Json::Number(1.0).get("a"), None);
 }
+
+#[test]
+fn get_returns_none_for_a_missing_key() {
+    assert_eq!(parses("{}").get("missing"), None);
+}
