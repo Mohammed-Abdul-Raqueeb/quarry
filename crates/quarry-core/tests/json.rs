@@ -358,3 +358,8 @@ fn rejects_a_trailing_comma_in_an_object() {
 fn rejects_a_missing_colon() {
     rejects(r#"{"a" 1}"#);
 }
+
+#[test]
+fn rejects_a_missing_value() {
+    rejects(r#"{"a":}"#);
+}
