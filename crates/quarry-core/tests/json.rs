@@ -393,3 +393,9 @@ fn rejects_trailing_content_after_a_value() {
 fn accepts_trailing_whitespace() {
     assert_eq!(parses("1  \n\t "), Json::Number(1.0));
 }
+
+#[test]
+fn rejects_a_comment() {
+    rejects("1 // comment");
+    rejects("/* comment */ 1");
+}
