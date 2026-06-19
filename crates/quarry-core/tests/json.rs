@@ -363,3 +363,10 @@ fn rejects_a_missing_colon() {
 fn rejects_a_missing_value() {
     rejects(r#"{"a":}"#);
 }
+
+#[test]
+fn rejects_an_unterminated_object() {
+    rejects(r#"{"a":1"#);
+}
+
+// ---- document-level ------------------------------------------------------
