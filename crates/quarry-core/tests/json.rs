@@ -411,3 +411,12 @@ fn rejects_nesting_past_the_depth_limit() {
     );
     rejects(&deep);
 }
+
+#[test]
+fn accepts_nesting_just_under_the_depth_limit() {
+    let depth = MAX_DEPTH - 2;
+    let input = format!("{}1{}", "[".repeat(depth), "]".repeat(depth));
+    assert!(parse(&input).is_ok());
+}
+
+// ---- accessors -----------------------------------------------------------
