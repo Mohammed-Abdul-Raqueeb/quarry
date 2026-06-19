@@ -375,3 +375,8 @@ fn rejects_an_unterminated_object() {
 fn rejects_empty_input() {
     rejects("");
 }
+
+#[test]
+fn rejects_only_whitespace() {
+    rejects("   ");
+}
