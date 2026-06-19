@@ -420,3 +420,10 @@ fn accepts_nesting_just_under_the_depth_limit() {
 }
 
 // ---- accessors -----------------------------------------------------------
+
+#[test]
+fn accessors_return_the_inner_value() {
+    assert_eq!(Json::String("x".to_string()).as_str(), Some("x"));
+    assert_eq!(Json::Number(1.5).as_f64(), Some(1.5));
+    assert_eq!(Json::Bool(true).as_bool(), Some(true));
+}
