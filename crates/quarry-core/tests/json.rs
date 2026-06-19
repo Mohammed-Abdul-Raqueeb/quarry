@@ -399,3 +399,15 @@ fn rejects_a_comment() {
     rejects("1 // comment");
     rejects("/* comment */ 1");
 }
+
+#[test]
+fn rejects_nesting_past_the_depth_limit() {
+    // An unbounded recursive parser is a stack-overflow waiting for a hostile
+    // document, so the limit is a hard rejection rather than best effort.
+    let deep = format!(
+        "{}1{}",
+        "[".repeat(MAX_DEPTH + 5),
+        "]".repeat(MAX_DEPTH + 5)
+    );
+    rejects(&deep);
+}
