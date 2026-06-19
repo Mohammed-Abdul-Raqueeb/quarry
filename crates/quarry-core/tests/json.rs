@@ -450,3 +450,15 @@ fn is_null_identifies_null_only() {
     assert!(Json::Null.is_null());
     assert!(!Json::Bool(false).is_null());
 }
+
+#[test]
+fn type_name_describes_every_variant() {
+    assert_eq!(Json::Null.type_name(), "null");
+    assert_eq!(Json::Bool(true).type_name(), "boolean");
+    assert_eq!(Json::Number(1.0).type_name(), "number");
+    assert_eq!(Json::String(String::new()).type_name(), "string");
+    assert_eq!(Json::Array(vec![]).type_name(), "array");
+    assert_eq!(parses("{}").type_name(), "object");
+}
+
+// ---- writing -------------------------------------------------------------
