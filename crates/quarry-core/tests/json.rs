@@ -427,3 +427,10 @@ fn accessors_return_the_inner_value() {
     assert_eq!(Json::Number(1.5).as_f64(), Some(1.5));
     assert_eq!(Json::Bool(true).as_bool(), Some(true));
 }
+
+#[test]
+fn accessors_return_none_for_the_wrong_type() {
+    assert_eq!(Json::Number(1.0).as_str(), None);
+    assert_eq!(Json::String("1".to_string()).as_f64(), None);
+    assert_eq!(Json::Null.as_bool(), None);
+}
