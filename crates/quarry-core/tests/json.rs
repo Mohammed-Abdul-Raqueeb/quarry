@@ -591,3 +591,17 @@ fn builder_replaces_a_repeated_key() {
     let built = JsonBuilder::new().num("a", 1.0).num("a", 2.0).build();
     assert_eq!(built.get("a").and_then(Json::as_f64), Some(2.0));
 }
+
+#[test]
+fn builder_nests_a_value() {
+    let inner = JsonBuilder::new().num("x", 1.0).build();
+    let built = JsonBuilder::new().set("outer", inner).build();
+
+    assert_eq!(
+        built
+            .get("outer")
+            .and_then(|o| o.get("x"))
+            .and_then(Json::as_f64),
+        Some(1.0)
+    );
+}
