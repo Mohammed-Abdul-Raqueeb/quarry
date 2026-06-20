@@ -489,3 +489,9 @@ fn writes_a_non_finite_number_as_null() {
     assert_eq!(Json::Number(f64::NAN).to_string(), "null");
     assert_eq!(Json::Number(f64::INFINITY).to_string(), "null");
 }
+
+#[test]
+fn escapes_a_quote_and_a_backslash() {
+    assert_eq!(Json::String("a\"b".to_string()).to_string(), r#""a\"b""#);
+    assert_eq!(Json::String("a\\b".to_string()).to_string(), r#""a\\b""#);
+}
