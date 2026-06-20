@@ -511,3 +511,11 @@ fn writes_multibyte_characters_raw() {
     // The output is declared UTF-8, so escaping them would only bloat it.
     assert_eq!(Json::String("日本".to_string()).to_string(), "\"日本\"");
 }
+
+#[test]
+fn writes_an_array_without_spaces() {
+    assert_eq!(
+        Json::Array(vec![Json::Number(1.0), Json::Number(2.0)]).to_string(),
+        "[1,2]"
+    );
+}
