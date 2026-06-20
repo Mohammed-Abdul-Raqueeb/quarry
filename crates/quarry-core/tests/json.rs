@@ -553,3 +553,9 @@ fn round_trips_escapes() {
     let original = Json::String("quote\" slash\\ tab\t newline\n".to_string());
     assert_eq!(parses(&original.to_string()), original);
 }
+
+#[test]
+fn round_trips_a_surrogate_pair() {
+    let original = Json::String("😀".to_string());
+    assert_eq!(parses(&original.to_string()), original);
+}
