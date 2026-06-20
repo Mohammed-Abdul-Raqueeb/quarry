@@ -505,3 +505,9 @@ fn escapes_the_control_characters() {
         r#""\u0001""#
     );
 }
+
+#[test]
+fn writes_multibyte_characters_raw() {
+    // The output is declared UTF-8, so escaping them would only bloat it.
+    assert_eq!(Json::String("日本".to_string()).to_string(), "\"日本\"");
+}
