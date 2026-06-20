@@ -529,3 +529,15 @@ fn writes_object_keys_in_sorted_order() {
 }
 
 // ---- round trips ---------------------------------------------------------
+
+#[test]
+fn round_trips_every_scalar() {
+    for input in ["null", "true", "false", "0", "-1", "1.5", "\"text\""] {
+        let once = parses(input).to_string();
+        assert_eq!(
+            parses(&once).to_string(),
+            once,
+            "{input} did not round trip"
+        );
+    }
+}
