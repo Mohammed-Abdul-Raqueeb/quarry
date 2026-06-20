@@ -469,3 +469,10 @@ fn writes_null_and_booleans() {
     assert_eq!(Json::Bool(true).to_string(), "true");
     assert_eq!(Json::Bool(false).to_string(), "false");
 }
+
+#[test]
+fn writes_an_integer_without_a_decimal_point() {
+    // Numbers are held as f64, so this is what keeps `42` from becoming `42.0`.
+    assert_eq!(Json::Number(42.0).to_string(), "42");
+    assert_eq!(Json::Number(-7.0).to_string(), "-7");
+}
