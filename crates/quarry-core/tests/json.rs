@@ -572,3 +572,16 @@ fn round_trips_a_realistic_document() {
 fn builder_produces_an_empty_object() {
     assert_eq!(JsonBuilder::new().build().to_string(), "{}");
 }
+
+#[test]
+fn builder_sets_typed_values() {
+    let built = JsonBuilder::new()
+        .str("s", "text")
+        .num("n", 2.5)
+        .bool("b", true)
+        .build();
+
+    assert_eq!(built.get("s").and_then(Json::as_str), Some("text"));
+    assert_eq!(built.get("n").and_then(Json::as_f64), Some(2.5));
+    assert_eq!(built.get("b").and_then(Json::as_bool), Some(true));
+}
