@@ -481,3 +481,11 @@ fn writes_an_integer_without_a_decimal_point() {
 fn writes_a_fraction() {
     assert_eq!(Json::Number(1.5).to_string(), "1.5");
 }
+
+#[test]
+fn writes_a_non_finite_number_as_null() {
+    // JSON cannot spell these, and emitting `NaN` would produce output no
+    // parser accepts.
+    assert_eq!(Json::Number(f64::NAN).to_string(), "null");
+    assert_eq!(Json::Number(f64::INFINITY).to_string(), "null");
+}
