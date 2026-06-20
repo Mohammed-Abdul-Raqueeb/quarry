@@ -6,3 +6,21 @@
 //! list of two hundred words tells you nothing about which.
 
 use quarry_core::tokenize::stemmer::stem;
+
+/// Asserts a whole group at once, reporting every failure rather than the first.
+fn check(cases: &[(&str, &str)]) {
+    let mut failures = Vec::new();
+
+    for (input, expected) in cases {
+        let actual = stem(input);
+        if actual != *expected {
+            failures.push(format!("{input} -> {actual} (expected {expected})"));
+        }
+    }
+
+    assert!(
+        failures.is_empty(),
+        "stem mismatches:\n  {}",
+        failures.join("\n  ")
+    );
+}
