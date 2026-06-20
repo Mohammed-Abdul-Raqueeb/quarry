@@ -495,3 +495,13 @@ fn escapes_a_quote_and_a_backslash() {
     assert_eq!(Json::String("a\"b".to_string()).to_string(), r#""a\"b""#);
     assert_eq!(Json::String("a\\b".to_string()).to_string(), r#""a\\b""#);
 }
+
+#[test]
+fn escapes_the_control_characters() {
+    assert_eq!(Json::String("\n".to_string()).to_string(), r#""\n""#);
+    assert_eq!(Json::String("\t".to_string()).to_string(), r#""\t""#);
+    assert_eq!(
+        Json::String("\u{01}".to_string()).to_string(),
+        r#""\u0001""#
+    );
+}
