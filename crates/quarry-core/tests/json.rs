@@ -547,3 +547,9 @@ fn round_trips_a_nested_document() {
     let input = r#"{"a":[1,{"b":"c"}],"d":null}"#;
     assert_eq!(parses(input).to_string(), input);
 }
+
+#[test]
+fn round_trips_escapes() {
+    let original = Json::String("quote\" slash\\ tab\t newline\n".to_string());
+    assert_eq!(parses(&original.to_string()), original);
+}
