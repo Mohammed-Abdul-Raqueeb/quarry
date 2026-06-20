@@ -559,3 +559,11 @@ fn round_trips_a_surrogate_pair() {
     let original = Json::String("😀".to_string());
     assert_eq!(parses(&original.to_string()), original);
 }
+
+#[test]
+fn round_trips_a_realistic_document() {
+    let input = r#"{"body":"Ownership explained","tag":"rust","title":"Rust","year":2021}"#;
+    assert_eq!(parses(input).to_string(), input);
+}
+
+// ---- JsonBuilder ---------------------------------------------------------
