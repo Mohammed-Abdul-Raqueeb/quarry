@@ -476,3 +476,8 @@ fn writes_an_integer_without_a_decimal_point() {
     assert_eq!(Json::Number(42.0).to_string(), "42");
     assert_eq!(Json::Number(-7.0).to_string(), "-7");
 }
+
+#[test]
+fn writes_a_fraction() {
+    assert_eq!(Json::Number(1.5).to_string(), "1.5");
+}
