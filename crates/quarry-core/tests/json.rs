@@ -567,3 +567,8 @@ fn round_trips_a_realistic_document() {
 }
 
 // ---- JsonBuilder ---------------------------------------------------------
+
+#[test]
+fn builder_produces_an_empty_object() {
+    assert_eq!(JsonBuilder::new().build().to_string(), "{}");
+}
