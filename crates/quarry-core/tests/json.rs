@@ -605,3 +605,9 @@ fn builder_nests_a_value() {
         Some(1.0)
     );
 }
+
+#[test]
+fn builder_output_parses_back() {
+    let built = JsonBuilder::new().str("message", "with \"quotes\"").build();
+    assert_eq!(parses(&built.to_string()), built);
+}
