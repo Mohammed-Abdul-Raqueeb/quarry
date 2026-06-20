@@ -519,3 +519,13 @@ fn writes_an_array_without_spaces() {
         "[1,2]"
     );
 }
+
+#[test]
+fn writes_object_keys_in_sorted_order() {
+    // Sorted keys are what make the segment tests able to compare serialized
+    // forms byte for byte.
+    let parsed = parses(r#"{"z":1,"a":2}"#);
+    assert_eq!(parsed.to_string(), r#"{"a":2,"z":1}"#);
+}
+
+// ---- round trips ---------------------------------------------------------
