@@ -585,3 +585,9 @@ fn builder_sets_typed_values() {
     assert_eq!(built.get("n").and_then(Json::as_f64), Some(2.5));
     assert_eq!(built.get("b").and_then(Json::as_bool), Some(true));
 }
+
+#[test]
+fn builder_replaces_a_repeated_key() {
+    let built = JsonBuilder::new().num("a", 1.0).num("a", 2.0).build();
+    assert_eq!(built.get("a").and_then(Json::as_f64), Some(2.0));
+}
