@@ -56,3 +56,8 @@ fn collapses_sses_to_ss() {
         ("glasses", "glass"),
     ]);
 }
+
+#[test]
+fn turns_ies_into_i() {
+    check(&[("ponies", "poni"), ("ties", "ti"), ("cries", "cri")]);
+}
