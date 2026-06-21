@@ -76,3 +76,9 @@ fn removes_ed_when_the_stem_has_a_vowel() {
         ("walked", "walk"),
     ]);
 }
+
+#[test]
+fn keeps_ed_when_the_stem_has_no_vowel() {
+    // `bl` has no vowel, so removing `-ed` would leave nothing meaningful.
+    check(&[("bled", "bled"), ("fed", "fed"), ("sped", "sped")]);
+}
