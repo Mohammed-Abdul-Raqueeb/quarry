@@ -128,3 +128,8 @@ fn keeps_a_doubled_l_s_or_z() {
 fn restores_an_e_for_a_short_cvc_stem() {
     check(&[("filing", "file"), ("hoping", "hope")]);
 }
+
+#[test]
+fn turns_a_terminal_y_into_i() {
+    check(&[("happy", "happi"), ("sky", "sky"), ("try", "try")]);
+}
