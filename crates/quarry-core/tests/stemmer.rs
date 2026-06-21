@@ -24,3 +24,15 @@ fn check(cases: &[(&str, &str)]) {
         failures.join("\n  ")
     );
 }
+
+#[test]
+fn leaves_short_words_alone() {
+    // Every rule would leave a two-letter word empty or meaningless.
+    check(&[
+        ("a", "a"),
+        ("be", "be"),
+        ("to", "to"),
+        ("it", "it"),
+        ("ox", "ox"),
+    ]);
+}
