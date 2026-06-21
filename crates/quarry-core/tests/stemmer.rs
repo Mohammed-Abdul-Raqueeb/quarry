@@ -149,3 +149,8 @@ fn rewrites_ational_to_ate() {
 fn rewrites_tional_to_tion() {
     check(&[("conditional", "condit"), ("conditionally", "condition")]);
 }
+
+#[test]
+fn rewrites_izer_and_ization() {
+    check(&[("digitizer", "digit"), ("vietnamization", "vietnam")]);
+}
