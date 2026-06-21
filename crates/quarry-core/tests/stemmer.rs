@@ -36,3 +36,14 @@ fn leaves_short_words_alone() {
         ("ox", "ox"),
     ]);
 }
+
+#[test]
+fn strips_simple_plurals() {
+    check(&[
+        ("cats", "cat"),
+        ("dogs", "dog"),
+        ("tables", "tabl"),
+        ("words", "word"),
+        ("plays", "plai"),
+    ]);
+}
