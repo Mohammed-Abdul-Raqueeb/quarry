@@ -117,3 +117,9 @@ fn a_restored_e_is_dropped_again_when_the_stem_is_long() {
 fn collapses_a_doubled_consonant_after_removing_a_suffix() {
     check(&[("hopping", "hop"), ("tanned", "tan"), ("falling", "fall")]);
 }
+
+#[test]
+fn keeps_a_doubled_l_s_or_z() {
+    // These three are exempted from the collapse rule by name.
+    check(&[("falling", "fall"), ("hissing", "hiss"), ("fizzed", "fizz")]);
+}
