@@ -67,3 +67,12 @@ fn keeps_a_terminal_double_s() {
     // `ss` is not a plural marker, so it survives step 1a untouched.
     check(&[("caress", "caress"), ("class", "class"), ("grass", "grass")]);
 }
+
+#[test]
+fn removes_ed_when_the_stem_has_a_vowel() {
+    check(&[
+        ("plastered", "plaster"),
+        ("rolled", "roll"),
+        ("walked", "walk"),
+    ]);
+}
