@@ -91,3 +91,8 @@ fn removes_ing_when_the_stem_has_a_vowel() {
         ("reading", "read"),
     ]);
 }
+
+#[test]
+fn keeps_ing_when_the_stem_has_no_vowel() {
+    check(&[("sing", "sing"), ("king", "king"), ("bring", "bring")]);
+}
