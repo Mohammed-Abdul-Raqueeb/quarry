@@ -103,3 +103,12 @@ fn restores_an_e_after_at_bl_and_iz() {
     // because `siz` is a short CVC stem that needs it to stay distinct.
     assert_eq!(stem("sized"), "size");
 }
+
+#[test]
+fn a_restored_e_is_dropped_again_when_the_stem_is_long() {
+    // Step 1b turns `conflated` into `conflate`, then step 5a removes the `e`
+    // because the stem has more than one vowel-consonant pair. The restored
+    // `e` surviving is the exception, not the rule — easy to misread the
+    // algorithm's worked examples as final output when they are intermediate.
+    check(&[("conflated", "conflat"), ("troubled", "troubl")]);
+}
