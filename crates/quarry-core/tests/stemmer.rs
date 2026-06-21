@@ -96,3 +96,10 @@ fn removes_ing_when_the_stem_has_a_vowel() {
 fn keeps_ing_when_the_stem_has_no_vowel() {
     check(&[("sing", "sing"), ("king", "king"), ("bring", "bring")]);
 }
+
+#[test]
+fn restores_an_e_after_at_bl_and_iz() {
+    // Step 1b's repair pass adds the `e` back, and step 5a keeps it here
+    // because `siz` is a short CVC stem that needs it to stay distinct.
+    assert_eq!(stem("sized"), "size");
+}
