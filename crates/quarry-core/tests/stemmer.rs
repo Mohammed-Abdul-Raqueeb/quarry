@@ -82,3 +82,12 @@ fn keeps_ed_when_the_stem_has_no_vowel() {
     // `bl` has no vowel, so removing `-ed` would leave nothing meaningful.
     check(&[("bled", "bled"), ("fed", "fed"), ("sped", "sped")]);
 }
+
+#[test]
+fn removes_ing_when_the_stem_has_a_vowel() {
+    check(&[
+        ("motoring", "motor"),
+        ("meeting", "meet"),
+        ("reading", "read"),
+    ]);
+}
