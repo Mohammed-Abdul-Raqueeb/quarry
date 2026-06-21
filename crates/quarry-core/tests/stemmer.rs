@@ -133,3 +133,9 @@ fn restores_an_e_for_a_short_cvc_stem() {
 fn turns_a_terminal_y_into_i() {
     check(&[("happy", "happi"), ("sky", "sky"), ("try", "try")]);
 }
+
+#[test]
+fn keeps_y_when_the_stem_has_no_vowel() {
+    // `sk` has no vowel, so `sky` keeps its `y`.
+    assert_eq!(stem("sky"), "sky");
+}
