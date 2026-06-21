@@ -61,3 +61,9 @@ fn collapses_sses_to_ss() {
 fn turns_ies_into_i() {
     check(&[("ponies", "poni"), ("ties", "ti"), ("cries", "cri")]);
 }
+
+#[test]
+fn keeps_a_terminal_double_s() {
+    // `ss` is not a plural marker, so it survives step 1a untouched.
+    check(&[("caress", "caress"), ("class", "class"), ("grass", "grass")]);
+}
