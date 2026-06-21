@@ -123,3 +123,8 @@ fn keeps_a_doubled_l_s_or_z() {
     // These three are exempted from the collapse rule by name.
     check(&[("falling", "fall"), ("hissing", "hiss"), ("fizzed", "fizz")]);
 }
+
+#[test]
+fn restores_an_e_for_a_short_cvc_stem() {
+    check(&[("filing", "file"), ("hoping", "hope")]);
+}
