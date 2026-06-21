@@ -112,3 +112,8 @@ fn a_restored_e_is_dropped_again_when_the_stem_is_long() {
     // algorithm's worked examples as final output when they are intermediate.
     check(&[("conflated", "conflat"), ("troubled", "troubl")]);
 }
+
+#[test]
+fn collapses_a_doubled_consonant_after_removing_a_suffix() {
+    check(&[("hopping", "hop"), ("tanned", "tan"), ("falling", "fall")]);
+}
