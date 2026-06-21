@@ -144,3 +144,8 @@ fn keeps_y_when_the_stem_has_no_vowel() {
 fn rewrites_ational_to_ate() {
     check(&[("relational", "relat"), ("rational", "ration")]);
 }
+
+#[test]
+fn rewrites_tional_to_tion() {
+    check(&[("conditional", "condit"), ("conditionally", "condition")]);
+}
