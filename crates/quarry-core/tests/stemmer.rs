@@ -47,3 +47,12 @@ fn strips_simple_plurals() {
         ("plays", "plai"),
     ]);
 }
+
+#[test]
+fn collapses_sses_to_ss() {
+    check(&[
+        ("caresses", "caress"),
+        ("classes", "class"),
+        ("glasses", "glass"),
+    ]);
+}
