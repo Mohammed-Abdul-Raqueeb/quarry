@@ -154,3 +154,8 @@ fn rewrites_tional_to_tion() {
 fn rewrites_izer_and_ization() {
     check(&[("digitizer", "digit"), ("vietnamization", "vietnam")]);
 }
+
+#[test]
+fn rewrites_ation_and_ator() {
+    check(&[("predication", "predic"), ("operator", "oper")]);
+}
