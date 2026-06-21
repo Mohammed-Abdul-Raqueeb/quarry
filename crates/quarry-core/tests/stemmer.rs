@@ -139,3 +139,8 @@ fn keeps_y_when_the_stem_has_no_vowel() {
     // `sk` has no vowel, so `sky` keeps its `y`.
     assert_eq!(stem("sky"), "sky");
 }
+
+#[test]
+fn rewrites_ational_to_ate() {
+    check(&[("relational", "relat"), ("rational", "ration")]);
+}
