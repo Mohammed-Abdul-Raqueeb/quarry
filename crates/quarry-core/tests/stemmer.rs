@@ -206,3 +206,8 @@ fn removes_a_suffix_only_from_a_long_enough_stem() {
 fn removes_ance_and_ence() {
     check(&[("allowance", "allow"), ("inference", "infer")]);
 }
+
+#[test]
+fn removes_er_and_ic() {
+    check(&[("airliner", "airlin"), ("gyroscopic", "gyroscop")]);
+}
