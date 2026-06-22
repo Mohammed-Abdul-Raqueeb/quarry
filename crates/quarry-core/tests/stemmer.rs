@@ -178,3 +178,8 @@ fn rewrites_aliti_iviti_and_biliti() {
         ("sensibiliti", "sensibl"),
     ]);
 }
+
+#[test]
+fn rewrites_icate_and_ical() {
+    check(&[("triplicate", "triplic"), ("electrical", "electr")]);
+}
