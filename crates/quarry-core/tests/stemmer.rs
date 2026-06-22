@@ -241,3 +241,12 @@ fn removes_ism_ate_and_iti() {
         ("angulariti", "angular"),
     ]);
 }
+
+#[test]
+fn removes_ous_ive_and_ize() {
+    check(&[
+        ("homologous", "homolog"),
+        ("effective", "effect"),
+        ("bowdlerize", "bowdler"),
+    ]);
+}
