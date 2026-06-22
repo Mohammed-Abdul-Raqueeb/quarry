@@ -261,3 +261,8 @@ fn keeps_a_terminal_e_a_short_cvc_stem_needs() {
     // Removing the `e` from `hope` would collide with `hop`.
     check(&[("hope", "hope"), ("rate", "rate")]);
 }
+
+#[test]
+fn collapses_a_doubled_terminal_l() {
+    check(&[("controll", "control"), ("roll", "roll")]);
+}
