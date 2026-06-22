@@ -164,3 +164,8 @@ fn rewrites_ation_and_ator() {
 fn rewrites_fulness_and_ousness() {
     check(&[("hopefulness", "hope"), ("callousness", "callous")]);
 }
+
+#[test]
+fn rewrites_iveness() {
+    assert_eq!(stem("decisiveness"), "decis");
+}
