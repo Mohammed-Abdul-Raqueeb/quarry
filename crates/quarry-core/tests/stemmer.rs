@@ -284,3 +284,13 @@ fn maps_a_word_family_onto_one_stem() {
         "the connect family should share a stem, got {stems:?}"
     );
 }
+
+#[test]
+fn maps_the_agree_family_onto_one_stem() {
+    let stems: Vec<String> = ["agreed", "agreeing", "agreement"]
+        .iter()
+        .map(|w| stem(w))
+        .collect();
+
+    assert_eq!(stems[0], stems[1]);
+}
