@@ -250,3 +250,8 @@ fn removes_ous_ive_and_ize() {
         ("bowdlerize", "bowdler"),
     ]);
 }
+
+#[test]
+fn drops_a_terminal_e_from_a_long_stem() {
+    check(&[("probate", "probat"), ("rate", "rate"), ("cease", "ceas")]);
+}
