@@ -201,3 +201,8 @@ fn removes_a_suffix_only_from_a_long_enough_stem() {
     // `revival` has two VC pairs so `-al` goes; `trial` has one so it stays.
     check(&[("revival", "reviv"), ("trial", "trial")]);
 }
+
+#[test]
+fn removes_ance_and_ence() {
+    check(&[("allowance", "allow"), ("inference", "infer")]);
+}
