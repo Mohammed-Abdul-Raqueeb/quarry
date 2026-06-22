@@ -232,3 +232,12 @@ fn removes_ion_only_after_s_or_t() {
     // `adoption` ends `t` + `ion`, so it goes; `lion` does not.
     check(&[("adoption", "adopt"), ("lion", "lion")]);
 }
+
+#[test]
+fn removes_ism_ate_and_iti() {
+    check(&[
+        ("communism", "commun"),
+        ("activate", "activ"),
+        ("angulariti", "angular"),
+    ]);
+}
