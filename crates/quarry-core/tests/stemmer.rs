@@ -216,3 +216,13 @@ fn removes_er_and_ic() {
 fn removes_able_and_ible() {
     check(&[("adjustable", "adjust"), ("defensible", "defens")]);
 }
+
+#[test]
+fn removes_ement_ment_and_ent() {
+    // Longest suffix first, so `ement` wins over `ment` and `ent`.
+    check(&[
+        ("replacement", "replac"),
+        ("adjustment", "adjust"),
+        ("dependent", "depend"),
+    ]);
+}
