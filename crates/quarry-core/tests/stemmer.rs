@@ -183,3 +183,8 @@ fn rewrites_aliti_iviti_and_biliti() {
 fn rewrites_icate_and_ical() {
     check(&[("triplicate", "triplic"), ("electrical", "electr")]);
 }
+
+#[test]
+fn removes_ful_and_ness() {
+    check(&[("hopeful", "hope"), ("goodness", "good")]);
+}
