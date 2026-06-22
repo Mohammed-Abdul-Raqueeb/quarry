@@ -294,3 +294,23 @@ fn maps_the_agree_family_onto_one_stem() {
 
     assert_eq!(stems[0], stems[1]);
 }
+
+#[test]
+fn is_idempotent() {
+    // Stemming a stem must not change it, or indexing and querying would
+    // disagree whenever one side happened to stem twice.
+    for word in [
+        "connection",
+        "relational",
+        "hopefulness",
+        "running",
+        "caresses",
+        "probate",
+        "triplicate",
+        "ponies",
+    ] {
+        let once = stem(word);
+        let twice = stem(&once);
+        assert_eq!(once, twice, "{word} is not idempotent: {once} -> {twice}");
+    }
+}
