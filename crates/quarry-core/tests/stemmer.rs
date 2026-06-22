@@ -159,3 +159,8 @@ fn rewrites_izer_and_ization() {
 fn rewrites_ation_and_ator() {
     check(&[("predication", "predic"), ("operator", "oper")]);
 }
+
+#[test]
+fn rewrites_fulness_and_ousness() {
+    check(&[("hopefulness", "hope"), ("callousness", "callous")]);
+}
