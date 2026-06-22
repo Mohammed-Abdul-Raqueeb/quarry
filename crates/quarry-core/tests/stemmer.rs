@@ -188,3 +188,10 @@ fn rewrites_icate_and_ical() {
 fn removes_ful_and_ness() {
     check(&[("hopeful", "hope"), ("goodness", "good")]);
 }
+
+#[test]
+fn removes_ative() {
+    // Step 3 removes `-ative` outright when the stem has any vowel-consonant
+    // pair, so `formative` loses five characters rather than three.
+    assert_eq!(stem("formative"), "form");
+}
