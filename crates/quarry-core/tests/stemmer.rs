@@ -226,3 +226,9 @@ fn removes_ement_ment_and_ent() {
         ("dependent", "depend"),
     ]);
 }
+
+#[test]
+fn removes_ion_only_after_s_or_t() {
+    // `adoption` ends `t` + `ion`, so it goes; `lion` does not.
+    check(&[("adoption", "adopt"), ("lion", "lion")]);
+}
