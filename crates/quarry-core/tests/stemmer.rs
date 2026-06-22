@@ -266,3 +266,21 @@ fn keeps_a_terminal_e_a_short_cvc_stem_needs() {
 fn collapses_a_doubled_terminal_l() {
     check(&[("controll", "control"), ("roll", "roll")]);
 }
+
+#[test]
+fn maps_a_word_family_onto_one_stem() {
+    // This is the property the whole algorithm exists for.
+    let family = [
+        "connect",
+        "connected",
+        "connecting",
+        "connection",
+        "connections",
+    ];
+    let stems: Vec<String> = family.iter().map(|w| stem(w)).collect();
+
+    assert!(
+        stems.windows(2).all(|pair| pair[0] == pair[1]),
+        "the connect family should share a stem, got {stems:?}"
+    );
+}
