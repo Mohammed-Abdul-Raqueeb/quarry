@@ -255,3 +255,9 @@ fn removes_ous_ive_and_ize() {
 fn drops_a_terminal_e_from_a_long_stem() {
     check(&[("probate", "probat"), ("rate", "rate"), ("cease", "ceas")]);
 }
+
+#[test]
+fn keeps_a_terminal_e_a_short_cvc_stem_needs() {
+    // Removing the `e` from `hope` would collide with `hop`.
+    check(&[("hope", "hope"), ("rate", "rate")]);
+}
