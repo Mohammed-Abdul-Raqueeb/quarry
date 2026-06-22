@@ -195,3 +195,9 @@ fn removes_ative() {
     // pair, so `formative` loses five characters rather than three.
     assert_eq!(stem("formative"), "form");
 }
+
+#[test]
+fn removes_a_suffix_only_from_a_long_enough_stem() {
+    // `revival` has two VC pairs so `-al` goes; `trial` has one so it stays.
+    check(&[("revival", "reviv"), ("trial", "trial")]);
+}
