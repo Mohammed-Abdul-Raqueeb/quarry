@@ -169,3 +169,12 @@ fn rewrites_fulness_and_ousness() {
 fn rewrites_iveness() {
     assert_eq!(stem("decisiveness"), "decis");
 }
+
+#[test]
+fn rewrites_aliti_iviti_and_biliti() {
+    check(&[
+        ("formaliti", "formal"),
+        ("sensitiviti", "sensit"),
+        ("sensibiliti", "sensibl"),
+    ]);
+}
