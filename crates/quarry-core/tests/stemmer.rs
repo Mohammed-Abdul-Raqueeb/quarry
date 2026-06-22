@@ -211,3 +211,8 @@ fn removes_ance_and_ence() {
 fn removes_er_and_ic() {
     check(&[("airliner", "airlin"), ("gyroscopic", "gyroscop")]);
 }
+
+#[test]
+fn removes_able_and_ible() {
+    check(&[("adjustable", "adjust"), ("defensible", "defens")]);
+}
