@@ -343,3 +343,9 @@ fn passes_non_ascii_through_unchanged() {
 fn handles_an_empty_string() {
     assert_eq!(stem(""), "");
 }
+
+#[test]
+fn handles_a_single_character() {
+    assert_eq!(stem("a"), "a");
+    assert_eq!(stem("z"), "z");
+}
