@@ -338,3 +338,8 @@ fn passes_non_ascii_through_unchanged() {
         assert_eq!(stem(word), word);
     }
 }
+
+#[test]
+fn handles_an_empty_string() {
+    assert_eq!(stem(""), "");
+}
