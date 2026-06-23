@@ -349,3 +349,9 @@ fn handles_a_single_character() {
     assert_eq!(stem("a"), "a");
     assert_eq!(stem("z"), "z");
 }
+
+#[test]
+fn handles_a_long_word_without_panicking() {
+    let long = "a".repeat(10_000);
+    assert!(!stem(&long).is_empty());
+}
