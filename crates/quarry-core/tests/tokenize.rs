@@ -11,3 +11,9 @@ fn texts(tokens: &[Token]) -> Vec<&str> {
 }
 
 // ---- StandardTokenizer ----------------------------------------------------
+
+#[test]
+fn splits_a_sentence_on_spaces() {
+    let tokens = StandardTokenizer::default().tokenize("the quick brown fox");
+    assert_eq!(texts(&tokens), ["the", "quick", "brown", "fox"]);
+}
