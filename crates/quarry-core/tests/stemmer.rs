@@ -355,3 +355,10 @@ fn handles_a_long_word_without_panicking() {
     let long = "a".repeat(10_000);
     assert!(!stem(&long).is_empty());
 }
+
+#[test]
+fn handles_digits_and_punctuation_without_panicking() {
+    for word in ["12345", "v1.2.3", "a-b-c", "x_y_z", "---"] {
+        let _ = stem(word);
+    }
+}
