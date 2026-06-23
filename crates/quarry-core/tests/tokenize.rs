@@ -34,3 +34,8 @@ fn collapses_runs_of_separators() {
 fn returns_nothing_for_an_empty_input() {
     assert!(StandardTokenizer::default().tokenize("").is_empty());
 }
+
+#[test]
+fn returns_nothing_for_only_separators() {
+    assert!(StandardTokenizer::default().tokenize("  ,.;!  ").is_empty());
+}
