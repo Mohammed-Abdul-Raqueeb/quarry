@@ -23,3 +23,9 @@ fn splits_on_punctuation() {
     let tokens = StandardTokenizer::default().tokenize("one,two;three!four");
     assert_eq!(texts(&tokens), ["one", "two", "three", "four"]);
 }
+
+#[test]
+fn collapses_runs_of_separators() {
+    let tokens = StandardTokenizer::default().tokenize("a   ,,,   b");
+    assert_eq!(texts(&tokens), ["a", "b"]);
+}
