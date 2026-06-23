@@ -362,3 +362,16 @@ fn handles_digits_and_punctuation_without_panicking() {
         let _ = stem(word);
     }
 }
+
+#[test]
+fn documented_over_stemming_still_holds() {
+    // Not a defect to fix case-by-case: the algorithm trades precision for
+    // size, and these are the textbook examples of that trade. If one of these
+    // changes, the stemmer's behaviour changed, which is worth knowing.
+    assert_eq!(stem("universal"), stem("universe"), "both reach univers");
+
+    // `argument` keeps its suffix: step 4 only removes `-ment` when the stem
+    // has more than one vowel-consonant pair, and `argu` has exactly one.
+    // Under-stemming is the other half of the same trade.
+    assert_eq!(stem("argument"), "argument");
+}
