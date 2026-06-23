@@ -29,3 +29,8 @@ fn collapses_runs_of_separators() {
     let tokens = StandardTokenizer::default().tokenize("a   ,,,   b");
     assert_eq!(texts(&tokens), ["a", "b"]);
 }
+
+#[test]
+fn returns_nothing_for_an_empty_input() {
+    assert!(StandardTokenizer::default().tokenize("").is_empty());
+}
