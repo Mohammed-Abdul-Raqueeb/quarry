@@ -58,3 +58,9 @@ fn keeps_an_internal_hyphen() {
     let tokens = StandardTokenizer::default().tokenize("a well-known e-mail");
     assert_eq!(texts(&tokens), ["a", "well-known", "e-mail"]);
 }
+
+#[test]
+fn keeps_an_internal_period() {
+    let tokens = StandardTokenizer::default().tokenize("version v1.2.3 shipped");
+    assert_eq!(texts(&tokens), ["version", "v1.2.3", "shipped"]);
+}
