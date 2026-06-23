@@ -39,3 +39,10 @@ fn returns_nothing_for_an_empty_input() {
 fn returns_nothing_for_only_separators() {
     assert!(StandardTokenizer::default().tokenize("  ,.;!  ").is_empty());
 }
+
+#[test]
+fn keeps_an_internal_apostrophe() {
+    // Splitting `wasn't` into `wasn` and `t` makes it unfindable.
+    let tokens = StandardTokenizer::default().tokenize("it wasn't there");
+    assert_eq!(texts(&tokens), ["it", "wasn't", "there"]);
+}
