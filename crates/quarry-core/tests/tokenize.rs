@@ -52,3 +52,9 @@ fn keeps_a_typographic_apostrophe() {
     let tokens = StandardTokenizer::default().tokenize("it wasn\u{2019}t there");
     assert_eq!(texts(&tokens), ["it", "wasn\u{2019}t", "there"]);
 }
+
+#[test]
+fn keeps_an_internal_hyphen() {
+    let tokens = StandardTokenizer::default().tokenize("a well-known e-mail");
+    assert_eq!(texts(&tokens), ["a", "well-known", "e-mail"]);
+}
