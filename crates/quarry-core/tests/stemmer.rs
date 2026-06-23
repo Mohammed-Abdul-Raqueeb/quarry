@@ -321,3 +321,12 @@ fn never_returns_an_empty_string() {
         assert!(!stem(word).is_empty(), "{word} stemmed to nothing");
     }
 }
+
+#[test]
+fn never_grows_a_word_by_more_than_one_character() {
+    // The repair pass can add a single `e`; nothing should add more.
+    for word in ["conflated", "troubled", "sized", "filing", "hoping"] {
+        let stemmed = stem(word);
+        assert!(stemmed.len() <= word.len() + 1, "{word} grew to {stemmed}");
+    }
+}
