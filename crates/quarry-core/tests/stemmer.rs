@@ -330,3 +330,11 @@ fn never_grows_a_word_by_more_than_one_character() {
         assert!(stemmed.len() <= word.len() + 1, "{word} grew to {stemmed}");
     }
 }
+
+#[test]
+fn passes_non_ascii_through_unchanged() {
+    // The rules are ASCII byte patterns, so anything else must not be touched.
+    for word in ["café", "naïve", "日本語", "Привет", "emoji🙂"] {
+        assert_eq!(stem(word), word);
+    }
+}
