@@ -46,3 +46,9 @@ fn keeps_an_internal_apostrophe() {
     let tokens = StandardTokenizer::default().tokenize("it wasn't there");
     assert_eq!(texts(&tokens), ["it", "wasn't", "there"]);
 }
+
+#[test]
+fn keeps_a_typographic_apostrophe() {
+    let tokens = StandardTokenizer::default().tokenize("it wasn\u{2019}t there");
+    assert_eq!(texts(&tokens), ["it", "wasn\u{2019}t", "there"]);
+}
