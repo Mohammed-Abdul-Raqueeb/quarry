@@ -314,3 +314,10 @@ fn is_idempotent() {
         assert_eq!(once, twice, "{word} is not idempotent: {once} -> {twice}");
     }
 }
+
+#[test]
+fn never_returns_an_empty_string() {
+    for word in ["ss", "ies", "sses", "ing", "eed", "y", "e", "al", "ion"] {
+        assert!(!stem(word).is_empty(), "{word} stemmed to nothing");
+    }
+}
