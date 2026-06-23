@@ -17,3 +17,9 @@ fn splits_a_sentence_on_spaces() {
     let tokens = StandardTokenizer::default().tokenize("the quick brown fox");
     assert_eq!(texts(&tokens), ["the", "quick", "brown", "fox"]);
 }
+
+#[test]
+fn splits_on_punctuation() {
+    let tokens = StandardTokenizer::default().tokenize("one,two;three!four");
+    assert_eq!(texts(&tokens), ["one", "two", "three", "four"]);
+}
