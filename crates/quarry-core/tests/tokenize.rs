@@ -64,3 +64,10 @@ fn keeps_an_internal_period() {
     let tokens = StandardTokenizer::default().tokenize("version v1.2.3 shipped");
     assert_eq!(texts(&tokens), ["version", "v1.2.3", "shipped"]);
 }
+
+#[test]
+fn strips_a_trailing_sentence_period() {
+    // The period is punctuation here, not part of the word.
+    let tokens = StandardTokenizer::default().tokenize("the end.");
+    assert_eq!(texts(&tokens), ["the", "end"]);
+}
