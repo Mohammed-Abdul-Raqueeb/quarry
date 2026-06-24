@@ -192,3 +192,9 @@ fn whitespace_tokenizer_keeps_punctuation_attached() {
     let tokens = WhitespaceTokenizer.tokenize("hello, world!");
     assert_eq!(texts(&tokens), ["hello,", "world!"]);
 }
+
+#[test]
+fn whitespace_tokenizer_handles_tabs_and_newlines() {
+    let tokens = WhitespaceTokenizer.tokenize("a\tb\nc");
+    assert_eq!(texts(&tokens), ["a", "b", "c"]);
+}
