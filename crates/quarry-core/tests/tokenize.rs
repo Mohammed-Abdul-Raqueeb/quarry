@@ -134,3 +134,9 @@ fn reports_offsets_correctly_through_multibyte_text() {
         assert_eq!(&input[token.start..token.end], token.text);
     }
 }
+
+#[test]
+fn tokenizes_a_token_running_to_the_end_of_input() {
+    let tokens = StandardTokenizer::default().tokenize("trailing");
+    assert_eq!(texts(&tokens), ["trailing"]);
+}
