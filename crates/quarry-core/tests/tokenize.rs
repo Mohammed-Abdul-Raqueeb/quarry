@@ -126,3 +126,11 @@ fn reports_offsets_correctly_after_trimming_punctuation() {
         assert_eq!(&input[token.start..token.end], token.text);
     }
 }
+
+#[test]
+fn reports_offsets_correctly_through_multibyte_text() {
+    let input = "café naïve dog";
+    for token in StandardTokenizer::default().tokenize(input) {
+        assert_eq!(&input[token.start..token.end], token.text);
+    }
+}
