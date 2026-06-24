@@ -71,3 +71,9 @@ fn strips_a_trailing_sentence_period() {
     let tokens = StandardTokenizer::default().tokenize("the end.");
     assert_eq!(texts(&tokens), ["the", "end"]);
 }
+
+#[test]
+fn strips_a_leading_hyphen_from_a_list_item() {
+    let tokens = StandardTokenizer::default().tokenize("- item");
+    assert_eq!(texts(&tokens), ["item"]);
+}
