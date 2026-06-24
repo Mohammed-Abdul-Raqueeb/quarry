@@ -101,3 +101,12 @@ fn keeps_an_underscore_inside_a_token() {
     let tokens = StandardTokenizer::default().tokenize("snake_case_name");
     assert_eq!(texts(&tokens), ["snake_case_name"]);
 }
+
+#[test]
+fn numbers_positions_from_zero() {
+    let tokens = StandardTokenizer::default().tokenize("a b c");
+    assert_eq!(
+        tokens.iter().map(|t| t.position).collect::<Vec<_>>(),
+        [0, 1, 2]
+    );
+}
