@@ -166,3 +166,8 @@ fn keyword_tokenizer_trims_surrounding_whitespace() {
     let tokens = KeywordTokenizer.tokenize("  padded  ");
     assert_eq!(texts(&tokens), ["padded"]);
 }
+
+#[test]
+fn keyword_tokenizer_returns_nothing_for_blank_input() {
+    assert!(KeywordTokenizer.tokenize("   ").is_empty());
+}
