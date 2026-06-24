@@ -89,3 +89,9 @@ fn drops_a_token_that_is_only_internal_characters() {
     let tokens = StandardTokenizer::default().tokenize("a --- b");
     assert_eq!(texts(&tokens), ["a", "b"]);
 }
+
+#[test]
+fn keeps_digits_as_tokens() {
+    let tokens = StandardTokenizer::default().tokenize("page 42 of 100");
+    assert_eq!(texts(&tokens), ["page", "42", "of", "100"]);
+}
