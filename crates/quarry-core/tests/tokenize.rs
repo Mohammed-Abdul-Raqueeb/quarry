@@ -160,3 +160,9 @@ fn keyword_tokenizer_emits_the_whole_input() {
     let tokens = KeywordTokenizer.tokenize("New York City");
     assert_eq!(texts(&tokens), ["New York City"]);
 }
+
+#[test]
+fn keyword_tokenizer_trims_surrounding_whitespace() {
+    let tokens = KeywordTokenizer.tokenize("  padded  ");
+    assert_eq!(texts(&tokens), ["padded"]);
+}
