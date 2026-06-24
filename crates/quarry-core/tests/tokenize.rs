@@ -146,3 +146,11 @@ fn keeps_non_latin_letters_as_tokens() {
     let tokens = StandardTokenizer::default().tokenize("Привет мир");
     assert_eq!(texts(&tokens), ["Привет", "мир"]);
 }
+
+#[test]
+fn strict_mode_splits_on_every_non_alphanumeric() {
+    let tokens = StandardTokenizer::strict().tokenize("wasn't well-known");
+    assert_eq!(texts(&tokens), ["wasn", "t", "well", "known"]);
+}
+
+// ---- KeywordTokenizer ----------------------------------------------------
