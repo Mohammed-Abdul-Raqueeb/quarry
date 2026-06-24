@@ -77,3 +77,9 @@ fn strips_a_leading_hyphen_from_a_list_item() {
     let tokens = StandardTokenizer::default().tokenize("- item");
     assert_eq!(texts(&tokens), ["item"]);
 }
+
+#[test]
+fn strips_surrounding_quotes_but_keeps_the_word() {
+    let tokens = StandardTokenizer::default().tokenize("he said 'hello'");
+    assert_eq!(texts(&tokens), ["he", "said", "hello"]);
+}
