@@ -110,3 +110,11 @@ fn numbers_positions_from_zero() {
         [0, 1, 2]
     );
 }
+
+#[test]
+fn reports_byte_offsets_that_index_the_original_text() {
+    let input = "the quick fox";
+    for token in StandardTokenizer::default().tokenize(input) {
+        assert_eq!(&input[token.start..token.end], token.text);
+    }
+}
