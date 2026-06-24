@@ -186,3 +186,9 @@ fn keyword_tokenizer_keeps_punctuation() {
 }
 
 // ---- WhitespaceTokenizer ------------------------------------------------
+
+#[test]
+fn whitespace_tokenizer_keeps_punctuation_attached() {
+    let tokens = WhitespaceTokenizer.tokenize("hello, world!");
+    assert_eq!(texts(&tokens), ["hello,", "world!"]);
+}
