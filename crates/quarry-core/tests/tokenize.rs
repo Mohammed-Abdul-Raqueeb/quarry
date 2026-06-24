@@ -95,3 +95,9 @@ fn keeps_digits_as_tokens() {
     let tokens = StandardTokenizer::default().tokenize("page 42 of 100");
     assert_eq!(texts(&tokens), ["page", "42", "of", "100"]);
 }
+
+#[test]
+fn keeps_an_underscore_inside_a_token() {
+    let tokens = StandardTokenizer::default().tokenize("snake_case_name");
+    assert_eq!(texts(&tokens), ["snake_case_name"]);
+}
