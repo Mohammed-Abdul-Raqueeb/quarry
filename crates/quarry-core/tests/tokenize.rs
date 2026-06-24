@@ -171,3 +171,10 @@ fn keyword_tokenizer_trims_surrounding_whitespace() {
 fn keyword_tokenizer_returns_nothing_for_blank_input() {
     assert!(KeywordTokenizer.tokenize("   ").is_empty());
 }
+
+#[test]
+fn keyword_tokenizer_offsets_point_at_the_trimmed_span() {
+    let input = "  padded  ";
+    let tokens = KeywordTokenizer.tokenize(input);
+    assert_eq!(&input[tokens[0].start..tokens[0].end], "padded");
+}
