@@ -198,3 +198,13 @@ fn whitespace_tokenizer_handles_tabs_and_newlines() {
     let tokens = WhitespaceTokenizer.tokenize("a\tb\nc");
     assert_eq!(texts(&tokens), ["a", "b", "c"]);
 }
+
+#[test]
+fn whitespace_tokenizer_reports_usable_offsets() {
+    let input = "alpha beta";
+    for token in WhitespaceTokenizer.tokenize(input) {
+        assert_eq!(&input[token.start..token.end], token.text);
+    }
+}
+
+// ---- Lowercase ----------------------------------------------------------
