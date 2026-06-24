@@ -83,3 +83,9 @@ fn strips_surrounding_quotes_but_keeps_the_word() {
     let tokens = StandardTokenizer::default().tokenize("he said 'hello'");
     assert_eq!(texts(&tokens), ["he", "said", "hello"]);
 }
+
+#[test]
+fn drops_a_token_that_is_only_internal_characters() {
+    let tokens = StandardTokenizer::default().tokenize("a --- b");
+    assert_eq!(texts(&tokens), ["a", "b"]);
+}
