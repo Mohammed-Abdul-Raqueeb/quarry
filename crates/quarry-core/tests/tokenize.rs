@@ -154,3 +154,9 @@ fn strict_mode_splits_on_every_non_alphanumeric() {
 }
 
 // ---- KeywordTokenizer ----------------------------------------------------
+
+#[test]
+fn keyword_tokenizer_emits_the_whole_input() {
+    let tokens = KeywordTokenizer.tokenize("New York City");
+    assert_eq!(texts(&tokens), ["New York City"]);
+}
