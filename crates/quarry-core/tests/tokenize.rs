@@ -118,3 +118,11 @@ fn reports_byte_offsets_that_index_the_original_text() {
         assert_eq!(&input[token.start..token.end], token.text);
     }
 }
+
+#[test]
+fn reports_offsets_correctly_after_trimming_punctuation() {
+    let input = "hello, 'world'.";
+    for token in StandardTokenizer::default().tokenize(input) {
+        assert_eq!(&input[token.start..token.end], token.text);
+    }
+}
