@@ -178,3 +178,11 @@ fn keyword_tokenizer_offsets_point_at_the_trimmed_span() {
     let tokens = KeywordTokenizer.tokenize(input);
     assert_eq!(&input[tokens[0].start..tokens[0].end], "padded");
 }
+
+#[test]
+fn keyword_tokenizer_keeps_punctuation() {
+    let tokens = KeywordTokenizer.tokenize("SKU-1234/A");
+    assert_eq!(texts(&tokens), ["SKU-1234/A"]);
+}
+
+// ---- WhitespaceTokenizer ------------------------------------------------
