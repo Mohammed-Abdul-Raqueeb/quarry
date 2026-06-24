@@ -140,3 +140,9 @@ fn tokenizes_a_token_running_to_the_end_of_input() {
     let tokens = StandardTokenizer::default().tokenize("trailing");
     assert_eq!(texts(&tokens), ["trailing"]);
 }
+
+#[test]
+fn keeps_non_latin_letters_as_tokens() {
+    let tokens = StandardTokenizer::default().tokenize("Привет мир");
+    assert_eq!(texts(&tokens), ["Привет", "мир"]);
+}
