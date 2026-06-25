@@ -238,3 +238,10 @@ fn length_filter_drops_tokens_below_the_minimum() {
     let tokens = filter.filter(vec![Token::new("a", 0, 0, 1), Token::new("abc", 1, 2, 5)]);
     assert_eq!(texts(&tokens), ["abc"]);
 }
+
+#[test]
+fn length_filter_drops_tokens_above_the_maximum() {
+    let filter = LengthFilter { min: 1, max: 4 };
+    let tokens = filter.filter(vec![Token::new("abcdefgh", 0, 0, 8)]);
+    assert!(tokens.is_empty());
+}
