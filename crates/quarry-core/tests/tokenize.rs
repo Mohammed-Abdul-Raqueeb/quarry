@@ -253,3 +253,12 @@ fn length_filter_measures_characters_not_bytes() {
     let tokens = filter.filter(vec![Token::new("éééé", 0, 0, 8)]);
     assert_eq!(tokens.len(), 1);
 }
+
+#[test]
+fn length_filter_default_keeps_ordinary_words() {
+    let filter = LengthFilter::default();
+    let tokens = filter.filter(vec![Token::new("ownership", 0, 0, 9)]);
+    assert_eq!(tokens.len(), 1);
+}
+
+// ---- StopwordFilter -----------------------------------------------------
