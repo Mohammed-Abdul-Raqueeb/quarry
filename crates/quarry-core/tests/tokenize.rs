@@ -245,3 +245,11 @@ fn length_filter_drops_tokens_above_the_maximum() {
     let tokens = filter.filter(vec![Token::new("abcdefgh", 0, 0, 8)]);
     assert!(tokens.is_empty());
 }
+
+#[test]
+fn length_filter_measures_characters_not_bytes() {
+    // Four characters, eight bytes: a byte-based limit would wrongly drop it.
+    let filter = LengthFilter { min: 1, max: 4 };
+    let tokens = filter.filter(vec![Token::new("éééé", 0, 0, 8)]);
+    assert_eq!(tokens.len(), 1);
+}
