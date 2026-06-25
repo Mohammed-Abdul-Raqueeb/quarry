@@ -308,3 +308,9 @@ fn stopword_filter_reports_its_size() {
     assert_eq!(StopwordFilter::english().len(), ENGLISH.len());
     assert!(StopwordFilter::empty().is_empty());
 }
+
+#[test]
+fn stopword_filter_accepts_an_extra_word() {
+    let filter = StopwordFilter::empty().with_word("Quarry");
+    assert!(filter.contains("quarry"));
+}
