@@ -208,3 +208,9 @@ fn whitespace_tokenizer_reports_usable_offsets() {
 }
 
 // ---- Lowercase ----------------------------------------------------------
+
+#[test]
+fn lowercase_filter_lowers_every_token() {
+    let tokens = Lowercase.filter(vec![Token::new("Rust", 0, 0, 4)]);
+    assert_eq!(tokens[0].text, "rust");
+}
