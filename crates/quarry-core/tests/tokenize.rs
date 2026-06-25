@@ -341,3 +341,8 @@ fn folds_accented_vowels() {
 fn folds_uppercase_accents_to_uppercase_ascii() {
     assert_eq!(fold("ÀÉÎÕÜ"), "AEIOU");
 }
+
+#[test]
+fn folds_cafe_to_cafe() {
+    assert_eq!(fold("café"), "cafe");
+}
