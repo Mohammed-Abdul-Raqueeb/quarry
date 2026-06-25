@@ -353,3 +353,9 @@ fn folds_multi_character_ligatures() {
     assert_eq!(fold("Œuvre"), "OEuvre");
     assert_eq!(fold("straße"), "strasse");
 }
+
+#[test]
+fn folds_thorn_and_eth() {
+    assert_eq!(fold("þ"), "th");
+    assert_eq!(fold("ð"), "d");
+}
