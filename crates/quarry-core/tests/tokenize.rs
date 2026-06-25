@@ -231,3 +231,10 @@ fn lowercase_filter_handles_non_ascii() {
 }
 
 // ---- LengthFilter -------------------------------------------------------
+
+#[test]
+fn length_filter_drops_tokens_below_the_minimum() {
+    let filter = LengthFilter { min: 3, max: 10 };
+    let tokens = filter.filter(vec![Token::new("a", 0, 0, 1), Token::new("abc", 1, 2, 5)]);
+    assert_eq!(texts(&tokens), ["abc"]);
+}
