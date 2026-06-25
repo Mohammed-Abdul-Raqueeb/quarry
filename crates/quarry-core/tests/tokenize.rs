@@ -314,3 +314,12 @@ fn stopword_filter_accepts_an_extra_word() {
     let filter = StopwordFilter::empty().with_word("Quarry");
     assert!(filter.contains("quarry"));
 }
+
+#[test]
+fn english_stopword_list_has_no_duplicates() {
+    let mut sorted = ENGLISH.to_vec();
+    sorted.sort_unstable();
+    let before = sorted.len();
+    sorted.dedup();
+    assert_eq!(sorted.len(), before);
+}
