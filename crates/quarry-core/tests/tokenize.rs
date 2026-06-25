@@ -214,3 +214,12 @@ fn lowercase_filter_lowers_every_token() {
     let tokens = Lowercase.filter(vec![Token::new("Rust", 0, 0, 4)]);
     assert_eq!(tokens[0].text, "rust");
 }
+
+#[test]
+fn lowercase_filter_preserves_positions_and_offsets() {
+    let tokens = Lowercase.filter(vec![Token::new("ABC", 7, 10, 13)]);
+    assert_eq!(
+        (tokens[0].position, tokens[0].start, tokens[0].end),
+        (7, 10, 13)
+    );
+}
