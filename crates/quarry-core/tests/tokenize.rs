@@ -223,3 +223,11 @@ fn lowercase_filter_preserves_positions_and_offsets() {
         (7, 10, 13)
     );
 }
+
+#[test]
+fn lowercase_filter_handles_non_ascii() {
+    let tokens = Lowercase.filter(vec![Token::new("ÉCOLE", 0, 0, 7)]);
+    assert_eq!(tokens[0].text, "école");
+}
+
+// ---- LengthFilter -------------------------------------------------------
