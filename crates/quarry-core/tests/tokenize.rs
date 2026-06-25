@@ -302,3 +302,9 @@ fn empty_stopword_filter_removes_nothing() {
     let tokens = filter.filter(vec![Token::new("the", 0, 0, 3)]);
     assert_eq!(tokens.len(), 1);
 }
+
+#[test]
+fn stopword_filter_reports_its_size() {
+    assert_eq!(StopwordFilter::english().len(), ENGLISH.len());
+    assert!(StopwordFilter::empty().is_empty());
+}
