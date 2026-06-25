@@ -323,3 +323,10 @@ fn english_stopword_list_has_no_duplicates() {
     sorted.dedup();
     assert_eq!(sorted.len(), before);
 }
+
+#[test]
+fn english_stopword_list_is_all_lowercase() {
+    assert!(ENGLISH.iter().all(|w| w.to_lowercase() == *w));
+}
+
+// ---- AsciiFolding -------------------------------------------------------
