@@ -346,3 +346,10 @@ fn folds_uppercase_accents_to_uppercase_ascii() {
 fn folds_cafe_to_cafe() {
     assert_eq!(fold("café"), "cafe");
 }
+
+#[test]
+fn folds_multi_character_ligatures() {
+    assert_eq!(fold("æon"), "aeon");
+    assert_eq!(fold("Œuvre"), "OEuvre");
+    assert_eq!(fold("straße"), "strasse");
+}
