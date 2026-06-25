@@ -288,3 +288,10 @@ fn stopword_filter_preserves_positions_so_phrases_stay_honest() {
     assert_eq!(texts(&tokens), ["king", "hill"]);
     assert_eq!(tokens[1].position, 3);
 }
+
+#[test]
+fn stopword_filter_is_case_insensitive_in_its_list() {
+    let filter = StopwordFilter::new(["The", "AND"]);
+    assert!(filter.contains("the"));
+    assert!(filter.contains("and"));
+}
