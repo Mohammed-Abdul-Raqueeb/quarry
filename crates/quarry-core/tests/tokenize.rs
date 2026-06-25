@@ -330,3 +330,9 @@ fn english_stopword_list_is_all_lowercase() {
 }
 
 // ---- AsciiFolding -------------------------------------------------------
+
+#[test]
+fn folds_accented_vowels() {
+    assert_eq!(fold("àáâãäå"), "aaaaaa");
+    assert_eq!(fold("èéêë"), "eeee");
+}
