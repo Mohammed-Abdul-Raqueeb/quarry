@@ -262,3 +262,13 @@ fn length_filter_default_keeps_ordinary_words() {
 }
 
 // ---- StopwordFilter -----------------------------------------------------
+
+#[test]
+fn stopword_filter_removes_listed_words() {
+    let filter = StopwordFilter::english();
+    let tokens = filter.filter(vec![
+        Token::new("the", 0, 0, 3),
+        Token::new("king", 1, 4, 8),
+    ]);
+    assert_eq!(texts(&tokens), ["king"]);
+}
