@@ -272,3 +272,19 @@ fn stopword_filter_removes_listed_words() {
     ]);
     assert_eq!(texts(&tokens), ["king"]);
 }
+
+#[test]
+fn stopword_filter_preserves_positions_so_phrases_stay_honest() {
+    // Removing `the` must leave a gap, or "king of the hill" would match the
+    // phrase "king of hill" exactly.
+    let filter = StopwordFilter::english();
+    let tokens = filter.filter(vec![
+        Token::new("king", 0, 0, 4),
+        Token::new("of", 1, 5, 7),
+        Token::new("the", 2, 8, 11),
+        Token::new("hill", 3, 12, 16),
+    ]);
+
+    assert_eq!(texts(&tokens), ["king", "hill"]);
+    assert_eq!(tokens[1].position, 3);
+}
