@@ -295,3 +295,10 @@ fn stopword_filter_is_case_insensitive_in_its_list() {
     assert!(filter.contains("the"));
     assert!(filter.contains("and"));
 }
+
+#[test]
+fn empty_stopword_filter_removes_nothing() {
+    let filter = StopwordFilter::empty();
+    let tokens = filter.filter(vec![Token::new("the", 0, 0, 3)]);
+    assert_eq!(tokens.len(), 1);
+}
