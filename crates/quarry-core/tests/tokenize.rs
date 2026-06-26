@@ -377,3 +377,10 @@ fn folds_typographic_punctuation() {
 fn leaves_plain_ascii_untouched() {
     assert_eq!(fold("plain ascii text"), "plain ascii text");
 }
+
+#[test]
+fn leaves_unmapped_scripts_untouched() {
+    // Mangling text it cannot fold would be worse than leaving it alone.
+    assert_eq!(fold("日本語"), "日本語");
+    assert_eq!(fold("Привет"), "Привет");
+}
