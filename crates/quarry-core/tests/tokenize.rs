@@ -411,3 +411,9 @@ fn ngram_tokenizer_emits_windows_in_the_configured_range() {
     let tokens = NgramTokenizer::new(2, 2).tokenize("abcd");
     assert_eq!(texts(&tokens), ["ab", "bc", "cd"]);
 }
+
+#[test]
+fn ngram_tokenizer_emits_several_widths() {
+    let tokens = NgramTokenizer::new(1, 2).tokenize("abc");
+    assert_eq!(texts(&tokens), ["a", "ab", "b", "bc", "c"]);
+}
