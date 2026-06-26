@@ -397,3 +397,11 @@ fn folding_filter_skips_allocation_for_ascii_tokens() {
     let tokens = AsciiFolding.filter(vec![Token::new("ascii", 0, 0, 5)]);
     assert_eq!(tokens[0].text, "ascii");
 }
+
+#[test]
+fn folding_filter_preserves_positions() {
+    let tokens = AsciiFolding.filter(vec![Token::new("café", 3, 10, 15)]);
+    assert_eq!((tokens[0].text.as_str(), tokens[0].position), ("cafe", 3));
+}
+
+// ---- NgramTokenizer -----------------------------------------------------
