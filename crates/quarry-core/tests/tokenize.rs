@@ -435,3 +435,11 @@ fn ngram_tokenizer_handles_multibyte_characters() {
     let tokens = NgramTokenizer::new(2, 2).tokenize("日本語");
     assert_eq!(texts(&tokens), ["日本", "本語"]);
 }
+
+#[test]
+fn ngram_tokenizer_reports_usable_offsets() {
+    let input = "héllo";
+    for token in NgramTokenizer::new(2, 3).tokenize(input) {
+        assert_eq!(&input[token.start..token.end], token.text);
+    }
+}
