@@ -456,3 +456,11 @@ fn ngram_tokenizer_clamps_a_zero_minimum() {
     let tokenizer = NgramTokenizer::new(0, 2);
     assert_eq!(tokenizer.min, 1);
 }
+
+#[test]
+fn fixed_ngram_tokenizer_uses_one_width() {
+    let tokenizer = NgramTokenizer::fixed(3);
+    assert_eq!((tokenizer.min, tokenizer.max), (3, 3));
+}
+
+// ---- EdgeNgramTokenizer -------------------------------------------------
