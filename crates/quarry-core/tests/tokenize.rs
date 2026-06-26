@@ -391,3 +391,9 @@ fn needs_folding_detects_whether_work_is_required() {
     assert!(!needs_folding("cafe"));
     assert!(!needs_folding("日本語"));
 }
+
+#[test]
+fn folding_filter_skips_allocation_for_ascii_tokens() {
+    let tokens = AsciiFolding.filter(vec![Token::new("ascii", 0, 0, 5)]);
+    assert_eq!(tokens[0].text, "ascii");
+}
