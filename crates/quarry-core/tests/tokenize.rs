@@ -482,3 +482,16 @@ fn edge_ngram_tokenizer_handles_several_words() {
     let tokens = EdgeNgramTokenizer::new(2, 3).tokenize("rust go");
     assert_eq!(texts(&tokens), ["ru", "rus", "go"]);
 }
+
+#[test]
+fn edge_ngram_tokenizer_gives_one_words_prefixes_one_position() {
+    // The prefixes are alternatives at the same slot, not a sequence.
+    let tokens = EdgeNgramTokenizer::new(1, 3).tokenize("ab cd");
+    let first: Vec<u32> = tokens
+        .iter()
+        .filter(|t| t.text.starts_with('a'))
+        .map(|t| t.position)
+        .collect();
+
+    assert!(first.iter().all(|p| *p == 0));
+}
