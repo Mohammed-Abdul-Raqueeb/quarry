@@ -476,3 +476,9 @@ fn edge_ngram_tokenizer_stops_at_the_word_length() {
     let tokens = EdgeNgramTokenizer::new(2, 10).tokenize("ab");
     assert_eq!(texts(&tokens), ["ab"]);
 }
+
+#[test]
+fn edge_ngram_tokenizer_handles_several_words() {
+    let tokens = EdgeNgramTokenizer::new(2, 3).tokenize("rust go");
+    assert_eq!(texts(&tokens), ["ru", "rus", "go"]);
+}
