@@ -470,3 +470,9 @@ fn edge_ngram_tokenizer_emits_prefixes() {
     let tokens = EdgeNgramTokenizer::new(1, 4).tokenize("rust");
     assert_eq!(texts(&tokens), ["r", "ru", "rus", "rust"]);
 }
+
+#[test]
+fn edge_ngram_tokenizer_stops_at_the_word_length() {
+    let tokens = EdgeNgramTokenizer::new(2, 10).tokenize("ab");
+    assert_eq!(texts(&tokens), ["ab"]);
+}
