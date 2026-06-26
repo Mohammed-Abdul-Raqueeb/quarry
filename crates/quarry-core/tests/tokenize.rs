@@ -443,3 +443,10 @@ fn ngram_tokenizer_reports_usable_offsets() {
         assert_eq!(&input[token.start..token.end], token.text);
     }
 }
+
+#[test]
+fn ngram_tokenizer_clamps_a_reversed_range() {
+    // A reversed range should degrade, not produce nothing at all.
+    let tokens = NgramTokenizer::new(4, 2).tokenize("abcde");
+    assert!(!tokens.is_empty());
+}
