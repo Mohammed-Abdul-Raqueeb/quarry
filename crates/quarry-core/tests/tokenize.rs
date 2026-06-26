@@ -365,3 +365,10 @@ fn folds_slashed_o_and_barred_l() {
     assert_eq!(fold("ø"), "o");
     assert_eq!(fold("ł"), "l");
 }
+
+#[test]
+fn folds_typographic_punctuation() {
+    assert_eq!(fold("don\u{2019}t"), "don't");
+    assert_eq!(fold("\u{201C}quoted\u{201D}"), "\"quoted\"");
+    assert_eq!(fold("dash\u{2014}dash"), "dash-dash");
+}
