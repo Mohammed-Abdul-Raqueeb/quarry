@@ -405,3 +405,9 @@ fn folding_filter_preserves_positions() {
 }
 
 // ---- NgramTokenizer -----------------------------------------------------
+
+#[test]
+fn ngram_tokenizer_emits_windows_in_the_configured_range() {
+    let tokens = NgramTokenizer::new(2, 2).tokenize("abcd");
+    assert_eq!(texts(&tokens), ["ab", "bc", "cd"]);
+}
