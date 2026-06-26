@@ -429,3 +429,9 @@ fn ngram_tokenizer_skips_windows_spanning_whitespace() {
 fn ngram_tokenizer_handles_input_shorter_than_the_window() {
     assert!(NgramTokenizer::new(5, 5).tokenize("abc").is_empty());
 }
+
+#[test]
+fn ngram_tokenizer_handles_multibyte_characters() {
+    let tokens = NgramTokenizer::new(2, 2).tokenize("日本語");
+    assert_eq!(texts(&tokens), ["日本", "本語"]);
+}
