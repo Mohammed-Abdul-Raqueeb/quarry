@@ -464,3 +464,9 @@ fn fixed_ngram_tokenizer_uses_one_width() {
 }
 
 // ---- EdgeNgramTokenizer -------------------------------------------------
+
+#[test]
+fn edge_ngram_tokenizer_emits_prefixes() {
+    let tokens = EdgeNgramTokenizer::new(1, 4).tokenize("rust");
+    assert_eq!(texts(&tokens), ["r", "ru", "rus", "rust"]);
+}
