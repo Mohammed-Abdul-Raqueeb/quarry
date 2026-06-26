@@ -424,3 +424,8 @@ fn ngram_tokenizer_skips_windows_spanning_whitespace() {
     let tokens = NgramTokenizer::new(2, 2).tokenize("ab cd");
     assert_eq!(texts(&tokens), ["ab", "cd"]);
 }
+
+#[test]
+fn ngram_tokenizer_handles_input_shorter_than_the_window() {
+    assert!(NgramTokenizer::new(5, 5).tokenize("abc").is_empty());
+}
