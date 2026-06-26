@@ -450,3 +450,9 @@ fn ngram_tokenizer_clamps_a_reversed_range() {
     let tokens = NgramTokenizer::new(4, 2).tokenize("abcde");
     assert!(!tokens.is_empty());
 }
+
+#[test]
+fn ngram_tokenizer_clamps_a_zero_minimum() {
+    let tokenizer = NgramTokenizer::new(0, 2);
+    assert_eq!(tokenizer.min, 1);
+}
