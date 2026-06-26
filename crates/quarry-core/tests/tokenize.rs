@@ -359,3 +359,9 @@ fn folds_thorn_and_eth() {
     assert_eq!(fold("þ"), "th");
     assert_eq!(fold("ð"), "d");
 }
+
+#[test]
+fn folds_slashed_o_and_barred_l() {
+    assert_eq!(fold("ø"), "o");
+    assert_eq!(fold("ł"), "l");
+}
