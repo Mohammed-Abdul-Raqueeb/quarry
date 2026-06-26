@@ -384,3 +384,10 @@ fn leaves_unmapped_scripts_untouched() {
     assert_eq!(fold("日本語"), "日本語");
     assert_eq!(fold("Привет"), "Привет");
 }
+
+#[test]
+fn needs_folding_detects_whether_work_is_required() {
+    assert!(needs_folding("café"));
+    assert!(!needs_folding("cafe"));
+    assert!(!needs_folding("日本語"));
+}
