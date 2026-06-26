@@ -417,3 +417,10 @@ fn ngram_tokenizer_emits_several_widths() {
     let tokens = NgramTokenizer::new(1, 2).tokenize("abc");
     assert_eq!(texts(&tokens), ["a", "ab", "b", "bc", "c"]);
 }
+
+#[test]
+fn ngram_tokenizer_skips_windows_spanning_whitespace() {
+    // A window straddling a word boundary matches nothing useful.
+    let tokens = NgramTokenizer::new(2, 2).tokenize("ab cd");
+    assert_eq!(texts(&tokens), ["ab", "cd"]);
+}
