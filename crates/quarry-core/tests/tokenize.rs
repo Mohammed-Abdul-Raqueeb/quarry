@@ -372,3 +372,8 @@ fn folds_typographic_punctuation() {
     assert_eq!(fold("\u{201C}quoted\u{201D}"), "\"quoted\"");
     assert_eq!(fold("dash\u{2014}dash"), "dash-dash");
 }
+
+#[test]
+fn leaves_plain_ascii_untouched() {
+    assert_eq!(fold("plain ascii text"), "plain ascii text");
+}
