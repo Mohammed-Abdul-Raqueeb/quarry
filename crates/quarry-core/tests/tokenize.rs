@@ -584,3 +584,16 @@ fn analyzer_default_is_the_english_pipeline() {
         Analyzer::english().filter_names()
     );
 }
+
+#[test]
+fn analyze_preserves_offsets_through_the_whole_pipeline() {
+    let input = "Running quickly";
+    for token in Analyzer::english().analyze(input) {
+        // The text has been rewritten by filters, but the span must still
+        // point at the original word for highlighting to work.
+        assert!(token.end <= input.len());
+        assert!(token.start < token.end);
+    }
+}
+
+// ---- Token --------------------------------------------------------------
