@@ -20,3 +20,10 @@ fn basic_schema() -> Schema {
 }
 
 // ---- FieldType ----------------------------------------------------------
+
+#[test]
+fn only_text_is_analyzed() {
+    assert!(FieldType::Text.is_analyzed());
+    assert!(!FieldType::Keyword.is_analyzed());
+    assert!(!FieldType::Numeric.is_analyzed());
+}
