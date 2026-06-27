@@ -523,3 +523,8 @@ fn english_analyzer_is_stable_across_index_and_query() {
     let analyzer = Analyzer::english();
     assert_eq!(analyzer.terms("Running"), analyzer.terms("runs"));
 }
+
+#[test]
+fn english_analyzer_handles_an_empty_string() {
+    assert!(Analyzer::english().terms("").is_empty());
+}
