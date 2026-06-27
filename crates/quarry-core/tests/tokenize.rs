@@ -503,3 +503,9 @@ fn edge_ngram_tokenizer_skips_punctuation() {
 }
 
 // ---- Analyzer -----------------------------------------------------------
+
+#[test]
+fn english_analyzer_lowercases_folds_and_stems() {
+    let terms = Analyzer::english().terms("Running CAFÉS quickly");
+    assert_eq!(terms, ["run", "cafe", "quickli"]);
+}
