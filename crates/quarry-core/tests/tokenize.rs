@@ -509,3 +509,9 @@ fn english_analyzer_lowercases_folds_and_stems() {
     let terms = Analyzer::english().terms("Running CAFÉS quickly");
     assert_eq!(terms, ["run", "cafe", "quickli"]);
 }
+
+#[test]
+fn english_analyzer_drops_stopwords() {
+    let terms = Analyzer::english().terms("the quick brown fox");
+    assert!(!terms.contains(&"the".to_string()));
+}
