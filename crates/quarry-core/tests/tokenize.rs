@@ -533,3 +533,9 @@ fn english_analyzer_handles_an_empty_string() {
 fn english_analyzer_handles_only_stopwords() {
     assert!(Analyzer::english().terms("the and of to").is_empty());
 }
+
+#[test]
+fn english_analyzer_folds_before_checking_stopwords() {
+    // Order matters: without folding first, `thé` survives a list with `the`.
+    assert!(Analyzer::english().terms("thé").is_empty());
+}
