@@ -576,3 +576,11 @@ fn analyzer_with_no_filters_returns_raw_tokens() {
     let analyzer = Analyzer::new(Box::new(StandardTokenizer::default()));
     assert_eq!(analyzer.terms("The Fox"), ["The", "Fox"]);
 }
+
+#[test]
+fn analyzer_default_is_the_english_pipeline() {
+    assert_eq!(
+        Analyzer::default().filter_names(),
+        Analyzer::english().filter_names()
+    );
+}
