@@ -597,3 +597,10 @@ fn analyze_preserves_offsets_through_the_whole_pipeline() {
 }
 
 // ---- Token --------------------------------------------------------------
+
+#[test]
+fn token_with_text_keeps_its_span_and_position() {
+    let token = Token::new("original", 4, 10, 18).with_text("rewritten");
+    assert_eq!((token.position, token.start, token.end), (4, 10, 18));
+    assert_eq!(token.text, "rewritten");
+}
