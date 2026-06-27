@@ -8,3 +8,15 @@
 use quarry_core::doc::{format_number, Document, Value};
 use quarry_core::json::parse;
 use quarry_core::schema::{FieldOptions, FieldType, Schema};
+
+fn basic_schema() -> Schema {
+    Schema::builder()
+        .text("title")
+        .and_then(|b| b.text("body"))
+        .and_then(|b| b.keyword("tag"))
+        .and_then(|b| b.numeric("year"))
+        .and_then(quarry_core::schema::SchemaBuilder::build)
+        .expect("schema should build")
+}
+
+// ---- FieldType ----------------------------------------------------------
