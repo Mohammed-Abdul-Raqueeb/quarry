@@ -551,3 +551,11 @@ fn keyword_analyzer_emits_one_lowercased_token() {
     let terms = Analyzer::keyword().terms("New York City");
     assert_eq!(terms, ["new york city"]);
 }
+
+#[test]
+fn analyzer_reports_its_filter_chain() {
+    let names = Analyzer::english().filter_names();
+    assert!(names.contains(&"lowercase"));
+    assert!(names.contains(&"porter"));
+    assert!(names.contains(&"stopwords"));
+}
