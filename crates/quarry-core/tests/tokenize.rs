@@ -515,3 +515,11 @@ fn english_analyzer_drops_stopwords() {
     let terms = Analyzer::english().terms("the quick brown fox");
     assert!(!terms.contains(&"the".to_string()));
 }
+
+#[test]
+fn english_analyzer_is_stable_across_index_and_query() {
+    // The property the whole pipeline exists for: a query must produce the
+    // same terms the document did, or the document is unfindable.
+    let analyzer = Analyzer::english();
+    assert_eq!(analyzer.terms("Running"), analyzer.terms("runs"));
+}
