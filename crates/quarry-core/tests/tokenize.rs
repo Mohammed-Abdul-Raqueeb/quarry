@@ -570,3 +570,9 @@ fn analyzer_applies_filters_in_order() {
 
     assert!(analyzer.terms("Rust").is_empty());
 }
+
+#[test]
+fn analyzer_with_no_filters_returns_raw_tokens() {
+    let analyzer = Analyzer::new(Box::new(StandardTokenizer::default()));
+    assert_eq!(analyzer.terms("The Fox"), ["The", "Fox"]);
+}
