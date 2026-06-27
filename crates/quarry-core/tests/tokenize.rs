@@ -609,3 +609,9 @@ fn token_with_text_keeps_its_span_and_position() {
 fn token_reports_its_span_length() {
     assert_eq!(Token::new("abc", 0, 5, 8).span_len(), 3);
 }
+
+#[test]
+fn token_span_length_is_zero_for_an_inverted_span() {
+    // Saturating rather than panicking: a filter could produce one by mistake.
+    assert_eq!(Token::new("abc", 0, 8, 5).span_len(), 0);
+}
