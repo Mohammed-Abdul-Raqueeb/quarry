@@ -528,3 +528,8 @@ fn english_analyzer_is_stable_across_index_and_query() {
 fn english_analyzer_handles_an_empty_string() {
     assert!(Analyzer::english().terms("").is_empty());
 }
+
+#[test]
+fn english_analyzer_handles_only_stopwords() {
+    assert!(Analyzer::english().terms("the and of to").is_empty());
+}
