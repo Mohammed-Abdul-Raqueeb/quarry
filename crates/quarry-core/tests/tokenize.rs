@@ -604,3 +604,8 @@ fn token_with_text_keeps_its_span_and_position() {
     assert_eq!((token.position, token.start, token.end), (4, 10, 18));
     assert_eq!(token.text, "rewritten");
 }
+
+#[test]
+fn token_reports_its_span_length() {
+    assert_eq!(Token::new("abc", 0, 5, 8).span_len(), 3);
+}
