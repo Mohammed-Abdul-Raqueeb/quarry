@@ -495,3 +495,11 @@ fn edge_ngram_tokenizer_gives_one_words_prefixes_one_position() {
 
     assert!(first.iter().all(|p| *p == 0));
 }
+
+#[test]
+fn edge_ngram_tokenizer_skips_punctuation() {
+    let tokens = EdgeNgramTokenizer::new(2, 3).tokenize("a-b");
+    assert!(texts(&tokens).iter().all(|t| !t.contains('-')));
+}
+
+// ---- Analyzer -----------------------------------------------------------
