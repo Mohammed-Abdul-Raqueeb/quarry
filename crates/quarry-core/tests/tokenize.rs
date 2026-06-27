@@ -545,3 +545,9 @@ fn simple_analyzer_neither_stems_nor_drops_stopwords() {
     let terms = Analyzer::simple().terms("The Running Cafés");
     assert_eq!(terms, ["the", "running", "cafes"]);
 }
+
+#[test]
+fn keyword_analyzer_emits_one_lowercased_token() {
+    let terms = Analyzer::keyword().terms("New York City");
+    assert_eq!(terms, ["new york city"]);
+}
