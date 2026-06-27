@@ -559,3 +559,14 @@ fn analyzer_reports_its_filter_chain() {
     assert!(names.contains(&"porter"));
     assert!(names.contains(&"stopwords"));
 }
+
+#[test]
+fn analyzer_applies_filters_in_order() {
+    // Stemming before lowercasing would leave `Running` unstemmed, since the
+    // stemmer's rules are lowercase byte patterns.
+    let analyzer = Analyzer::new(Box::new(StandardTokenizer::default()))
+        .with(Box::new(Lowercase))
+        .with(Box::new(StopwordFilter::new(["rust"])));
+
+    assert!(analyzer.terms("Rust").is_empty());
+}
