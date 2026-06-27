@@ -539,3 +539,9 @@ fn english_analyzer_folds_before_checking_stopwords() {
     // Order matters: without folding first, `thé` survives a list with `the`.
     assert!(Analyzer::english().terms("thé").is_empty());
 }
+
+#[test]
+fn simple_analyzer_neither_stems_nor_drops_stopwords() {
+    let terms = Analyzer::simple().terms("The Running Cafés");
+    assert_eq!(terms, ["the", "running", "cafes"]);
+}
