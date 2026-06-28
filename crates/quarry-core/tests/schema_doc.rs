@@ -60,3 +60,8 @@ fn assigns_ids_in_declaration_order() {
     assert_eq!(schema.field("title").map(|f| f.id), Some(0));
     assert_eq!(schema.field("year").map(|f| f.id), Some(3));
 }
+
+#[test]
+fn rejects_an_empty_schema() {
+    assert!(Schema::builder().build().is_err());
+}
