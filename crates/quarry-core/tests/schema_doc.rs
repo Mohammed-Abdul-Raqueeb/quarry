@@ -34,3 +34,8 @@ fn field_type_names_round_trip() {
         assert_eq!(FieldType::parse(ty.as_str()).ok(), Some(ty));
     }
 }
+
+#[test]
+fn field_type_rejects_an_unknown_name() {
+    assert!(FieldType::parse("vector").is_err());
+}
