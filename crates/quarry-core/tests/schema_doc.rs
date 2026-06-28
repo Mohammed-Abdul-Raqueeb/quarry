@@ -78,3 +78,10 @@ fn rejects_a_duplicate_field_name() {
 fn rejects_an_empty_field_name() {
     assert!(Schema::builder().text("").is_err());
 }
+
+#[test]
+fn rejects_a_reserved_underscore_prefix() {
+    // Reserved so the query parser can treat `_all` specially without a real
+    // field being able to shadow it.
+    assert!(Schema::builder().text("_all").is_err());
+}
