@@ -39,3 +39,12 @@ fn field_type_names_round_trip() {
 fn field_type_rejects_an_unknown_name() {
     assert!(FieldType::parse("vector").is_err());
 }
+
+#[test]
+fn field_type_parsing_is_case_sensitive() {
+    // The on-disk form is lowercase; accepting other spellings would make two
+    // schema files that look different compare as equal.
+    assert!(FieldType::parse("Text").is_err());
+}
+
+// ---- building -----------------------------------------------------------
