@@ -126,3 +126,24 @@ fn a_stored_only_field_is_not_indexed() {
     assert!(!field.options.indexed);
     assert!(field.options.stored);
 }
+
+#[test]
+fn accepts_explicit_options() {
+    let schema = Schema::builder()
+        .add(
+            "custom",
+            FieldType::Text,
+            FieldOptions {
+                indexed: true,
+                stored: false,
+                positions: true,
+                boost: 3.0,
+            },
+        )
+        .and_then(quarry_core::schema::SchemaBuilder::build)
+        .expect("should build");
+
+    let field = schema.field("custom").expect("field exists");
+    assert!(!field.options.stored);
+    assert_eq!(field.options.boost, 3.0);
+}
