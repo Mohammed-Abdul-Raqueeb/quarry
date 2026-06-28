@@ -85,3 +85,12 @@ fn rejects_a_reserved_underscore_prefix() {
     // field being able to shadow it.
     assert!(Schema::builder().text("_all").is_err());
 }
+
+#[test]
+fn text_fields_get_positions_by_default() {
+    let schema = basic_schema();
+    assert_eq!(
+        schema.field("title").map(|f| f.options.positions),
+        Some(true)
+    );
+}
