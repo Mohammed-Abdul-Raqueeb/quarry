@@ -73,3 +73,8 @@ fn rejects_a_duplicate_field_name() {
         .and_then(|b| b.text("title"));
     assert!(result.is_err());
 }
+
+#[test]
+fn rejects_an_empty_field_name() {
+    assert!(Schema::builder().text("").is_err());
+}
