@@ -147,3 +147,14 @@ fn accepts_explicit_options() {
     assert!(!field.options.stored);
     assert_eq!(field.options.boost, 3.0);
 }
+
+#[test]
+fn default_options_index_and_store() {
+    let options = FieldOptions::default();
+    assert!(options.indexed);
+    assert!(options.stored);
+    assert!(!options.positions);
+    assert_eq!(options.boost, 1.0);
+}
+
+// ---- lookup -------------------------------------------------------------
