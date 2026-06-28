@@ -27,3 +27,10 @@ fn only_text_is_analyzed() {
     assert!(!FieldType::Keyword.is_analyzed());
     assert!(!FieldType::Numeric.is_analyzed());
 }
+
+#[test]
+fn field_type_names_round_trip() {
+    for ty in [FieldType::Text, FieldType::Keyword, FieldType::Numeric] {
+        assert_eq!(FieldType::parse(ty.as_str()).ok(), Some(ty));
+    }
+}
