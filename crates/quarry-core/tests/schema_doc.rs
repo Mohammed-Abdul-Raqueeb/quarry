@@ -53,3 +53,10 @@ fn field_type_parsing_is_case_sensitive() {
 fn builds_a_schema_with_several_fields() {
     assert_eq!(basic_schema().len(), 4);
 }
+
+#[test]
+fn assigns_ids_in_declaration_order() {
+    let schema = basic_schema();
+    assert_eq!(schema.field("title").map(|f| f.id), Some(0));
+    assert_eq!(schema.field("year").map(|f| f.id), Some(3));
+}
