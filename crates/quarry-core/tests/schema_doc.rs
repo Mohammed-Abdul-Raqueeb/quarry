@@ -94,3 +94,13 @@ fn text_fields_get_positions_by_default() {
         Some(true)
     );
 }
+
+#[test]
+fn keyword_fields_do_not_get_positions() {
+    // Positions roughly double a posting list, and a keyword is one token.
+    let schema = basic_schema();
+    assert_eq!(
+        schema.field("tag").map(|f| f.options.positions),
+        Some(false)
+    );
+}
