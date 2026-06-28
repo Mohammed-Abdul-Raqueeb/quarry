@@ -114,3 +114,15 @@ fn a_boosted_text_field_records_its_boost() {
 
     assert_eq!(schema.field("title").map(|f| f.options.boost), Some(2.5));
 }
+
+#[test]
+fn a_stored_only_field_is_not_indexed() {
+    let schema = Schema::builder()
+        .stored_only("raw")
+        .and_then(quarry_core::schema::SchemaBuilder::build)
+        .expect("should build");
+
+    let field = schema.field("raw").expect("field exists");
+    assert!(!field.options.indexed);
+    assert!(field.options.stored);
+}
