@@ -177,3 +177,8 @@ fn looks_a_field_up_by_id() {
         Some("title")
     );
 }
+
+#[test]
+fn returns_none_for_an_out_of_range_id() {
+    assert!(basic_schema().field_by_id(99).is_none());
+}
