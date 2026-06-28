@@ -168,3 +168,12 @@ fn looks_a_field_up_by_name() {
 fn returns_none_for_an_unknown_name() {
     assert!(basic_schema().field("missing").is_none());
 }
+
+#[test]
+fn looks_a_field_up_by_id() {
+    let schema = basic_schema();
+    assert_eq!(
+        schema.field_by_id(0).map(|f| f.name.as_str()),
+        Some("title")
+    );
+}
