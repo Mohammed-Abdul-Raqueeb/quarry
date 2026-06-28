@@ -48,3 +48,8 @@ fn field_type_parsing_is_case_sensitive() {
 }
 
 // ---- building -----------------------------------------------------------
+
+#[test]
+fn builds_a_schema_with_several_fields() {
+    assert_eq!(basic_schema().len(), 4);
+}
