@@ -182,3 +182,8 @@ fn looks_a_field_up_by_id() {
 fn returns_none_for_an_out_of_range_id() {
     assert!(basic_schema().field_by_id(99).is_none());
 }
+
+#[test]
+fn field_id_errors_for_an_unknown_name() {
+    assert!(basic_schema().field_id("missing").is_err());
+}
