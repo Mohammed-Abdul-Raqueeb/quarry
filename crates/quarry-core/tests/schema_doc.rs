@@ -163,3 +163,8 @@ fn default_options_index_and_store() {
 fn looks_a_field_up_by_name() {
     assert!(basic_schema().field("body").is_some());
 }
+
+#[test]
+fn returns_none_for_an_unknown_name() {
+    assert!(basic_schema().field("missing").is_none());
+}
