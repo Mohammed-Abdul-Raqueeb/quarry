@@ -104,3 +104,13 @@ fn keyword_fields_do_not_get_positions() {
         Some(false)
     );
 }
+
+#[test]
+fn a_boosted_text_field_records_its_boost() {
+    let schema = Schema::builder()
+        .text_boosted("title", 2.5)
+        .and_then(quarry_core::schema::SchemaBuilder::build)
+        .expect("should build");
+
+    assert_eq!(schema.field("title").map(|f| f.options.boost), Some(2.5));
+}
