@@ -158,3 +158,8 @@ fn default_options_index_and_store() {
 }
 
 // ---- lookup -------------------------------------------------------------
+
+#[test]
+fn looks_a_field_up_by_name() {
+    assert!(basic_schema().field("body").is_some());
+}
