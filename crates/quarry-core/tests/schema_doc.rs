@@ -65,3 +65,11 @@ fn assigns_ids_in_declaration_order() {
 fn rejects_an_empty_schema() {
     assert!(Schema::builder().build().is_err());
 }
+
+#[test]
+fn rejects_a_duplicate_field_name() {
+    let result = Schema::builder()
+        .text("title")
+        .and_then(|b| b.text("title"));
+    assert!(result.is_err());
+}
