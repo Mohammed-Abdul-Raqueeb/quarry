@@ -220,3 +220,8 @@ fn default_search_fields_excludes_unindexed_text() {
 
     assert_eq!(schema.default_search_fields(), vec![0]);
 }
+
+#[test]
+fn stored_fields_lists_everything_kept() {
+    assert_eq!(basic_schema().stored_fields().len(), 4);
+}
