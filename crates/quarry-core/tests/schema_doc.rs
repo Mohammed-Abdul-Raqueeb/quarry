@@ -281,3 +281,12 @@ fn a_new_document_is_empty() {
     assert!(doc.is_empty());
     assert_eq!(doc.len(), 0);
 }
+
+#[test]
+fn add_appends_a_value() {
+    let mut doc = Document::new();
+    doc.add(0, Value::Text("a".to_string()));
+    doc.add(0, Value::Text("b".to_string()));
+
+    assert_eq!(doc.values(0).len(), 2);
+}
