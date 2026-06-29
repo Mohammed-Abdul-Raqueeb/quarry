@@ -200,3 +200,23 @@ fn default_search_fields_are_the_indexed_text_fields() {
     let schema = basic_schema();
     assert_eq!(schema.default_search_fields(), vec![0, 1]);
 }
+
+#[test]
+fn default_search_fields_excludes_unindexed_text() {
+    let schema = Schema::builder()
+        .text("searchable")
+        .and_then(|b| {
+            b.add(
+                "hidden",
+                FieldType::Text,
+                FieldOptions {
+                    indexed: false,
+                    ..FieldOptions::default()
+                },
+            )
+        })
+        .and_then(quarry_core::schema::SchemaBuilder::build)
+        .expect("should build");
+
+    assert_eq!(schema.default_search_fields(), vec![0]);
+}
