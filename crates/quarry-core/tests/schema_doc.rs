@@ -301,3 +301,13 @@ fn repeating_a_field_makes_it_multi_valued() {
 
     assert_eq!(doc.values(2).len(), 3);
 }
+
+#[test]
+fn set_replaces_every_value() {
+    let mut doc = Document::new();
+    doc.add(0, Value::Text("old".to_string()));
+    doc.set(0, Value::Text("new".to_string()));
+
+    assert_eq!(doc.values(0).len(), 1);
+    assert_eq!(doc.value(0).map(Value::as_text), Some("new".to_string()));
+}
