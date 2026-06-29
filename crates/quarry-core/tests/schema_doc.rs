@@ -256,3 +256,9 @@ fn value_matches_only_its_own_field_type() {
     assert!(Value::Keyword(String::new()).matches(FieldType::Keyword));
     assert!(Value::Number(0.0).matches(FieldType::Numeric));
 }
+
+#[test]
+fn format_number_drops_a_trailing_zero() {
+    assert_eq!(format_number(42.0), "42");
+    assert_eq!(format_number(-7.0), "-7");
+}
