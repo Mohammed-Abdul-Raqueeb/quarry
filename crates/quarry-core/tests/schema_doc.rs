@@ -290,3 +290,14 @@ fn add_appends_a_value() {
 
     assert_eq!(doc.values(0).len(), 2);
 }
+
+#[test]
+fn repeating_a_field_makes_it_multi_valued() {
+    // Three tags on one document index as three keywords.
+    let mut doc = Document::new();
+    for tag in ["rust", "systems", "memory"] {
+        doc.add(2, Value::Keyword(tag.to_string()));
+    }
+
+    assert_eq!(doc.values(2).len(), 3);
+}
