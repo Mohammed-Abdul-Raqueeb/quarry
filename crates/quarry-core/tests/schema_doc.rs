@@ -333,3 +333,13 @@ fn iter_yields_every_populated_field() {
 }
 
 // ---- from_json ----------------------------------------------------------
+
+#[test]
+fn builds_a_document_from_json() {
+    let schema = basic_schema();
+    let json = parse(r#"{"title":"Rust","body":"Ownership","tag":"rust","year":2021}"#)
+        .expect("valid json");
+
+    let doc = Document::from_json(&schema, &json).expect("should build");
+    assert_eq!(doc.len(), 4);
+}
