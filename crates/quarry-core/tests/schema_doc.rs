@@ -321,3 +321,15 @@ fn values_returns_an_empty_slice_for_an_absent_field() {
 fn value_returns_none_for_an_absent_field() {
     assert!(Document::new().value(5).is_none());
 }
+
+#[test]
+fn iter_yields_every_populated_field() {
+    let mut doc = Document::new();
+    doc.add(0, Value::Text("a".to_string()));
+    doc.add(3, Value::Number(1.0));
+
+    let fields: Vec<u16> = doc.iter().map(|(id, _)| id).collect();
+    assert_eq!(fields, vec![0, 3]);
+}
+
+// ---- from_json ----------------------------------------------------------
