@@ -248,3 +248,11 @@ fn only_a_number_value_yields_a_number() {
     assert_eq!(Value::Keyword("42".to_string()).as_number(), None);
     assert_eq!(Value::Text("42".to_string()).as_number(), None);
 }
+
+#[test]
+fn value_matches_only_its_own_field_type() {
+    assert!(Value::Text(String::new()).matches(FieldType::Text));
+    assert!(!Value::Text(String::new()).matches(FieldType::Keyword));
+    assert!(Value::Keyword(String::new()).matches(FieldType::Keyword));
+    assert!(Value::Number(0.0).matches(FieldType::Numeric));
+}
