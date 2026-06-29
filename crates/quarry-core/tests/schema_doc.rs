@@ -239,3 +239,12 @@ fn value_renders_as_text() {
     assert_eq!(Value::Keyword("tag".to_string()).as_text(), "tag");
     assert_eq!(Value::Number(42.0).as_text(), "42");
 }
+
+#[test]
+fn only_a_number_value_yields_a_number() {
+    // A keyword that looks numeric is still a keyword, so range queries cannot
+    // silently succeed on a mistyped field.
+    assert_eq!(Value::Number(1.5).as_number(), Some(1.5));
+    assert_eq!(Value::Keyword("42".to_string()).as_number(), None);
+    assert_eq!(Value::Text("42".to_string()).as_number(), None);
+}
