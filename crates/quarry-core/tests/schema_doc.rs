@@ -343,3 +343,12 @@ fn builds_a_document_from_json() {
     let doc = Document::from_json(&schema, &json).expect("should build");
     assert_eq!(doc.len(), 4);
 }
+
+#[test]
+fn accepts_an_array_as_a_multi_valued_field() {
+    let schema = basic_schema();
+    let json = parse(r#"{"tag":["rust","systems"]}"#).expect("valid json");
+
+    let doc = Document::from_json(&schema, &json).expect("should build");
+    assert_eq!(doc.values(2).len(), 2);
+}
