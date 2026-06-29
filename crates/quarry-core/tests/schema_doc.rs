@@ -267,3 +267,10 @@ fn format_number_drops_a_trailing_zero() {
 fn format_number_keeps_a_real_fraction() {
     assert_eq!(format_number(1.5), "1.5");
 }
+
+#[test]
+fn format_number_handles_zero() {
+    assert_eq!(format_number(0.0), "0");
+}
+
+// ---- Document -----------------------------------------------------------
