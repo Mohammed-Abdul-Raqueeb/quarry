@@ -193,3 +193,10 @@ fn field_id_names_the_missing_field_in_its_error() {
     let err = basic_schema().field_id("nope").unwrap_err().to_string();
     assert!(err.contains("nope"), "message was: {err}");
 }
+
+#[test]
+fn default_search_fields_are_the_indexed_text_fields() {
+    // A bare term should search prose, not identifiers or numbers.
+    let schema = basic_schema();
+    assert_eq!(schema.default_search_fields(), vec![0, 1]);
+}
