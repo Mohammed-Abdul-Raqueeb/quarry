@@ -274,3 +274,10 @@ fn format_number_handles_zero() {
 }
 
 // ---- Document -----------------------------------------------------------
+
+#[test]
+fn a_new_document_is_empty() {
+    let doc = Document::new();
+    assert!(doc.is_empty());
+    assert_eq!(doc.len(), 0);
+}
