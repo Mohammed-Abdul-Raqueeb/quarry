@@ -225,3 +225,10 @@ fn default_search_fields_excludes_unindexed_text() {
 fn stored_fields_lists_everything_kept() {
     assert_eq!(basic_schema().stored_fields().len(), 4);
 }
+
+#[test]
+fn an_empty_schema_reports_itself_as_empty() {
+    assert!(Schema::default().is_empty());
+}
+
+// ---- Value --------------------------------------------------------------
