@@ -187,3 +187,9 @@ fn returns_none_for_an_out_of_range_id() {
 fn field_id_errors_for_an_unknown_name() {
     assert!(basic_schema().field_id("missing").is_err());
 }
+
+#[test]
+fn field_id_names_the_missing_field_in_its_error() {
+    let err = basic_schema().field_id("nope").unwrap_err().to_string();
+    assert!(err.contains("nope"), "message was: {err}");
+}
