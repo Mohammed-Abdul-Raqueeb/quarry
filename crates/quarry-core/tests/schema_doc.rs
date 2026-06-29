@@ -262,3 +262,8 @@ fn format_number_drops_a_trailing_zero() {
     assert_eq!(format_number(42.0), "42");
     assert_eq!(format_number(-7.0), "-7");
 }
+
+#[test]
+fn format_number_keeps_a_real_fraction() {
+    assert_eq!(format_number(1.5), "1.5");
+}
