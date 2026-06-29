@@ -311,3 +311,8 @@ fn set_replaces_every_value() {
     assert_eq!(doc.values(0).len(), 1);
     assert_eq!(doc.value(0).map(Value::as_text), Some("new".to_string()));
 }
+
+#[test]
+fn values_returns_an_empty_slice_for_an_absent_field() {
+    assert!(Document::new().values(5).is_empty());
+}
