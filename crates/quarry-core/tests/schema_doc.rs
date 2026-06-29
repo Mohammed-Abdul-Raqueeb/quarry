@@ -316,3 +316,8 @@ fn set_replaces_every_value() {
 fn values_returns_an_empty_slice_for_an_absent_field() {
     assert!(Document::new().values(5).is_empty());
 }
+
+#[test]
+fn value_returns_none_for_an_absent_field() {
+    assert!(Document::new().value(5).is_none());
+}
