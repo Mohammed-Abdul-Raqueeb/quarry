@@ -232,3 +232,10 @@ fn an_empty_schema_reports_itself_as_empty() {
 }
 
 // ---- Value --------------------------------------------------------------
+
+#[test]
+fn value_renders_as_text() {
+    assert_eq!(Value::Text("prose".to_string()).as_text(), "prose");
+    assert_eq!(Value::Keyword("tag".to_string()).as_text(), "tag");
+    assert_eq!(Value::Number(42.0).as_text(), "42");
+}
