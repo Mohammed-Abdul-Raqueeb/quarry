@@ -360,3 +360,11 @@ fn rejects_a_non_object_document() {
 
     assert!(Document::from_json(&schema, &json).is_err());
 }
+
+#[test]
+fn rejects_an_unknown_field() {
+    let schema = basic_schema();
+    let json = parse(r#"{"author":"someone"}"#).expect("valid json");
+
+    assert!(Document::from_json(&schema, &json).is_err());
+}
