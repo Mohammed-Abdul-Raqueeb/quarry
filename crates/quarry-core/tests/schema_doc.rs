@@ -462,3 +462,14 @@ fn renders_a_single_valued_field_as_a_scalar() {
     let doc = Document::from_json(&schema, &json).expect("should build");
     assert_eq!(doc.to_json(&schema).to_string(), r#"{"tag":"only"}"#);
 }
+
+#[test]
+fn a_document_round_trips_through_json() {
+    let schema = basic_schema();
+    let original = r#"{"body":"Explained","tag":"rust","title":"Rust","year":2021}"#;
+
+    let doc =
+        Document::from_json(&schema, &parse(original).expect("valid json")).expect("should build");
+
+    assert_eq!(doc.to_json(&schema).to_string(), original);
+}
