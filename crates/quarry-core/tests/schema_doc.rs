@@ -368,3 +368,12 @@ fn rejects_an_unknown_field() {
 
     assert!(Document::from_json(&schema, &json).is_err());
 }
+
+#[test]
+fn rejects_a_string_in_a_numeric_field() {
+    // Coercing "42" to 42 is how a numeric field ends up un-rangeable.
+    let schema = basic_schema();
+    let json = parse(r#"{"year":"2021"}"#).expect("valid json");
+
+    assert!(Document::from_json(&schema, &json).is_err());
+}
