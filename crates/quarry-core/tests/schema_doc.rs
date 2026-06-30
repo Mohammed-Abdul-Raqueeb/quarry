@@ -377,3 +377,11 @@ fn rejects_a_string_in_a_numeric_field() {
 
     assert!(Document::from_json(&schema, &json).is_err());
 }
+
+#[test]
+fn rejects_a_number_in_a_text_field() {
+    let schema = basic_schema();
+    let json = parse(r#"{"title":42}"#).expect("valid json");
+
+    assert!(Document::from_json(&schema, &json).is_err());
+}
