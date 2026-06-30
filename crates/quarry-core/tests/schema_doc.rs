@@ -395,3 +395,11 @@ fn accepts_a_boolean_in_a_keyword_field() {
     let doc = Document::from_json(&schema, &json).expect("should build");
     assert_eq!(doc.value(2).map(Value::as_text), Some("true".to_string()));
 }
+
+#[test]
+fn rejects_null_in_a_typed_field() {
+    let schema = basic_schema();
+    let json = parse(r#"{"title":null}"#).expect("valid json");
+
+    assert!(Document::from_json(&schema, &json).is_err());
+}
