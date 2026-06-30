@@ -453,3 +453,12 @@ fn renders_a_multi_valued_field_as_an_array() {
     let doc = Document::from_json(&schema, &json).expect("should build");
     assert_eq!(doc.to_json(&schema).to_string(), r#"{"tag":["a","b"]}"#);
 }
+
+#[test]
+fn renders_a_single_valued_field_as_a_scalar() {
+    let schema = basic_schema();
+    let json = parse(r#"{"tag":["only"]}"#).expect("valid json");
+
+    let doc = Document::from_json(&schema, &json).expect("should build");
+    assert_eq!(doc.to_json(&schema).to_string(), r#"{"tag":"only"}"#);
+}
