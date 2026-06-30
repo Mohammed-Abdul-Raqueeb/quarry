@@ -352,3 +352,11 @@ fn accepts_an_array_as_a_multi_valued_field() {
     let doc = Document::from_json(&schema, &json).expect("should build");
     assert_eq!(doc.values(2).len(), 2);
 }
+
+#[test]
+fn rejects_a_non_object_document() {
+    let schema = basic_schema();
+    let json = parse("[1,2]").expect("valid json");
+
+    assert!(Document::from_json(&schema, &json).is_err());
+}
