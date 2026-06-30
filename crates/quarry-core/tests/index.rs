@@ -24,3 +24,10 @@ fn a_posting_without_positions_reports_none() {
     let posting = Posting::new(3, 2);
     assert!(!posting.has_positions());
 }
+
+#[test]
+fn a_posting_with_positions_takes_its_frequency_from_them() {
+    let posting = Posting::with_positions(3, vec![1, 5, 9]);
+    assert_eq!(posting.term_freq, 3);
+    assert!(posting.has_positions());
+}
