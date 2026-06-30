@@ -412,3 +412,12 @@ fn accepts_a_document_with_only_some_fields() {
     let doc = Document::from_json(&schema, &json).expect("should build");
     assert_eq!(doc.len(), 1);
 }
+
+#[test]
+fn accepts_an_empty_document() {
+    let schema = basic_schema();
+    let json = parse("{}").expect("valid json");
+
+    let doc = Document::from_json(&schema, &json).expect("should build");
+    assert!(doc.is_empty());
+}
