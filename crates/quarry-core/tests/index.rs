@@ -18,3 +18,9 @@ fn list_with(docs: &[(u32, u32)]) -> PostingList {
 }
 
 // ---- Posting ------------------------------------------------------------
+
+#[test]
+fn a_posting_without_positions_reports_none() {
+    let posting = Posting::new(3, 2);
+    assert!(!posting.has_positions());
+}
