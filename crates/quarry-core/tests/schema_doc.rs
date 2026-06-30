@@ -403,3 +403,12 @@ fn rejects_null_in_a_typed_field() {
 
     assert!(Document::from_json(&schema, &json).is_err());
 }
+
+#[test]
+fn accepts_a_document_with_only_some_fields() {
+    let schema = basic_schema();
+    let json = parse(r#"{"title":"Only a title"}"#).expect("valid json");
+
+    let doc = Document::from_json(&schema, &json).expect("should build");
+    assert_eq!(doc.len(), 1);
+}
