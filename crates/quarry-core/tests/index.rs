@@ -38,3 +38,10 @@ fn a_posting_with_no_positions_has_zero_frequency() {
 }
 
 // ---- PostingList --------------------------------------------------------
+
+#[test]
+fn a_new_list_is_empty() {
+    let list = PostingList::new(0);
+    assert!(list.is_empty());
+    assert_eq!(list.doc_freq(), 0);
+}
