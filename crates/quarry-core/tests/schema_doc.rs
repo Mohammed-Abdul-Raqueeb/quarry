@@ -385,3 +385,13 @@ fn rejects_a_number_in_a_text_field() {
 
     assert!(Document::from_json(&schema, &json).is_err());
 }
+
+#[test]
+fn accepts_a_boolean_in_a_keyword_field() {
+    // There is exactly one sensible reading, and real documents contain them.
+    let schema = basic_schema();
+    let json = parse(r#"{"tag":true}"#).expect("valid json");
+
+    let doc = Document::from_json(&schema, &json).expect("should build");
+    assert_eq!(doc.value(2).map(Value::as_text), Some("true".to_string()));
+}
