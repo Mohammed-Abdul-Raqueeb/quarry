@@ -45,3 +45,11 @@ fn a_new_list_is_empty() {
     assert!(list.is_empty());
     assert_eq!(list.doc_freq(), 0);
 }
+
+#[test]
+fn doc_freq_counts_documents_not_occurrences() {
+    // This is the document frequency BM25's IDF is computed from, so counting
+    // occurrences here would weight common words wrongly.
+    let list = list_with(&[(1, 10), (2, 20)]);
+    assert_eq!(list.doc_freq(), 2);
+}
