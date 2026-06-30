@@ -444,3 +444,12 @@ fn renders_a_document_back_to_json() {
         r#"{"title":"Rust","year":2021}"#
     );
 }
+
+#[test]
+fn renders_a_multi_valued_field_as_an_array() {
+    let schema = basic_schema();
+    let json = parse(r#"{"tag":["a","b"]}"#).expect("valid json");
+
+    let doc = Document::from_json(&schema, &json).expect("should build");
+    assert_eq!(doc.to_json(&schema).to_string(), r#"{"tag":["a","b"]}"#);
+}
