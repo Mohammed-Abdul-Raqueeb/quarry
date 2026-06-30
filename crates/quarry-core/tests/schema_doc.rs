@@ -421,3 +421,14 @@ fn accepts_an_empty_document() {
     let doc = Document::from_json(&schema, &json).expect("should build");
     assert!(doc.is_empty());
 }
+
+#[test]
+fn error_for_a_type_mismatch_names_the_field() {
+    let schema = basic_schema();
+    let json = parse(r#"{"year":"nope"}"#).expect("valid json");
+
+    let err = Document::from_json(&schema, &json).unwrap_err().to_string();
+    assert!(err.contains("year"), "message was: {err}");
+}
+
+// ---- to_json ------------------------------------------------------------
