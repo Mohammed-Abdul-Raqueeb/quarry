@@ -432,3 +432,15 @@ fn error_for_a_type_mismatch_names_the_field() {
 }
 
 // ---- to_json ------------------------------------------------------------
+
+#[test]
+fn renders_a_document_back_to_json() {
+    let schema = basic_schema();
+    let json = parse(r#"{"title":"Rust","year":2021}"#).expect("valid json");
+
+    let doc = Document::from_json(&schema, &json).expect("should build");
+    assert_eq!(
+        doc.to_json(&schema).to_string(),
+        r#"{"title":"Rust","year":2021}"#
+    );
+}
