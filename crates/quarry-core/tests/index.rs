@@ -31,3 +31,10 @@ fn a_posting_with_positions_takes_its_frequency_from_them() {
     assert_eq!(posting.term_freq, 3);
     assert!(posting.has_positions());
 }
+
+#[test]
+fn a_posting_with_no_positions_has_zero_frequency() {
+    assert_eq!(Posting::with_positions(1, vec![]).term_freq, 0);
+}
+
+// ---- PostingList --------------------------------------------------------
