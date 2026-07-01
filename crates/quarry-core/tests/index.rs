@@ -176,3 +176,11 @@ fn difference_with_an_empty_list_returns_everything() {
     let left = list_with(&[(1, 1), (2, 1)]);
     assert_eq!(left.difference(&PostingList::new(0)), vec![1, 2]);
 }
+
+#[test]
+fn difference_of_identical_lists_is_empty() {
+    let left = list_with(&[(1, 1), (2, 1)]);
+    assert!(left.difference(&left).is_empty());
+}
+
+// ---- posting list encoding ---------------------------------------------
