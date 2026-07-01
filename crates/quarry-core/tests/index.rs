@@ -59,3 +59,10 @@ fn total_term_freq_sums_occurrences() {
     let list = list_with(&[(1, 10), (2, 20)]);
     assert_eq!(list.total_term_freq(), 30);
 }
+
+#[test]
+fn push_accepts_ascending_document_ids() {
+    let mut list = PostingList::new(0);
+    assert!(list.push(Posting::new(1, 1)).is_ok());
+    assert!(list.push(Posting::new(5, 1)).is_ok());
+}
