@@ -66,3 +66,12 @@ fn push_accepts_ascending_document_ids() {
     assert!(list.push(Posting::new(1, 1)).is_ok());
     assert!(list.push(Posting::new(5, 1)).is_ok());
 }
+
+#[test]
+fn push_rejects_a_descending_document_id() {
+    // The ordering is load-bearing: intersection and gap encoding both rely on
+    // it, so a violation is an error rather than something to sort out later.
+    let mut list = PostingList::new(0);
+    list.push(Posting::new(5, 1)).expect("first push");
+    assert!(list.push(Posting::new(2, 1)).is_err());
+}
