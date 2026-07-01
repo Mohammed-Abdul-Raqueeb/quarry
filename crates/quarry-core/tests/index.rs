@@ -117,3 +117,11 @@ fn intersect_keeps_only_shared_documents() {
 
     assert_eq!(left.intersect(&right), vec![2, 5]);
 }
+
+#[test]
+fn intersect_of_disjoint_lists_is_empty() {
+    let left = list_with(&[(1, 1), (3, 1)]);
+    let right = list_with(&[(2, 1), (4, 1)]);
+
+    assert!(left.intersect(&right).is_empty());
+}
