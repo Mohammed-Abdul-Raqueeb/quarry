@@ -131,3 +131,11 @@ fn intersect_with_an_empty_list_is_empty() {
     let left = list_with(&[(1, 1)]);
     assert!(left.intersect(&PostingList::new(0)).is_empty());
 }
+
+#[test]
+fn intersect_is_commutative() {
+    let left = list_with(&[(1, 1), (2, 1), (5, 1)]);
+    let right = list_with(&[(2, 1), (5, 1), (8, 1)]);
+
+    assert_eq!(left.intersect(&right), right.intersect(&left));
+}
