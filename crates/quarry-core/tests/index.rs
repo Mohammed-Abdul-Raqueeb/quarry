@@ -147,3 +147,9 @@ fn union_merges_without_duplicates() {
 
     assert_eq!(left.union(&right), vec![1, 3, 5]);
 }
+
+#[test]
+fn union_with_an_empty_list_returns_the_other() {
+    let left = list_with(&[(1, 1), (3, 1)]);
+    assert_eq!(left.union(&PostingList::new(0)), vec![1, 3]);
+}
