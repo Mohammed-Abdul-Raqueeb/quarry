@@ -94,3 +94,10 @@ fn get_returns_none_for_an_absent_document() {
     let list = list_with(&[(1, 1), (9, 1)]);
     assert!(list.get(5).is_none());
 }
+
+#[test]
+fn contains_reports_membership() {
+    let list = list_with(&[(1, 1), (9, 1)]);
+    assert!(list.contains(9));
+    assert!(!list.contains(2));
+}
