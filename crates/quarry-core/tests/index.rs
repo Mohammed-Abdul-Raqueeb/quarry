@@ -153,3 +153,12 @@ fn union_with_an_empty_list_returns_the_other() {
     let left = list_with(&[(1, 1), (3, 1)]);
     assert_eq!(left.union(&PostingList::new(0)), vec![1, 3]);
 }
+
+#[test]
+fn union_keeps_the_result_sorted() {
+    let left = list_with(&[(1, 1), (9, 1)]);
+    let right = list_with(&[(4, 1), (6, 1)]);
+
+    let merged = left.union(&right);
+    assert!(merged.windows(2).all(|w| w[0] < w[1]));
+}
