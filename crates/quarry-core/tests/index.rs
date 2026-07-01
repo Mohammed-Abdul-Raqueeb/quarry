@@ -82,3 +82,9 @@ fn push_rejects_a_duplicate_document_id() {
     list.push(Posting::new(5, 1)).expect("first push");
     assert!(list.push(Posting::new(5, 1)).is_err());
 }
+
+#[test]
+fn get_finds_a_posting_by_document() {
+    let list = list_with(&[(1, 1), (7, 3), (9, 1)]);
+    assert_eq!(list.get(7).map(|p| p.term_freq), Some(3));
+}
