@@ -88,3 +88,9 @@ fn get_finds_a_posting_by_document() {
     let list = list_with(&[(1, 1), (7, 3), (9, 1)]);
     assert_eq!(list.get(7).map(|p| p.term_freq), Some(3));
 }
+
+#[test]
+fn get_returns_none_for_an_absent_document() {
+    let list = list_with(&[(1, 1), (9, 1)]);
+    assert!(list.get(5).is_none());
+}
