@@ -75,3 +75,10 @@ fn push_rejects_a_descending_document_id() {
     list.push(Posting::new(5, 1)).expect("first push");
     assert!(list.push(Posting::new(2, 1)).is_err());
 }
+
+#[test]
+fn push_rejects_a_duplicate_document_id() {
+    let mut list = PostingList::new(0);
+    list.push(Posting::new(5, 1)).expect("first push");
+    assert!(list.push(Posting::new(5, 1)).is_err());
+}
