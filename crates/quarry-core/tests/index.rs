@@ -184,3 +184,11 @@ fn difference_of_identical_lists_is_empty() {
 }
 
 // ---- posting list encoding ---------------------------------------------
+
+fn round_trip(list: &PostingList) -> PostingList {
+    let mut writer = BlobWriter::new();
+    list.encode(&mut writer);
+    let bytes = writer.finish();
+
+    PostingList::decode(&mut BlobReader::new(&bytes)).expect("should decode")
+}
