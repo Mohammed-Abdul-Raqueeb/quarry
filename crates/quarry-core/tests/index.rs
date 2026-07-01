@@ -101,3 +101,11 @@ fn contains_reports_membership() {
     assert!(list.contains(9));
     assert!(!list.contains(2));
 }
+
+#[test]
+fn doc_ids_returns_them_in_order() {
+    let list = list_with(&[(1, 1), (4, 1), (9, 1)]);
+    assert_eq!(list.doc_ids(), vec![1, 4, 9]);
+}
+
+// ---- set operations -----------------------------------------------------
