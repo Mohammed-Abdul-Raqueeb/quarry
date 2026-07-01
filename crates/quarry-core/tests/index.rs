@@ -162,3 +162,11 @@ fn union_keeps_the_result_sorted() {
     let merged = left.union(&right);
     assert!(merged.windows(2).all(|w| w[0] < w[1]));
 }
+
+#[test]
+fn difference_removes_shared_documents() {
+    let left = list_with(&[(1, 1), (2, 1), (5, 1)]);
+    let right = list_with(&[(2, 1)]);
+
+    assert_eq!(left.difference(&right), vec![1, 5]);
+}
