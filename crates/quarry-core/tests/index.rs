@@ -170,3 +170,9 @@ fn difference_removes_shared_documents() {
 
     assert_eq!(left.difference(&right), vec![1, 5]);
 }
+
+#[test]
+fn difference_with_an_empty_list_returns_everything() {
+    let left = list_with(&[(1, 1), (2, 1)]);
+    assert_eq!(left.difference(&PostingList::new(0)), vec![1, 2]);
+}
