@@ -53,3 +53,9 @@ fn doc_freq_counts_documents_not_occurrences() {
     let list = list_with(&[(1, 10), (2, 20)]);
     assert_eq!(list.doc_freq(), 2);
 }
+
+#[test]
+fn total_term_freq_sums_occurrences() {
+    let list = list_with(&[(1, 10), (2, 20)]);
+    assert_eq!(list.total_term_freq(), 30);
+}
