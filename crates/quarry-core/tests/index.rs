@@ -192,3 +192,12 @@ fn round_trip(list: &PostingList) -> PostingList {
 
     PostingList::decode(&mut BlobReader::new(&bytes)).expect("should decode")
 }
+
+#[test]
+fn an_empty_list_round_trips() {
+    let list = PostingList::new(3);
+    let decoded = round_trip(&list);
+
+    assert_eq!(decoded.field, 3);
+    assert!(decoded.is_empty());
+}
