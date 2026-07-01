@@ -125,3 +125,9 @@ fn intersect_of_disjoint_lists_is_empty() {
 
     assert!(left.intersect(&right).is_empty());
 }
+
+#[test]
+fn intersect_with_an_empty_list_is_empty() {
+    let left = list_with(&[(1, 1)]);
+    assert!(left.intersect(&PostingList::new(0)).is_empty());
+}
