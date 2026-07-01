@@ -139,3 +139,11 @@ fn intersect_is_commutative() {
 
     assert_eq!(left.intersect(&right), right.intersect(&left));
 }
+
+#[test]
+fn union_merges_without_duplicates() {
+    let left = list_with(&[(1, 1), (3, 1)]);
+    let right = list_with(&[(3, 1), (5, 1)]);
+
+    assert_eq!(left.union(&right), vec![1, 3, 5]);
+}
