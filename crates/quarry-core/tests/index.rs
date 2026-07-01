@@ -109,3 +109,11 @@ fn doc_ids_returns_them_in_order() {
 }
 
 // ---- set operations -----------------------------------------------------
+
+#[test]
+fn intersect_keeps_only_shared_documents() {
+    let left = list_with(&[(1, 1), (2, 1), (5, 1)]);
+    let right = list_with(&[(2, 1), (5, 1), (8, 1)]);
+
+    assert_eq!(left.intersect(&right), vec![2, 5]);
+}
