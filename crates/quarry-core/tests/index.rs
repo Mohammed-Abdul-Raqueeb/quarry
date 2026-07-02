@@ -322,3 +322,18 @@ fn the_same_term_in_two_documents_gives_a_frequency_of_two() {
 
     assert_eq!(index.doc_freq(0, "rust"), 2);
 }
+
+#[test]
+fn positions_accumulate_in_order() {
+    let mut index = InvertedIndex::new();
+    let doc = index.allocate_doc();
+    for position in [0u32, 4, 9] {
+        index.add_term(0, "rust", doc, Some(position));
+    }
+
+    let list = index.postings(0, "rust").expect("list exists");
+    assert_eq!(
+        list.get(doc).map(|p| p.positions.clone()),
+        Some(vec![0, 4, 9])
+    );
+}
