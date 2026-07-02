@@ -280,3 +280,12 @@ fn a_new_index_is_empty() {
     assert_eq!(index.doc_count(), 0);
     assert_eq!(index.term_count(), 0);
 }
+
+#[test]
+fn allocate_doc_assigns_dense_ascending_ids() {
+    // Dense ids are what allow the gap encoding in the posting codec.
+    let mut index = InvertedIndex::new();
+    assert_eq!(index.allocate_doc(), 0);
+    assert_eq!(index.allocate_doc(), 1);
+    assert_eq!(index.doc_count(), 2);
+}
