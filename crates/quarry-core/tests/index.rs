@@ -351,3 +351,8 @@ fn the_same_term_in_two_fields_keeps_separate_lists() {
     assert_eq!(index.doc_freq(0, "rust"), 1);
     assert_eq!(index.doc_freq(1, "rust"), 1);
 }
+
+#[test]
+fn doc_freq_is_zero_for_an_unknown_term() {
+    assert_eq!(InvertedIndex::new().doc_freq(0, "absent"), 0);
+}
