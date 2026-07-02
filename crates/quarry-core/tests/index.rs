@@ -254,3 +254,14 @@ fn gap_encoding_keeps_a_dense_list_small() {
         writer.len()
     );
 }
+
+#[test]
+fn decoding_a_truncated_list_fails() {
+    let list = list_with(&[(1, 1), (2, 1), (3, 1)]);
+    let mut writer = BlobWriter::new();
+    list.encode(&mut writer);
+    let bytes = writer.finish();
+
+    let cut = &bytes[..bytes.len() / 2];
+    assert!(PostingList::decode(&mut BlobReader::new(cut)).is_err());
+}
