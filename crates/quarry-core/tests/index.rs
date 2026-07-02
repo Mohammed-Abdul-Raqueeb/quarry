@@ -217,3 +217,9 @@ fn a_list_with_positions_round_trips() {
 
     assert_eq!(round_trip(&list), list);
 }
+
+#[test]
+fn a_list_starting_at_document_zero_round_trips() {
+    let list = list_with(&[(0, 1), (1, 1)]);
+    assert_eq!(round_trip(&list), list);
+}
