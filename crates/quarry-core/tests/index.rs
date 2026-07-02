@@ -207,3 +207,13 @@ fn a_list_without_positions_round_trips() {
     let list = list_with(&[(1, 2), (7, 1), (100, 5)]);
     assert_eq!(round_trip(&list), list);
 }
+
+#[test]
+fn a_list_with_positions_round_trips() {
+    let mut list = PostingList::new(1);
+    list.postings
+        .push(Posting::with_positions(0, vec![0, 3, 7]));
+    list.postings.push(Posting::with_positions(4, vec![1]));
+
+    assert_eq!(round_trip(&list), list);
+}
