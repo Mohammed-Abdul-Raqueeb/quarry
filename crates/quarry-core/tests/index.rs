@@ -229,3 +229,11 @@ fn a_list_with_large_document_ids_round_trips() {
     let list = list_with(&[(1_000_000, 1), (2_000_000, 1)]);
     assert_eq!(round_trip(&list), list);
 }
+
+#[test]
+fn a_long_list_round_trips() {
+    let docs: Vec<(u32, u32)> = (0..500).map(|i| (i * 3, 1 + i % 7)).collect();
+    let list = list_with(&docs);
+
+    assert_eq!(round_trip(&list), list);
+}
