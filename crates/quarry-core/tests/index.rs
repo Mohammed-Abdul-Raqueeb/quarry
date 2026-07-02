@@ -223,3 +223,9 @@ fn a_list_starting_at_document_zero_round_trips() {
     let list = list_with(&[(0, 1), (1, 1)]);
     assert_eq!(round_trip(&list), list);
 }
+
+#[test]
+fn a_list_with_large_document_ids_round_trips() {
+    let list = list_with(&[(1_000_000, 1), (2_000_000, 1)]);
+    assert_eq!(round_trip(&list), list);
+}
