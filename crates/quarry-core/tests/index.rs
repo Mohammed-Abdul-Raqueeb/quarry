@@ -361,3 +361,12 @@ fn doc_freq_is_zero_for_an_unknown_term() {
 fn postings_returns_none_for_an_unknown_term() {
     assert!(InvertedIndex::new().postings(0, "absent").is_none());
 }
+
+#[test]
+fn records_and_reports_a_field_length() {
+    let mut index = InvertedIndex::new();
+    let doc = index.allocate_doc();
+    index.record_field_length(doc, 0, 12);
+
+    assert_eq!(index.field_length(doc, 0), 12);
+}
