@@ -265,3 +265,10 @@ fn decoding_a_truncated_list_fails() {
     let cut = &bytes[..bytes.len() / 2];
     assert!(PostingList::decode(&mut BlobReader::new(cut)).is_err());
 }
+
+#[test]
+fn decoding_an_empty_buffer_fails() {
+    assert!(PostingList::decode(&mut BlobReader::new(&[])).is_err());
+}
+
+// ---- InvertedIndex ------------------------------------------------------
