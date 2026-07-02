@@ -272,3 +272,11 @@ fn decoding_an_empty_buffer_fails() {
 }
 
 // ---- InvertedIndex ------------------------------------------------------
+
+#[test]
+fn a_new_index_is_empty() {
+    let index = InvertedIndex::new();
+    assert!(index.is_empty());
+    assert_eq!(index.doc_count(), 0);
+    assert_eq!(index.term_count(), 0);
+}
