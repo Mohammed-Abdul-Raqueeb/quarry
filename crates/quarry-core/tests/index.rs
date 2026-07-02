@@ -370,3 +370,8 @@ fn records_and_reports_a_field_length() {
 
     assert_eq!(index.field_length(doc, 0), 12);
 }
+
+#[test]
+fn field_length_is_zero_when_unrecorded() {
+    assert_eq!(InvertedIndex::new().field_length(0, 0), 0);
+}
