@@ -237,3 +237,20 @@ fn a_long_list_round_trips() {
 
     assert_eq!(round_trip(&list), list);
 }
+
+#[test]
+fn gap_encoding_keeps_a_dense_list_small() {
+    let docs: Vec<(u32, u32)> = (10_000..10_300).map(|i| (i, 1)).collect();
+    let list = list_with(&docs);
+
+    let mut writer = BlobWriter::new();
+    list.encode(&mut writer);
+
+    // 300 postings with adjacent ids and a frequency of 1 should cost roughly
+    // two bytes each, not the eight a fixed layout would.
+    assert!(
+        writer.len() < docs.len() * 4,
+        "300 dense postings took {} bytes",
+        writer.len()
+    );
+}
