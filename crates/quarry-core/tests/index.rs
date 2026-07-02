@@ -201,3 +201,9 @@ fn an_empty_list_round_trips() {
     assert_eq!(decoded.field, 3);
     assert!(decoded.is_empty());
 }
+
+#[test]
+fn a_list_without_positions_round_trips() {
+    let list = list_with(&[(1, 2), (7, 1), (100, 5)]);
+    assert_eq!(round_trip(&list), list);
+}
