@@ -311,3 +311,14 @@ fn repeating_a_term_in_one_document_raises_its_frequency() {
     assert_eq!(list.doc_freq(), 1);
     assert_eq!(list.total_term_freq(), 3);
 }
+
+#[test]
+fn the_same_term_in_two_documents_gives_a_frequency_of_two() {
+    let mut index = InvertedIndex::new();
+    for _ in 0..2 {
+        let doc = index.allocate_doc();
+        index.add_term(0, "rust", doc, None);
+    }
+
+    assert_eq!(index.doc_freq(0, "rust"), 2);
+}
