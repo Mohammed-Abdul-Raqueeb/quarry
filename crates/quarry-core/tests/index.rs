@@ -375,3 +375,17 @@ fn records_and_reports_a_field_length() {
 fn field_length_is_zero_when_unrecorded() {
     assert_eq!(InvertedIndex::new().field_length(0, 0), 0);
 }
+
+#[test]
+fn field_stats_accumulate_across_documents() {
+    let mut index = InvertedIndex::new();
+    for length in [10u32, 20, 30] {
+        let doc = index.allocate_doc();
+        index.record_field_length(doc, 0, length);
+    }
+
+    let stats = index.field_stats(0);
+    assert_eq!(stats.doc_count, 3);
+    assert_eq!(stats.total_length, 60);
+    assert_eq!(stats.average_length(), 20.0);
+}
