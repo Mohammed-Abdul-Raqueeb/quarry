@@ -289,3 +289,12 @@ fn allocate_doc_assigns_dense_ascending_ids() {
     assert_eq!(index.allocate_doc(), 1);
     assert_eq!(index.doc_count(), 2);
 }
+
+#[test]
+fn add_term_creates_a_posting_list() {
+    let mut index = InvertedIndex::new();
+    let doc = index.allocate_doc();
+    index.add_term(0, "rust", doc, None);
+
+    assert_eq!(index.doc_freq(0, "rust"), 1);
+}
