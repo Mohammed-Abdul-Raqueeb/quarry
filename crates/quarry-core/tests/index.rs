@@ -356,3 +356,8 @@ fn the_same_term_in_two_fields_keeps_separate_lists() {
 fn doc_freq_is_zero_for_an_unknown_term() {
     assert_eq!(InvertedIndex::new().doc_freq(0, "absent"), 0);
 }
+
+#[test]
+fn postings_returns_none_for_an_unknown_term() {
+    assert!(InvertedIndex::new().postings(0, "absent").is_none());
+}
