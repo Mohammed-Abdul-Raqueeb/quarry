@@ -523,3 +523,14 @@ fn insert_list_installs_a_whole_posting_list() {
 
     assert_eq!(index.doc_freq(0, "rust"), 2);
 }
+
+#[test]
+fn set_field_length_does_not_touch_the_statistics() {
+    // The merger sums statistics itself, so replaying lengths must not
+    // double-count.
+    let mut index = InvertedIndex::new();
+    index.set_field_length(0, 0, 10);
+
+    assert_eq!(index.field_length(0, 0), 10);
+    assert_eq!(index.field_stats(0).doc_count, 0);
+}
