@@ -505,3 +505,13 @@ fn most_frequent_terms_respects_its_limit() {
 
     assert_eq!(index.most_frequent_terms(0, 2).len(), 2);
 }
+
+#[test]
+fn active_fields_lists_fields_with_recorded_lengths() {
+    let mut index = InvertedIndex::new();
+    let doc = index.allocate_doc();
+    index.record_field_length(doc, 2, 5);
+    index.record_field_length(doc, 0, 5);
+
+    assert_eq!(index.active_fields(), vec![0, 2]);
+}
