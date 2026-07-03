@@ -494,3 +494,14 @@ fn most_frequent_terms_breaks_ties_alphabetically() {
 
     assert_eq!(index.most_frequent_terms(0, 2)[0].0, "apple");
 }
+
+#[test]
+fn most_frequent_terms_respects_its_limit() {
+    let mut index = InvertedIndex::new();
+    let doc = index.allocate_doc();
+    for term in ["a", "b", "c", "d"] {
+        index.add_term(0, term, doc, None);
+    }
+
+    assert_eq!(index.most_frequent_terms(0, 2).len(), 2);
+}
