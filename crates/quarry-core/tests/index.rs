@@ -515,3 +515,11 @@ fn active_fields_lists_fields_with_recorded_lengths() {
 
     assert_eq!(index.active_fields(), vec![0, 2]);
 }
+
+#[test]
+fn insert_list_installs_a_whole_posting_list() {
+    let mut index = InvertedIndex::new();
+    index.insert_list(TermKey::new(0, "rust"), list_with(&[(0, 1), (3, 1)]));
+
+    assert_eq!(index.doc_freq(0, "rust"), 2);
+}
