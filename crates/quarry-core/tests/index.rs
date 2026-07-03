@@ -561,3 +561,17 @@ fn estimated_bytes_is_zero_for_an_empty_index() {
 }
 
 // ---- TermKey ------------------------------------------------------------
+
+#[test]
+fn term_keys_order_by_field_then_text() {
+    let mut keys = [
+        TermKey::new(1, "a"),
+        TermKey::new(0, "z"),
+        TermKey::new(0, "a"),
+    ];
+    keys.sort();
+
+    assert_eq!(keys[0], TermKey::new(0, "a"));
+    assert_eq!(keys[1], TermKey::new(0, "z"));
+    assert_eq!(keys[2], TermKey::new(1, "a"));
+}
