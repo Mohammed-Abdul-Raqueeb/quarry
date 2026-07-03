@@ -435,3 +435,13 @@ fn terms_with_prefix_returns_nothing_for_an_unmatched_prefix() {
 
     assert!(index.terms_with_prefix(0, "python").is_empty());
 }
+
+#[test]
+fn terms_with_prefix_is_scoped_to_one_field() {
+    let mut index = InvertedIndex::new();
+    let doc = index.allocate_doc();
+    index.add_term(0, "rust", doc, None);
+    index.add_term(1, "rust", doc, None);
+
+    assert_eq!(index.terms_with_prefix(0, "rus").len(), 1);
+}
