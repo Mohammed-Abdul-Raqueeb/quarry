@@ -445,3 +445,13 @@ fn terms_with_prefix_is_scoped_to_one_field() {
 
     assert_eq!(index.terms_with_prefix(0, "rus").len(), 1);
 }
+
+#[test]
+fn an_empty_prefix_returns_every_term_in_the_field() {
+    let mut index = InvertedIndex::new();
+    let doc = index.allocate_doc();
+    index.add_term(0, "a", doc, None);
+    index.add_term(0, "b", doc, None);
+
+    assert_eq!(index.terms_with_prefix(0, "").len(), 2);
+}
