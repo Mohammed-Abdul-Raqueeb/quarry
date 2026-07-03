@@ -426,3 +426,12 @@ fn terms_with_prefix_finds_a_contiguous_range() {
         ["borrow", "borrowed", "borrowing"]
     );
 }
+
+#[test]
+fn terms_with_prefix_returns_nothing_for_an_unmatched_prefix() {
+    let mut index = InvertedIndex::new();
+    let doc = index.allocate_doc();
+    index.add_term(0, "rust", doc, None);
+
+    assert!(index.terms_with_prefix(0, "python").is_empty());
+}
