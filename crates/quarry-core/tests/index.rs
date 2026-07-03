@@ -466,3 +466,20 @@ fn terms_in_field_lists_only_that_field() {
     assert_eq!(index.terms_in_field(0), ["one"]);
     assert_eq!(index.terms_in_field(1), ["two"]);
 }
+
+#[test]
+fn most_frequent_terms_orders_by_document_frequency() {
+    let mut index = InvertedIndex::new();
+    for i in 0..3 {
+        let doc = index.allocate_doc();
+        index.add_term(0, "common", doc, None);
+        if i == 0 {
+            index.add_term(0, "rare", doc, None);
+        }
+    }
+
+    assert_eq!(
+        index.most_frequent_terms(0, 2),
+        vec![("common", 3), ("rare", 1)]
+    );
+}
