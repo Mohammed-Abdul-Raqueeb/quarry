@@ -483,3 +483,14 @@ fn most_frequent_terms_orders_by_document_frequency() {
         vec![("common", 3), ("rare", 1)]
     );
 }
+
+#[test]
+fn most_frequent_terms_breaks_ties_alphabetically() {
+    // Deterministic output matters for a CLI that prints this.
+    let mut index = InvertedIndex::new();
+    let doc = index.allocate_doc();
+    index.add_term(0, "zebra", doc, None);
+    index.add_term(0, "apple", doc, None);
+
+    assert_eq!(index.most_frequent_terms(0, 2)[0].0, "apple");
+}
