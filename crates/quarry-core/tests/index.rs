@@ -575,3 +575,9 @@ fn term_keys_order_by_field_then_text() {
     assert_eq!(keys[1], TermKey::new(0, "z"));
     assert_eq!(keys[2], TermKey::new(1, "a"));
 }
+
+#[test]
+fn term_keys_compare_by_value() {
+    assert_eq!(TermKey::new(0, "rust"), TermKey::new(0, "rust"));
+    assert_ne!(TermKey::new(0, "rust"), TermKey::new(1, "rust"));
+}
