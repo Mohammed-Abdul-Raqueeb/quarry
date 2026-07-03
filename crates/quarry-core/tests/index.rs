@@ -395,3 +395,20 @@ fn average_length_is_one_for_an_unseen_field() {
     // Returning 1.0 rather than 0.0 keeps BM25 from dividing by zero.
     assert_eq!(InvertedIndex::new().field_stats(0).average_length(), 1.0);
 }
+
+#[test]
+fn terms_are_iterated_in_sorted_order() {
+    // The segment writer front-codes the dictionary, which only works if the
+    // terms arrive sorted.
+    let mut index = InvertedIndex::new();
+    let doc = index.allocate_doc();
+    for term in ["zebra", "apple", "mango"] {
+        index.add_term(0, term, doc, None);
+    }
+
+    let terms: Vec<&str> = index
+        .iter_terms()
+        .map(|(key, _)| key.text.as_str())
+        .collect();
+    assert_eq!(terms, ["apple", "mango", "zebra"]);
+}
