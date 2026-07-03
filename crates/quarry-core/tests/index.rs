@@ -541,3 +541,16 @@ fn set_doc_count_overrides_the_counter() {
     index.set_doc_count(42);
     assert_eq!(index.doc_count(), 42);
 }
+
+#[test]
+fn estimated_bytes_grows_with_content() {
+    let mut index = InvertedIndex::new();
+    let empty = index.estimated_bytes();
+
+    let doc = index.allocate_doc();
+    for i in 0..50 {
+        index.add_term(0, &format!("term{i}"), doc, Some(i));
+    }
+
+    assert!(index.estimated_bytes() > empty);
+}
