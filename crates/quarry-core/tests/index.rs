@@ -455,3 +455,14 @@ fn an_empty_prefix_returns_every_term_in_the_field() {
 
     assert_eq!(index.terms_with_prefix(0, "").len(), 2);
 }
+
+#[test]
+fn terms_in_field_lists_only_that_field() {
+    let mut index = InvertedIndex::new();
+    let doc = index.allocate_doc();
+    index.add_term(0, "one", doc, None);
+    index.add_term(1, "two", doc, None);
+
+    assert_eq!(index.terms_in_field(0), ["one"]);
+    assert_eq!(index.terms_in_field(1), ["two"]);
+}
