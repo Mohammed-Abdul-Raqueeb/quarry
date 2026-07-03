@@ -389,3 +389,9 @@ fn field_stats_accumulate_across_documents() {
     assert_eq!(stats.total_length, 60);
     assert_eq!(stats.average_length(), 20.0);
 }
+
+#[test]
+fn average_length_is_one_for_an_unseen_field() {
+    // Returning 1.0 rather than 0.0 keeps BM25 from dividing by zero.
+    assert_eq!(InvertedIndex::new().field_stats(0).average_length(), 1.0);
+}
