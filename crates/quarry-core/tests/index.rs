@@ -554,3 +554,10 @@ fn estimated_bytes_grows_with_content() {
 
     assert!(index.estimated_bytes() > empty);
 }
+
+#[test]
+fn estimated_bytes_is_zero_for_an_empty_index() {
+    assert_eq!(InvertedIndex::new().estimated_bytes(), 0);
+}
+
+// ---- TermKey ------------------------------------------------------------
