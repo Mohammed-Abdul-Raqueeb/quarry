@@ -534,3 +534,10 @@ fn set_field_length_does_not_touch_the_statistics() {
     assert_eq!(index.field_length(0, 0), 10);
     assert_eq!(index.field_stats(0).doc_count, 0);
 }
+
+#[test]
+fn set_doc_count_overrides_the_counter() {
+    let mut index = InvertedIndex::new();
+    index.set_doc_count(42);
+    assert_eq!(index.doc_count(), 42);
+}
