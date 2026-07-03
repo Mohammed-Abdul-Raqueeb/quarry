@@ -412,3 +412,17 @@ fn terms_are_iterated_in_sorted_order() {
         .collect();
     assert_eq!(terms, ["apple", "mango", "zebra"]);
 }
+
+#[test]
+fn terms_with_prefix_finds_a_contiguous_range() {
+    let mut index = InvertedIndex::new();
+    let doc = index.allocate_doc();
+    for term in ["borrow", "borrowed", "borrowing", "break"] {
+        index.add_term(0, term, doc, None);
+    }
+
+    assert_eq!(
+        index.terms_with_prefix(0, "borrow"),
+        ["borrow", "borrowed", "borrowing"]
+    );
+}
