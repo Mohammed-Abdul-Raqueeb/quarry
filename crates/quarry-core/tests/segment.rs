@@ -19,3 +19,7 @@ fn schema() -> Schema {
         .and_then(SchemaBuilder::build)
         .expect("schema should build")
 }
+
+fn writer() -> IndexWriter {
+    IndexWriter::new(schema())
+}
