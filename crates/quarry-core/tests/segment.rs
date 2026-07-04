@@ -36,3 +36,13 @@ fn segment_with(titles: &[&str]) -> Segment {
 }
 
 // ---- round trips --------------------------------------------------------
+
+#[test]
+fn a_segment_round_trips() {
+    let original = segment_with(&["rust ownership", "python typing"]);
+    let bytes = original.write();
+    let decoded = Segment::read(&bytes).expect("should read");
+
+    assert_eq!(decoded.doc_count(), 2);
+    assert_eq!(decoded.meta.term_count, original.meta.term_count);
+}
