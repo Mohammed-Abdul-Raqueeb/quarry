@@ -154,3 +154,12 @@ fn rejects_a_buffer_that_is_too_short() {
 fn rejects_an_empty_buffer() {
     assert!(Segment::read(&[]).is_err());
 }
+
+#[test]
+fn rejects_a_missing_leading_magic() {
+    let mut bytes = segment_with(&["x"]).write();
+    bytes[0] = b'X';
+
+    let err = Segment::read(&bytes).unwrap_err().to_string();
+    assert!(err.contains("magic"), "message was: {err}");
+}
