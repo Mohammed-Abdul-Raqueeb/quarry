@@ -130,3 +130,10 @@ fn serialization_is_deterministic() {
 fn a_segment_records_the_current_format_version() {
     assert_eq!(segment_with(&["x"]).meta.version, FORMAT_VERSION);
 }
+
+#[test]
+fn a_segment_records_its_document_and_term_counts() {
+    let segment = segment_with(&["alpha beta"]);
+    assert_eq!(segment.meta.doc_count, 1);
+    assert!(segment.meta.term_count >= 2);
+}
