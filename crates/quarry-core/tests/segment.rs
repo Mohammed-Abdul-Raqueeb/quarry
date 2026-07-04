@@ -64,3 +64,15 @@ fn a_round_tripped_segment_keeps_positions() {
     let list = decoded.index.postings(0, "beta").expect("term exists");
     assert_eq!(list.get(0).map(|p| p.positions.clone()), Some(vec![1]));
 }
+
+#[test]
+fn a_round_tripped_segment_keeps_stored_fields() {
+    let original = segment_with(&["rust ownership"]);
+    let decoded = Segment::read(&original.write()).expect("should read");
+
+    let doc = decoded.store.document(0).expect("document stored");
+    assert_eq!(
+        doc.value(0).map(Value::as_text),
+        Some("rust ownership".to_string())
+    );
+}
