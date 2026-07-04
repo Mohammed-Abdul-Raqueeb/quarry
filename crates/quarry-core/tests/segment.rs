@@ -96,3 +96,14 @@ fn a_round_tripped_segment_keeps_per_document_lengths() {
     assert_eq!(decoded.index.field_length(0, 0), 3);
     assert_eq!(decoded.index.field_length(1, 0), 1);
 }
+
+#[test]
+fn a_segment_with_many_documents_round_trips() {
+    let titles: Vec<String> = (0..200).map(|i| format!("document number {i}")).collect();
+    let refs: Vec<&str> = titles.iter().map(String::as_str).collect();
+
+    let original = segment_with(&refs);
+    let decoded = Segment::read(&original.write()).expect("should read");
+
+    assert_eq!(decoded.doc_count(), 200);
+}
