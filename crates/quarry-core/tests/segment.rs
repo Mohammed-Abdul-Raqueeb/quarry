@@ -46,3 +46,12 @@ fn a_segment_round_trips() {
     assert_eq!(decoded.doc_count(), 2);
     assert_eq!(decoded.meta.term_count, original.meta.term_count);
 }
+
+#[test]
+fn a_round_tripped_segment_keeps_its_postings() {
+    let original = segment_with(&["rust ownership"]);
+    let decoded = Segment::read(&original.write()).expect("should read");
+
+    assert_eq!(decoded.index.doc_freq(0, "rust"), 1);
+    assert_eq!(decoded.index.doc_freq(0, "ownership"), 1);
+}
