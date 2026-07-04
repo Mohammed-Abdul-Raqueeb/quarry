@@ -115,3 +115,13 @@ fn a_segment_with_multibyte_terms_round_trips() {
 
     assert_eq!(decoded.doc_count(), 2);
 }
+
+#[test]
+fn serialization_is_deterministic() {
+    // Two segments built the same way must serialize identically, or the
+    // front-coded dictionary and the checksums would be unstable.
+    let first = segment_with(&["rust ownership", "python typing"]);
+    let second = segment_with(&["rust ownership", "python typing"]);
+
+    assert_eq!(first.write(), second.write());
+}
