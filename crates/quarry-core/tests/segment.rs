@@ -107,3 +107,11 @@ fn a_segment_with_many_documents_round_trips() {
 
     assert_eq!(decoded.doc_count(), 200);
 }
+
+#[test]
+fn a_segment_with_multibyte_terms_round_trips() {
+    let original = segment_with(&["café naïve", "日本語 テスト"]);
+    let decoded = Segment::read(&original.write()).expect("should read");
+
+    assert_eq!(decoded.doc_count(), 2);
+}
