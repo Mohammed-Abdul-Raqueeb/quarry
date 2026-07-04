@@ -183,3 +183,12 @@ fn a_truncated_segment_is_reported_as_truncated_not_corrupt() {
     let err = Segment::read(cut).unwrap_err().to_string();
     assert!(err.contains("truncated"), "message was: {err}");
 }
+
+#[test]
+fn rejects_a_damaged_body_byte() {
+    let mut bytes = segment_with(&["rust ownership and borrowing"]).write();
+    let middle = bytes.len() / 2;
+    bytes[middle] ^= 0xFF;
+
+    assert!(Segment::read(&bytes).is_err());
+}
