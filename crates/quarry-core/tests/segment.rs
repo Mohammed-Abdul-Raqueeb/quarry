@@ -149,3 +149,8 @@ fn a_segment_with_one_document_is_not_empty() {
 fn rejects_a_buffer_that_is_too_short() {
     assert!(Segment::read(&[1, 2, 3]).is_err());
 }
+
+#[test]
+fn rejects_an_empty_buffer() {
+    assert!(Segment::read(&[]).is_err());
+}
