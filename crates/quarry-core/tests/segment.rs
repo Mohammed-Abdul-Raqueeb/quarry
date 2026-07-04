@@ -172,3 +172,14 @@ fn rejects_a_truncated_segment() {
 
     assert!(Segment::read(cut).is_err());
 }
+
+#[test]
+fn a_truncated_segment_is_reported_as_truncated_not_corrupt() {
+    // The distinction matters: one means an interrupted write, the other means
+    // damaged bytes, and they call for different responses.
+    let bytes = segment_with(&["rust ownership"]).write();
+    let cut = &bytes[..bytes.len() - 6];
+
+    let err = Segment::read(cut).unwrap_err().to_string();
+    assert!(err.contains("truncated"), "message was: {err}");
+}
