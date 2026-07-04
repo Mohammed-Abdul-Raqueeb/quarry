@@ -137,3 +137,10 @@ fn a_segment_records_its_document_and_term_counts() {
     assert_eq!(segment.meta.doc_count, 1);
     assert!(segment.meta.term_count >= 2);
 }
+
+#[test]
+fn a_segment_with_one_document_is_not_empty() {
+    assert!(!segment_with(&["x"]).is_empty());
+}
+
+// ---- framing and corruption --------------------------------------------
