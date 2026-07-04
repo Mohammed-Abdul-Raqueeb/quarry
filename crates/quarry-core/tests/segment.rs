@@ -23,3 +23,16 @@ fn schema() -> Schema {
 fn writer() -> IndexWriter {
     IndexWriter::new(schema())
 }
+
+/// A segment holding the given titles, one document each.
+fn segment_with(titles: &[&str]) -> Segment {
+    let mut writer = writer();
+    for title in titles {
+        let mut doc = Document::new();
+        doc.add(0, Value::Text((*title).to_string()));
+        writer.add(&doc).expect("should index");
+    }
+    writer.flush().expect("a document was added")
+}
+
+// ---- round trips --------------------------------------------------------
