@@ -125,3 +125,8 @@ fn serialization_is_deterministic() {
 
     assert_eq!(first.write(), second.write());
 }
+
+#[test]
+fn a_segment_records_the_current_format_version() {
+    assert_eq!(segment_with(&["x"]).meta.version, FORMAT_VERSION);
+}
