@@ -163,3 +163,12 @@ fn rejects_a_missing_leading_magic() {
     let err = Segment::read(&bytes).unwrap_err().to_string();
     assert!(err.contains("magic"), "message was: {err}");
 }
+
+#[test]
+fn rejects_a_truncated_segment() {
+    // The failure a process killed mid-write leaves behind.
+    let bytes = segment_with(&["rust ownership", "more text here"]).write();
+    let cut = &bytes[..bytes.len() - 20];
+
+    assert!(Segment::read(cut).is_err());
+}
