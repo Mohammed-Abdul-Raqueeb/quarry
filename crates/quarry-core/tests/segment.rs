@@ -76,3 +76,14 @@ fn a_round_tripped_segment_keeps_stored_fields() {
         Some("rust ownership".to_string())
     );
 }
+
+#[test]
+fn a_round_tripped_segment_keeps_field_statistics() {
+    let original = segment_with(&["one two three", "four"]);
+    let decoded = Segment::read(&original.write()).expect("should read");
+
+    assert_eq!(
+        decoded.index.field_stats(0).total_length,
+        original.index.field_stats(0).total_length
+    );
+}
