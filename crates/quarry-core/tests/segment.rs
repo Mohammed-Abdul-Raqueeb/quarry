@@ -55,3 +55,12 @@ fn a_round_tripped_segment_keeps_its_postings() {
     assert_eq!(decoded.index.doc_freq(0, "rust"), 1);
     assert_eq!(decoded.index.doc_freq(0, "ownership"), 1);
 }
+
+#[test]
+fn a_round_tripped_segment_keeps_positions() {
+    let original = segment_with(&["alpha beta gamma"]);
+    let decoded = Segment::read(&original.write()).expect("should read");
+
+    let list = decoded.index.postings(0, "beta").expect("term exists");
+    assert_eq!(list.get(0).map(|p| p.positions.clone()), Some(vec![1]));
+}
