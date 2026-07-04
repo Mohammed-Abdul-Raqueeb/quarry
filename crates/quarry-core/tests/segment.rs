@@ -87,3 +87,12 @@ fn a_round_tripped_segment_keeps_field_statistics() {
         original.index.field_stats(0).total_length
     );
 }
+
+#[test]
+fn a_round_tripped_segment_keeps_per_document_lengths() {
+    let original = segment_with(&["one two three", "four"]);
+    let decoded = Segment::read(&original.write()).expect("should read");
+
+    assert_eq!(decoded.index.field_length(0, 0), 3);
+    assert_eq!(decoded.index.field_length(1, 0), 1);
+}
