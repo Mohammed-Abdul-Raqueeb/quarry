@@ -374,3 +374,11 @@ fn merging_one_segment_returns_it_unchanged() {
 fn merging_nothing_is_an_error() {
     assert!(merge(&[], &schema()).is_err());
 }
+
+#[test]
+fn merging_sums_the_document_counts() {
+    let merged =
+        merge(&[segment_with(&["a b"]), segment_with(&["c d"])], &schema()).expect("should merge");
+
+    assert_eq!(merged.doc_count(), 2);
+}
