@@ -289,3 +289,15 @@ fn a_segment_rejects_a_schema_with_an_added_field() {
 fn the_schema_digest_is_stable() {
     assert_eq!(schema_digest(&schema()), schema_digest(&schema()));
 }
+
+#[test]
+fn the_schema_digest_changes_with_field_order() {
+    let reordered = Schema::builder()
+        .text("body")
+        .and_then(|b| b.text("title"))
+        .and_then(|b| b.keyword("tag"))
+        .and_then(SchemaBuilder::build)
+        .expect("should build");
+
+    assert_ne!(schema_digest(&schema()), schema_digest(&reordered));
+}
