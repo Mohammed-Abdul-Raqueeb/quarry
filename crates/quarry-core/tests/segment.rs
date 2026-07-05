@@ -369,3 +369,8 @@ fn merging_one_segment_returns_it_unchanged() {
 
     assert_eq!(merged.doc_count(), segment.doc_count());
 }
+
+#[test]
+fn merging_nothing_is_an_error() {
+    assert!(merge(&[], &schema()).is_err());
+}
