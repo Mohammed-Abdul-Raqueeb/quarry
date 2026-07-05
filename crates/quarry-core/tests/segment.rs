@@ -284,3 +284,8 @@ fn a_segment_rejects_a_schema_with_an_added_field() {
 
     assert!(segment_with(&["x"]).check_schema(&extended).is_err());
 }
+
+#[test]
+fn the_schema_digest_is_stable() {
+    assert_eq!(schema_digest(&schema()), schema_digest(&schema()));
+}
