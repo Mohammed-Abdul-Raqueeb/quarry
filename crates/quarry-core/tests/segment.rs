@@ -301,3 +301,19 @@ fn the_schema_digest_changes_with_field_order() {
 
     assert_ne!(schema_digest(&schema()), schema_digest(&reordered));
 }
+
+#[test]
+fn the_schema_digest_ignores_a_boost_change() {
+    // Changing a boost does not invalidate existing postings, so forcing a
+    // reindex for it would be gratuitous.
+    let boosted = Schema::builder()
+        .text_boosted("title", 3.0)
+        .and_then(|b| b.text("body"))
+        .and_then(|b| b.keyword("tag"))
+        .and_then(SchemaBuilder::build)
+        .expect("should build");
+
+    assert_eq!(schema_digest(&schema()), schema_digest(&boosted));
+}
+
+// ---- front coding -------------------------------------------------------
