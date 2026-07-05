@@ -202,3 +202,15 @@ fn a_damaged_byte_is_reported_as_a_checksum_mismatch() {
     let err = Segment::read(&bytes).unwrap_err().to_string();
     assert!(err.contains("checksum"), "message was: {err}");
 }
+
+#[test]
+fn rejects_a_future_format_version() {
+    let mut bytes = segment_with(&["x"]).write();
+    bytes[4..8].copy_from_slice(&(FORMAT_VERSION + 1).to_le_bytes());
+    // Keep the footer intact so the version check is what fires.
+    let len = bytes.len();
+    bytes[len - 4..].copy_from_slice(MAGIC_END);
+
+    let err = Segment::read(&bytes).unwrap_err().to_string();
+    assert!(err.contains("format"), "message was: {err}");
+}
