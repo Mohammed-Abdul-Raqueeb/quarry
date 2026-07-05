@@ -332,3 +332,9 @@ fn shared_prefix_of_related_strings() {
 fn shared_prefix_of_unrelated_strings_is_zero() {
     assert_eq!(shared_prefix_len("rust", "python"), 0);
 }
+
+#[test]
+fn shared_prefix_with_an_empty_string_is_zero() {
+    assert_eq!(shared_prefix_len("", "rust"), 0);
+    assert_eq!(shared_prefix_len("rust", ""), 0);
+}
