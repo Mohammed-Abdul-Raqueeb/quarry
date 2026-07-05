@@ -345,3 +345,19 @@ fn shared_prefix_backs_off_to_a_character_boundary() {
     let length = shared_prefix_len("café", "cafés");
     assert!("café".is_char_boundary(length));
 }
+
+#[test]
+fn front_coding_shrinks_a_dictionary_of_related_terms() {
+    let terms: Vec<String> = (0..200).map(|i| format!("prefixedterm{i:04}")).collect();
+    let refs: Vec<&str> = terms.iter().map(String::as_str).collect();
+
+    let segment = segment_with(&refs);
+    let size = segment.write().len();
+    let raw: usize = terms.iter().map(String::len).sum();
+
+    // Every term shares twelve characters, so the dictionary must cost far
+    // less than storing each one whole.
+    assert!(size < raw * 3, "{size} bytes for {raw} bytes of terms");
+}
+
+// ---- merging ------------------------------------------------------------
