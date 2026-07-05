@@ -245,3 +245,17 @@ fn every_single_byte_flip_in_the_body_is_detected() {
 fn a_segment_matches_the_schema_it_was_written_with() {
     assert!(segment_with(&["x"]).check_schema(&schema()).is_ok());
 }
+
+#[test]
+fn a_segment_rejects_a_schema_with_reordered_fields() {
+    // Field ids are positional, so reading with a reordered schema would
+    // attribute every term to the wrong field.
+    let reordered = Schema::builder()
+        .text("body")
+        .and_then(|b| b.text("title"))
+        .and_then(|b| b.keyword("tag"))
+        .and_then(SchemaBuilder::build)
+        .expect("should build");
+
+    assert!(segment_with(&["x"]).check_schema(&reordered).is_err());
+}
