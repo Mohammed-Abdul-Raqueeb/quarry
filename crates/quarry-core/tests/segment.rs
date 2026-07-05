@@ -259,3 +259,15 @@ fn a_segment_rejects_a_schema_with_reordered_fields() {
 
     assert!(segment_with(&["x"]).check_schema(&reordered).is_err());
 }
+
+#[test]
+fn a_segment_rejects_a_schema_with_a_changed_type() {
+    let changed = Schema::builder()
+        .text("title")
+        .and_then(|b| b.keyword("body"))
+        .and_then(|b| b.keyword("tag"))
+        .and_then(SchemaBuilder::build)
+        .expect("should build");
+
+    assert!(segment_with(&["x"]).check_schema(&changed).is_err());
+}
