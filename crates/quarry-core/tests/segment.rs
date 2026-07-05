@@ -223,3 +223,20 @@ fn a_version_error_names_both_versions() {
     let err = Segment::read(&bytes).unwrap_err().to_string();
     assert!(err.contains("99"), "message was: {err}");
 }
+
+#[test]
+fn every_single_byte_flip_in_the_body_is_detected() {
+    // Exhaustive over a small segment: the checksum must catch all of them.
+    let bytes = segment_with(&["rust"]).write();
+
+    for i in 8..bytes.len() - 8 {
+        let mut damaged = bytes.clone();
+        damaged[i] ^= 0xFF;
+        assert!(
+            Segment::read(&damaged).is_err(),
+            "a flip at byte {i} went undetected"
+        );
+    }
+}
+
+// ---- schema binding ----------------------------------------------------
