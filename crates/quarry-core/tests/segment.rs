@@ -317,3 +317,8 @@ fn the_schema_digest_ignores_a_boost_change() {
 }
 
 // ---- front coding -------------------------------------------------------
+
+#[test]
+fn shared_prefix_of_identical_strings_is_their_length() {
+    assert_eq!(shared_prefix_len("borrow", "borrow"), 6);
+}
