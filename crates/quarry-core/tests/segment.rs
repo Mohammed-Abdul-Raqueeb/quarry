@@ -338,3 +338,10 @@ fn shared_prefix_with_an_empty_string_is_zero() {
     assert_eq!(shared_prefix_len("", "rust"), 0);
     assert_eq!(shared_prefix_len("rust", ""), 0);
 }
+
+#[test]
+fn shared_prefix_backs_off_to_a_character_boundary() {
+    // Returning a byte count mid-character would make slicing the prefix panic.
+    let length = shared_prefix_len("café", "cafés");
+    assert!("café".is_char_boundary(length));
+}
