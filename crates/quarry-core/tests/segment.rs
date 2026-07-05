@@ -271,3 +271,16 @@ fn a_segment_rejects_a_schema_with_a_changed_type() {
 
     assert!(segment_with(&["x"]).check_schema(&changed).is_err());
 }
+
+#[test]
+fn a_segment_rejects_a_schema_with_an_added_field() {
+    let extended = Schema::builder()
+        .text("title")
+        .and_then(|b| b.text("body"))
+        .and_then(|b| b.keyword("tag"))
+        .and_then(|b| b.numeric("year"))
+        .and_then(SchemaBuilder::build)
+        .expect("should build");
+
+    assert!(segment_with(&["x"]).check_schema(&extended).is_err());
+}
