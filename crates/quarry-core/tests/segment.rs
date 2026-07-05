@@ -240,3 +240,8 @@ fn every_single_byte_flip_in_the_body_is_detected() {
 }
 
 // ---- schema binding ----------------------------------------------------
+
+#[test]
+fn a_segment_matches_the_schema_it_was_written_with() {
+    assert!(segment_with(&["x"]).check_schema(&schema()).is_ok());
+}
