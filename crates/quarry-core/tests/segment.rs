@@ -192,3 +192,13 @@ fn rejects_a_damaged_body_byte() {
 
     assert!(Segment::read(&bytes).is_err());
 }
+
+#[test]
+fn a_damaged_byte_is_reported_as_a_checksum_mismatch() {
+    let mut bytes = segment_with(&["rust ownership and borrowing"]).write();
+    let middle = bytes.len() / 2;
+    bytes[middle] ^= 0x01;
+
+    let err = Segment::read(&bytes).unwrap_err().to_string();
+    assert!(err.contains("checksum"), "message was: {err}");
+}
