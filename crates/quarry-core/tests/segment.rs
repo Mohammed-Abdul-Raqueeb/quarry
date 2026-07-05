@@ -214,3 +214,12 @@ fn rejects_a_future_format_version() {
     let err = Segment::read(&bytes).unwrap_err().to_string();
     assert!(err.contains("format"), "message was: {err}");
 }
+
+#[test]
+fn a_version_error_names_both_versions() {
+    let mut bytes = segment_with(&["x"]).write();
+    bytes[4..8].copy_from_slice(&99u32.to_le_bytes());
+
+    let err = Segment::read(&bytes).unwrap_err().to_string();
+    assert!(err.contains("99"), "message was: {err}");
+}
