@@ -361,3 +361,11 @@ fn front_coding_shrinks_a_dictionary_of_related_terms() {
 }
 
 // ---- merging ------------------------------------------------------------
+
+#[test]
+fn merging_one_segment_returns_it_unchanged() {
+    let segment = segment_with(&["rust"]);
+    let merged = merge(std::slice::from_ref(&segment), &schema()).expect("should merge");
+
+    assert_eq!(merged.doc_count(), segment.doc_count());
+}
