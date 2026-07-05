@@ -327,3 +327,8 @@ fn shared_prefix_of_identical_strings_is_their_length() {
 fn shared_prefix_of_related_strings() {
     assert_eq!(shared_prefix_len("borrow", "borrowing"), 6);
 }
+
+#[test]
+fn shared_prefix_of_unrelated_strings_is_zero() {
+    assert_eq!(shared_prefix_len("rust", "python"), 0);
+}
