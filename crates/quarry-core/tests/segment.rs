@@ -543,3 +543,17 @@ fn merge_report_shows_terms_collapsing() {
 
     assert!(report.terms_collapsed() > 0);
 }
+
+#[test]
+fn merge_report_shows_bytes_saved() {
+    let (_, report) = merge_with_report(
+        &[
+            segment_with(&["rust ownership borrowing"]),
+            segment_with(&["rust ownership borrowing"]),
+        ],
+        &schema(),
+    )
+    .expect("should merge");
+
+    assert!(report.bytes_saved_ratio() > 0.0);
+}
