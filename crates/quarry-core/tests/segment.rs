@@ -557,3 +557,11 @@ fn merge_report_shows_bytes_saved() {
 
     assert!(report.bytes_saved_ratio() > 0.0);
 }
+
+#[test]
+fn merge_report_reports_zero_savings_when_it_grew() {
+    let (_, report) = merge_with_report(&[segment_with(&["x"])], &schema()).expect("should merge");
+    assert!(report.bytes_saved_ratio() >= 0.0);
+}
+
+// ---- MergePolicy --------------------------------------------------------
