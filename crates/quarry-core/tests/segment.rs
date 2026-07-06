@@ -491,3 +491,13 @@ fn a_merged_segment_round_trips() {
     assert_eq!(decoded.doc_count(), 2);
     assert_eq!(decoded.index.doc_freq(0, "gamma"), 1);
 }
+
+#[test]
+fn merging_rejects_a_segment_from_a_different_schema() {
+    let other = Schema::builder()
+        .text("different")
+        .and_then(SchemaBuilder::build)
+        .expect("should build");
+
+    assert!(merge(&[segment_with(&["x"])], &other).is_err());
+}
