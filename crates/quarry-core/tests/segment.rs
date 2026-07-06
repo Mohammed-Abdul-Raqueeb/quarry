@@ -597,3 +597,25 @@ fn the_policy_respects_its_per_merge_cap() {
 
     assert_eq!(policy.select(&segments).len(), 3);
 }
+
+#[test]
+fn the_policy_skips_segments_past_the_size_ceiling() {
+    // Rewriting a large segment to absorb a small one copies the large one for
+    // almost no read benefit.
+    let policy = MergePolicy {
+        min_segments: 2,
+        max_segments_per_merge: 10,
+        max_merged_docs: 2,
+    };
+    let segments = [
+        segment_with(&["a", "b", "c", "d"]),
+        segment_with(&["e"]),
+        segment_with(&["f"]),
+    ];
+
+    let selected = policy.select(&segments);
+    assert!(
+        !selected.contains(&0),
+        "the large segment should be skipped"
+    );
+}
