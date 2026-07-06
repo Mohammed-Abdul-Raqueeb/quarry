@@ -501,3 +501,24 @@ fn merging_rejects_a_segment_from_a_different_schema() {
 
     assert!(merge(&[segment_with(&["x"])], &other).is_err());
 }
+
+#[test]
+fn merging_is_associative_in_its_document_count() {
+    let segments = [
+        segment_with(&["a"]),
+        segment_with(&["b"]),
+        segment_with(&["c"]),
+    ];
+
+    let all_at_once = merge(&segments, &schema()).expect("should merge");
+    let stepwise = merge(
+        &[
+            merge(&segments[..2], &schema()).expect("should merge"),
+            segments[2].clone(),
+        ],
+        &schema(),
+    )
+    .expect("should merge");
+
+    assert_eq!(all_at_once.doc_count(), stepwise.doc_count());
+}
