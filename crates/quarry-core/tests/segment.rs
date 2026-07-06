@@ -565,3 +565,9 @@ fn merge_report_reports_zero_savings_when_it_grew() {
 }
 
 // ---- MergePolicy --------------------------------------------------------
+
+#[test]
+fn the_policy_leaves_a_small_number_of_segments_alone() {
+    let segments = [segment_with(&["a"]), segment_with(&["b"])];
+    assert!(MergePolicy::default().select(&segments).is_empty());
+}
