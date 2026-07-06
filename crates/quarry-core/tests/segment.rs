@@ -408,3 +408,14 @@ fn merging_remaps_document_ids_densely() {
         Some(vec![1])
     );
 }
+
+#[test]
+fn merging_combines_posting_lists_for_a_shared_term() {
+    let merged = merge(
+        &[segment_with(&["rust"]), segment_with(&["rust"])],
+        &schema(),
+    )
+    .expect("should merge");
+
+    assert_eq!(merged.index.doc_freq(0, "rust"), 2);
+}
