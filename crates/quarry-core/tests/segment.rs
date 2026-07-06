@@ -465,3 +465,16 @@ fn merging_preserves_per_document_field_lengths() {
     assert_eq!(merged.index.field_length(0, 0), 3);
     assert_eq!(merged.index.field_length(1, 0), 1);
 }
+
+#[test]
+fn merging_sums_field_statistics_without_double_counting() {
+    let merged = merge(
+        &[segment_with(&["one two"]), segment_with(&["three four"])],
+        &schema(),
+    )
+    .expect("should merge");
+
+    let stats = merged.index.field_stats(0);
+    assert_eq!(stats.doc_count, 2);
+    assert_eq!(stats.total_length, 4);
+}
