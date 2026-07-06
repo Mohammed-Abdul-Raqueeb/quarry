@@ -522,3 +522,12 @@ fn merging_is_associative_in_its_document_count() {
 
     assert_eq!(all_at_once.doc_count(), stepwise.doc_count());
 }
+
+#[test]
+fn merge_report_counts_the_inputs() {
+    let (_, report) = merge_with_report(&[segment_with(&["a"]), segment_with(&["b"])], &schema())
+        .expect("should merge");
+
+    assert_eq!(report.segments_in, 2);
+    assert_eq!(report.docs, 2);
+}
