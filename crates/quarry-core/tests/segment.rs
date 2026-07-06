@@ -382,3 +382,29 @@ fn merging_sums_the_document_counts() {
 
     assert_eq!(merged.doc_count(), 2);
 }
+
+#[test]
+fn merging_remaps_document_ids_densely() {
+    // Segment B's document 0 must become document 1 in the merged index, or
+    // the two would collide.
+    let merged = merge(
+        &[segment_with(&["alpha"]), segment_with(&["beta"])],
+        &schema(),
+    )
+    .expect("should merge");
+
+    assert_eq!(
+        merged
+            .index
+            .postings(0, "alpha")
+            .map(quarry_core::index::PostingList::doc_ids),
+        Some(vec![0])
+    );
+    assert_eq!(
+        merged
+            .index
+            .postings(0, "beta")
+            .map(quarry_core::index::PostingList::doc_ids),
+        Some(vec![1])
+    );
+}
