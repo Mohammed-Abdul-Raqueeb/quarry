@@ -619,3 +619,15 @@ fn the_policy_skips_segments_past_the_size_ceiling() {
         "the large segment should be skipped"
     );
 }
+
+#[test]
+fn the_policy_declines_when_only_one_candidate_remains() {
+    let policy = MergePolicy {
+        min_segments: 2,
+        max_segments_per_merge: 10,
+        max_merged_docs: 2,
+    };
+    let segments = [segment_with(&["a", "b", "c"]), segment_with(&["d"])];
+
+    assert!(policy.select(&segments).is_empty());
+}
