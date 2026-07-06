@@ -531,3 +531,15 @@ fn merge_report_counts_the_inputs() {
     assert_eq!(report.segments_in, 2);
     assert_eq!(report.docs, 2);
 }
+
+#[test]
+fn merge_report_shows_terms_collapsing() {
+    // The same term in two segments becomes one dictionary entry.
+    let (_, report) = merge_with_report(
+        &[segment_with(&["rust"]), segment_with(&["rust"])],
+        &schema(),
+    )
+    .expect("should merge");
+
+    assert!(report.terms_collapsed() > 0);
+}
