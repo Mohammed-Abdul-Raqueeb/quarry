@@ -419,3 +419,23 @@ fn merging_combines_posting_lists_for_a_shared_term() {
 
     assert_eq!(merged.index.doc_freq(0, "rust"), 2);
 }
+
+#[test]
+fn merged_posting_lists_stay_ascending() {
+    let merged = merge(
+        &[
+            segment_with(&["rust", "rust"]),
+            segment_with(&["rust"]),
+            segment_with(&["rust", "rust"]),
+        ],
+        &schema(),
+    )
+    .expect("should merge");
+
+    let ids = merged
+        .index
+        .postings(0, "rust")
+        .expect("term exists")
+        .doc_ids();
+    assert!(ids.windows(2).all(|w| w[0] < w[1]), "ids were {ids:?}");
+}
