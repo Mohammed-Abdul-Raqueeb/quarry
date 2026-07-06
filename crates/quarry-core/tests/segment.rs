@@ -478,3 +478,16 @@ fn merging_sums_field_statistics_without_double_counting() {
     assert_eq!(stats.doc_count, 2);
     assert_eq!(stats.total_length, 4);
 }
+
+#[test]
+fn a_merged_segment_round_trips() {
+    let merged = merge(
+        &[segment_with(&["alpha beta"]), segment_with(&["gamma"])],
+        &schema(),
+    )
+    .expect("should merge");
+
+    let decoded = Segment::read(&merged.write()).expect("should read");
+    assert_eq!(decoded.doc_count(), 2);
+    assert_eq!(decoded.index.doc_freq(0, "gamma"), 1);
+}
