@@ -585,3 +585,15 @@ fn the_policy_returns_indices_in_order() {
 
     assert!(selected.windows(2).all(|w| w[0] < w[1]));
 }
+
+#[test]
+fn the_policy_respects_its_per_merge_cap() {
+    let policy = MergePolicy {
+        min_segments: 2,
+        max_segments_per_merge: 3,
+        max_merged_docs: 1_000,
+    };
+    let segments: Vec<Segment> = (0..10).map(|_| segment_with(&["a"])).collect();
+
+    assert_eq!(policy.select(&segments).len(), 3);
+}
