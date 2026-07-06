@@ -453,3 +453,15 @@ fn merging_preserves_stored_documents() {
         Some("second doc".to_string())
     );
 }
+
+#[test]
+fn merging_preserves_per_document_field_lengths() {
+    let merged = merge(
+        &[segment_with(&["one two three"]), segment_with(&["one"])],
+        &schema(),
+    )
+    .expect("should merge");
+
+    assert_eq!(merged.index.field_length(0, 0), 3);
+    assert_eq!(merged.index.field_length(1, 0), 1);
+}
