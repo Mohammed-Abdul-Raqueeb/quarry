@@ -577,3 +577,11 @@ fn the_policy_selects_once_there_are_enough_segments() {
     let segments: Vec<Segment> = (0..5).map(|_| segment_with(&["a"])).collect();
     assert!(!MergePolicy::default().select(&segments).is_empty());
 }
+
+#[test]
+fn the_policy_returns_indices_in_order() {
+    let segments: Vec<Segment> = (0..5).map(|_| segment_with(&["a"])).collect();
+    let selected = MergePolicy::default().select(&segments);
+
+    assert!(selected.windows(2).all(|w| w[0] < w[1]));
+}
