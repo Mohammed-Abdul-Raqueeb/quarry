@@ -571,3 +571,9 @@ fn the_policy_leaves_a_small_number_of_segments_alone() {
     let segments = [segment_with(&["a"]), segment_with(&["b"])];
     assert!(MergePolicy::default().select(&segments).is_empty());
 }
+
+#[test]
+fn the_policy_selects_once_there_are_enough_segments() {
+    let segments: Vec<Segment> = (0..5).map(|_| segment_with(&["a"])).collect();
+    assert!(!MergePolicy::default().select(&segments).is_empty());
+}
