@@ -109,3 +109,10 @@ fn bm25_idf_is_zero_for_an_empty_corpus() {
 fn bm25_idf_falls_as_document_frequency_rises() {
     assert!(Bm25::idf(1000, 1) > Bm25::idf(1000, 500));
 }
+
+#[test]
+fn bm25_idf_stays_positive_for_a_term_in_every_document() {
+    // Without the `+1` inside the logarithm this goes negative, and adding a
+    // common word to a query would push matching documents *down*.
+    assert!(Bm25::idf(1000, 1000) > 0.0);
+}
