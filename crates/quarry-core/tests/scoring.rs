@@ -104,3 +104,8 @@ fn bm25_survives_a_zero_average_length() {
 fn bm25_idf_is_zero_for_an_empty_corpus() {
     assert_eq!(Bm25::idf(0, 0), 0.0);
 }
+
+#[test]
+fn bm25_idf_falls_as_document_frequency_rises() {
+    assert!(Bm25::idf(1000, 1) > Bm25::idf(1000, 500));
+}
