@@ -25,3 +25,9 @@ fn bm25_clamps_a_negative_k1() {
     // which produces rankings that look arbitrary rather than badly tuned.
     assert_eq!(Bm25::new(-5.0, 0.5).k1, 0.0);
 }
+
+#[test]
+fn bm25_clamps_b_into_zero_to_one() {
+    assert_eq!(Bm25::new(1.2, -1.0).b, 0.0);
+    assert_eq!(Bm25::new(1.2, 5.0).b, 1.0);
+}
