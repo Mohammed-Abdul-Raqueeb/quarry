@@ -36,3 +36,8 @@ fn bm25_clamps_b_into_zero_to_one() {
 fn bm25_scores_zero_for_an_absent_term() {
     assert_eq!(Bm25::default().score(0, 1, 100, 10, 10.0), 0.0);
 }
+
+#[test]
+fn bm25_scores_zero_for_an_empty_index() {
+    assert_eq!(Bm25::default().score(1, 0, 0, 10, 10.0), 0.0);
+}
