@@ -50,3 +50,14 @@ fn bm25_rises_with_term_frequency() {
 
     assert!(twice > once);
 }
+
+#[test]
+fn bm25_saturates_in_term_frequency() {
+    // The property that distinguishes it from TF-IDF: a document repeating a
+    // word twenty times is not ten times more relevant than one with two.
+    let bm25 = Bm25::default();
+    let first_step = bm25.score(2, 10, 1000, 100, 100.0) - bm25.score(1, 10, 1000, 100, 100.0);
+    let later_step = bm25.score(21, 10, 1000, 100, 100.0) - bm25.score(20, 10, 1000, 100, 100.0);
+
+    assert!(later_step < first_step, "frequency should saturate");
+}
