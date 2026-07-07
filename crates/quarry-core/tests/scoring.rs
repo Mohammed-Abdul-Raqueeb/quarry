@@ -41,3 +41,12 @@ fn bm25_scores_zero_for_an_absent_term() {
 fn bm25_scores_zero_for_an_empty_index() {
     assert_eq!(Bm25::default().score(1, 0, 0, 10, 10.0), 0.0);
 }
+
+#[test]
+fn bm25_rises_with_term_frequency() {
+    let bm25 = Bm25::default();
+    let once = bm25.score(1, 10, 1000, 100, 100.0);
+    let twice = bm25.score(2, 10, 1000, 100, 100.0);
+
+    assert!(twice > once);
+}
