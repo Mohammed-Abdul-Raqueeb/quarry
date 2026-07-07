@@ -153,3 +153,14 @@ fn tfidf_rises_with_term_frequency() {
     let tfidf = TfIdf::default();
     assert!(tfidf.score(4, 10, 1000, 100, 0.0) > tfidf.score(1, 10, 1000, 100, 0.0));
 }
+
+#[test]
+fn tfidf_does_not_saturate() {
+    // The reason BM25 is the default: TF-IDF grows without bound, so repeating
+    // a word two hundred times outranks using it well.
+    let tfidf = TfIdf::raw();
+    let first_step = tfidf.score(2, 10, 1000, 100, 0.0) - tfidf.score(1, 10, 1000, 100, 0.0);
+    let later_step = tfidf.score(21, 10, 1000, 100, 0.0) - tfidf.score(20, 10, 1000, 100, 0.0);
+
+    assert!((later_step - first_step).abs() < 0.001);
+}
