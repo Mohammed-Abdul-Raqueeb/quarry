@@ -61,3 +61,12 @@ fn bm25_saturates_in_term_frequency() {
 
     assert!(later_step < first_step, "frequency should saturate");
 }
+
+#[test]
+fn bm25_scores_a_rare_term_higher_than_a_common_one() {
+    let bm25 = Bm25::default();
+    let rare = bm25.score(1, 2, 1000, 100, 100.0);
+    let common = bm25.score(1, 900, 1000, 100, 100.0);
+
+    assert!(rare > common);
+}
