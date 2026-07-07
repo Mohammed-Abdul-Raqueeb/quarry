@@ -99,3 +99,8 @@ fn bm25_survives_a_zero_average_length() {
     let score = Bm25::default().score(1, 10, 1000, 10, 0.0);
     assert!(score.is_finite());
 }
+
+#[test]
+fn bm25_idf_is_zero_for_an_empty_corpus() {
+    assert_eq!(Bm25::idf(0, 0), 0.0);
+}
