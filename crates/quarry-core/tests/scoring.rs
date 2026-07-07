@@ -11,3 +11,10 @@ use quarry_core::score::{ConstantScorer, Scorer};
 use quarry_core::search::collector::{CountCollector, ScoredDoc, TopK};
 
 // ---- BM25 ---------------------------------------------------------------
+
+#[test]
+fn bm25_defaults_are_the_published_values() {
+    let bm25 = Bm25::default();
+    assert_eq!(bm25.k1, DEFAULT_K1);
+    assert_eq!(bm25.b, DEFAULT_B);
+}
