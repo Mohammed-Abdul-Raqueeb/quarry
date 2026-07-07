@@ -122,3 +122,8 @@ fn bm25_idf_clamps_a_frequency_above_the_corpus_size() {
     let idf = Bm25::idf(100, 1_000);
     assert!(idf.is_finite() && idf > 0.0);
 }
+
+#[test]
+fn bm25_names_itself() {
+    assert_eq!(Bm25::default().name(), "bm25");
+}
