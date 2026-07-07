@@ -31,3 +31,8 @@ fn bm25_clamps_b_into_zero_to_one() {
     assert_eq!(Bm25::new(1.2, -1.0).b, 0.0);
     assert_eq!(Bm25::new(1.2, 5.0).b, 1.0);
 }
+
+#[test]
+fn bm25_scores_zero_for_an_absent_term() {
+    assert_eq!(Bm25::default().score(0, 1, 100, 10, 10.0), 0.0);
+}
