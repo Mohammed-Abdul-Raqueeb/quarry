@@ -142,3 +142,8 @@ fn bm25_scores_are_finite_across_a_wide_range() {
 }
 
 // ---- TF-IDF -------------------------------------------------------------
+
+#[test]
+fn tfidf_scores_zero_for_an_absent_term() {
+    assert_eq!(TfIdf::default().score(0, 1, 100, 10, 10.0), 0.0);
+}
