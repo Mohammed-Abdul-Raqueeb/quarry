@@ -147,3 +147,9 @@ fn bm25_scores_are_finite_across_a_wide_range() {
 fn tfidf_scores_zero_for_an_absent_term() {
     assert_eq!(TfIdf::default().score(0, 1, 100, 10, 10.0), 0.0);
 }
+
+#[test]
+fn tfidf_rises_with_term_frequency() {
+    let tfidf = TfIdf::default();
+    assert!(tfidf.score(4, 10, 1000, 100, 0.0) > tfidf.score(1, 10, 1000, 100, 0.0));
+}
