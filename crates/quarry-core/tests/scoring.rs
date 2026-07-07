@@ -127,3 +127,18 @@ fn bm25_idf_clamps_a_frequency_above_the_corpus_size() {
 fn bm25_names_itself() {
     assert_eq!(Bm25::default().name(), "bm25");
 }
+
+#[test]
+fn bm25_scores_are_finite_across_a_wide_range() {
+    let bm25 = Bm25::default();
+    for tf in [1u32, 10, 1_000] {
+        for df in [1u64, 100, 10_000] {
+            for len in [1u32, 100, 100_000] {
+                let score = bm25.score(tf, df, 10_000, len, 500.0);
+                assert!(score.is_finite(), "tf={tf} df={df} len={len} gave {score}");
+            }
+        }
+    }
+}
+
+// ---- TF-IDF -------------------------------------------------------------
