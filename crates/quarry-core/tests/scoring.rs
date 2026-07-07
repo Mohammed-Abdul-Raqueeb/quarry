@@ -82,3 +82,12 @@ fn bm25_penalises_a_longer_field() {
         "a match in a short field should count for more"
     );
 }
+
+#[test]
+fn bm25_ignores_length_when_b_is_zero() {
+    let bm25 = Bm25::without_length_normalization();
+    let short = bm25.score(1, 10, 1000, 10, 100.0);
+    let long = bm25.score(1, 10, 1000, 1000, 100.0);
+
+    assert!((short - long).abs() < f32::EPSILON);
+}
