@@ -91,3 +91,11 @@ fn bm25_ignores_length_when_b_is_zero() {
 
     assert!((short - long).abs() < f32::EPSILON);
 }
+
+#[test]
+fn bm25_survives_a_zero_average_length() {
+    // A corrupt statistics block could produce one; dividing by it would
+    // yield infinity and poison the whole ranking.
+    let score = Bm25::default().score(1, 10, 1000, 10, 0.0);
+    assert!(score.is_finite());
+}
