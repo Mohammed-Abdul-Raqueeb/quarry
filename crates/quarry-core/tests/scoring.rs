@@ -70,3 +70,15 @@ fn bm25_scores_a_rare_term_higher_than_a_common_one() {
 
     assert!(rare > common);
 }
+
+#[test]
+fn bm25_penalises_a_longer_field() {
+    let bm25 = Bm25::default();
+    let short = bm25.score(1, 10, 1000, 10, 100.0);
+    let long = bm25.score(1, 10, 1000, 1000, 100.0);
+
+    assert!(
+        short > long,
+        "a match in a short field should count for more"
+    );
+}
