@@ -18,3 +18,10 @@ fn bm25_defaults_are_the_published_values() {
     assert_eq!(bm25.k1, DEFAULT_K1);
     assert_eq!(bm25.b, DEFAULT_B);
 }
+
+#[test]
+fn bm25_clamps_a_negative_k1() {
+    // Outside its range the formula stops being monotonic in term frequency,
+    // which produces rankings that look arbitrary rather than badly tuned.
+    assert_eq!(Bm25::new(-5.0, 0.5).k1, 0.0);
+}
