@@ -116,3 +116,9 @@ fn bm25_idf_stays_positive_for_a_term_in_every_document() {
     // common word to a query would push matching documents *down*.
     assert!(Bm25::idf(1000, 1000) > 0.0);
 }
+
+#[test]
+fn bm25_idf_clamps_a_frequency_above_the_corpus_size() {
+    let idf = Bm25::idf(100, 1_000);
+    assert!(idf.is_finite() && idf > 0.0);
+}
