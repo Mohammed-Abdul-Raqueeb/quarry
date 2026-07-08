@@ -303,3 +303,16 @@ fn topk_breaks_score_ties_by_ascending_document_id() {
     let docs: Vec<u32> = collector.into_sorted().iter().map(|s| s.doc).collect();
     assert_eq!(docs, vec![0, 1, 2]);
 }
+
+#[test]
+fn topk_counts_every_match_including_those_it_dropped() {
+    // This is what the API reports as `total`, so it must not be capped by
+    // the limit.
+    let mut collector = TopK::new(2);
+    for doc in 0..10 {
+        collector.collect(doc, 1.0);
+    }
+
+    assert_eq!(collector.total_hits(), 10);
+    assert_eq!(collector.len(), 2);
+}
