@@ -229,3 +229,8 @@ fn constant_scorer_names_itself() {
 }
 
 // ---- ScoredDoc ordering -------------------------------------------------
+
+#[test]
+fn scored_docs_order_by_score() {
+    assert!(ScoredDoc::new(1, 2.0) > ScoredDoc::new(2, 1.0));
+}
