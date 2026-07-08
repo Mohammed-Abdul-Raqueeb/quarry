@@ -192,3 +192,8 @@ fn tfidf_raw_mode_ignores_length() {
 fn tfidf_idf_stays_positive_for_a_universal_term() {
     assert!(TfIdf::idf(100, 100) > 0.0);
 }
+
+#[test]
+fn tfidf_idf_is_zero_for_an_empty_corpus() {
+    assert_eq!(TfIdf::idf(0, 0), 0.0);
+}
