@@ -260,3 +260,13 @@ fn topk_starts_empty() {
     assert!(collector.is_empty());
     assert_eq!(collector.total_hits(), 0);
 }
+
+#[test]
+fn topk_keeps_everything_below_its_limit() {
+    let mut collector = TopK::new(5);
+    for doc in 0..3 {
+        collector.collect(doc, 1.0);
+    }
+
+    assert_eq!(collector.len(), 3);
+}
