@@ -234,3 +234,10 @@ fn constant_scorer_names_itself() {
 fn scored_docs_order_by_score() {
     assert!(ScoredDoc::new(1, 2.0) > ScoredDoc::new(2, 1.0));
 }
+
+#[test]
+fn equal_scores_break_the_tie_on_document_id() {
+    // Reversed, so that once the heap is inverted for top-k the lowest id
+    // comes out first and results are stable.
+    assert!(ScoredDoc::new(1, 1.0) > ScoredDoc::new(2, 1.0));
+}
