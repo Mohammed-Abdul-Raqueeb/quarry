@@ -222,3 +222,10 @@ fn constant_scorer_ignores_every_other_input() {
         ConstantScorer.score(99, 999, 9999, 999, 999.0)
     );
 }
+
+#[test]
+fn constant_scorer_names_itself() {
+    assert_eq!(ConstantScorer.name(), "constant");
+}
+
+// ---- ScoredDoc ordering -------------------------------------------------
