@@ -204,3 +204,8 @@ fn tfidf_names_itself() {
 }
 
 // ---- ConstantScorer -----------------------------------------------------
+
+#[test]
+fn constant_scorer_returns_one_for_a_match() {
+    assert_eq!(ConstantScorer.score(1, 100, 1000, 50, 50.0), 1.0);
+}
