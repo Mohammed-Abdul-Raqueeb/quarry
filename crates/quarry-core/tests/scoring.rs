@@ -214,3 +214,11 @@ fn constant_scorer_returns_one_for_a_match() {
 fn constant_scorer_returns_zero_for_no_match() {
     assert_eq!(ConstantScorer.score(0, 100, 1000, 50, 50.0), 0.0);
 }
+
+#[test]
+fn constant_scorer_ignores_every_other_input() {
+    assert_eq!(
+        ConstantScorer.score(1, 1, 1, 1, 1.0),
+        ConstantScorer.score(99, 999, 9999, 999, 999.0)
+    );
+}
