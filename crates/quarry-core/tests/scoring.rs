@@ -316,3 +316,12 @@ fn topk_counts_every_match_including_those_it_dropped() {
     assert_eq!(collector.total_hits(), 10);
     assert_eq!(collector.len(), 2);
 }
+
+#[test]
+fn topk_with_a_zero_limit_keeps_nothing_but_still_counts() {
+    let mut collector = TopK::new(0);
+    collector.collect(0, 1.0);
+
+    assert_eq!(collector.total_hits(), 1);
+    assert!(collector.is_empty());
+}
