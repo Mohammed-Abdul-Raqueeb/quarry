@@ -172,3 +172,9 @@ fn tfidf_sublinear_mode_dampens_frequency() {
 
     assert!(sublinear.score(16, 10, 1000, 100, 0.0) < raw.score(16, 10, 1000, 100, 0.0));
 }
+
+#[test]
+fn tfidf_normalises_by_field_length_when_asked() {
+    let tfidf = TfIdf::default();
+    assert!(tfidf.score(1, 10, 1000, 4, 0.0) > tfidf.score(1, 10, 1000, 400, 0.0));
+}
