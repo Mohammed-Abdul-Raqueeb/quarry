@@ -197,3 +197,10 @@ fn tfidf_idf_stays_positive_for_a_universal_term() {
 fn tfidf_idf_is_zero_for_an_empty_corpus() {
     assert_eq!(TfIdf::idf(0, 0), 0.0);
 }
+
+#[test]
+fn tfidf_names_itself() {
+    assert_eq!(TfIdf::default().name(), "tfidf");
+}
+
+// ---- ConstantScorer -----------------------------------------------------
