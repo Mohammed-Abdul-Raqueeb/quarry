@@ -292,3 +292,14 @@ fn topk_returns_results_best_first() {
     let scores: Vec<f32> = collector.into_sorted().iter().map(|s| s.score).collect();
     assert_eq!(scores, vec![3.0, 2.0, 1.0]);
 }
+
+#[test]
+fn topk_breaks_score_ties_by_ascending_document_id() {
+    let mut collector = TopK::new(3);
+    for doc in [2u32, 0, 1] {
+        collector.collect(doc, 1.0);
+    }
+
+    let docs: Vec<u32> = collector.into_sorted().iter().map(|s| s.doc).collect();
+    assert_eq!(docs, vec![0, 1, 2]);
+}
