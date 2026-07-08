@@ -270,3 +270,14 @@ fn topk_keeps_everything_below_its_limit() {
 
     assert_eq!(collector.len(), 3);
 }
+
+#[test]
+fn topk_keeps_only_the_best_once_full() {
+    let mut collector = TopK::new(2);
+    collector.collect(0, 1.0);
+    collector.collect(1, 5.0);
+    collector.collect(2, 3.0);
+
+    let kept: Vec<u32> = collector.into_sorted().iter().map(|s| s.doc).collect();
+    assert_eq!(kept, vec![1, 2]);
+}
