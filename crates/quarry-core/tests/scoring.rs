@@ -164,3 +164,11 @@ fn tfidf_does_not_saturate() {
 
     assert!((later_step - first_step).abs() < 0.001);
 }
+
+#[test]
+fn tfidf_sublinear_mode_dampens_frequency() {
+    let sublinear = TfIdf::default();
+    let raw = TfIdf::raw();
+
+    assert!(sublinear.score(16, 10, 1000, 100, 0.0) < raw.score(16, 10, 1000, 100, 0.0));
+}
