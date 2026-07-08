@@ -241,3 +241,15 @@ fn equal_scores_break_the_tie_on_document_id() {
     // comes out first and results are stable.
     assert!(ScoredDoc::new(1, 1.0) > ScoredDoc::new(2, 1.0));
 }
+
+#[test]
+fn a_nan_score_orders_consistently_rather_than_panicking() {
+    // A pathological boost can produce one, and a partial comparison would
+    // break the heap's invariant.
+    let nan = ScoredDoc::new(1, f32::NAN);
+    let ordinary = ScoredDoc::new(2, 1.0);
+
+    assert!(nan.partial_cmp(&ordinary).is_some());
+}
+
+// ---- TopK ---------------------------------------------------------------
