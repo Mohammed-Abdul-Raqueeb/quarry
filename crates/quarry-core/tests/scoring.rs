@@ -253,3 +253,10 @@ fn a_nan_score_orders_consistently_rather_than_panicking() {
 }
 
 // ---- TopK ---------------------------------------------------------------
+
+#[test]
+fn topk_starts_empty() {
+    let collector = TopK::new(5);
+    assert!(collector.is_empty());
+    assert_eq!(collector.total_hits(), 0);
+}
