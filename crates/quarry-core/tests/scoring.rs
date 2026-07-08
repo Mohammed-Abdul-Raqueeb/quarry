@@ -187,3 +187,8 @@ fn tfidf_raw_mode_ignores_length() {
 
     assert!((short - long).abs() < f32::EPSILON);
 }
+
+#[test]
+fn tfidf_idf_stays_positive_for_a_universal_term() {
+    assert!(TfIdf::idf(100, 100) > 0.0);
+}
