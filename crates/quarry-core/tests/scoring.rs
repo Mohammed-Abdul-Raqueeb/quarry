@@ -281,3 +281,14 @@ fn topk_keeps_only_the_best_once_full() {
     let kept: Vec<u32> = collector.into_sorted().iter().map(|s| s.doc).collect();
     assert_eq!(kept, vec![1, 2]);
 }
+
+#[test]
+fn topk_returns_results_best_first() {
+    let mut collector = TopK::new(3);
+    collector.collect(0, 1.0);
+    collector.collect(1, 3.0);
+    collector.collect(2, 2.0);
+
+    let scores: Vec<f32> = collector.into_sorted().iter().map(|s| s.score).collect();
+    assert_eq!(scores, vec![3.0, 2.0, 1.0]);
+}
