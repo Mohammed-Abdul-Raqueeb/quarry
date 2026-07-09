@@ -25,3 +25,18 @@ fn schema() -> &'static Schema {
             .expect("schema should build")
     })
 }
+
+/// Builds a one-segment index from `(title, body, tag)` triples.
+fn index(docs: &[(&str, &str, &str)]) -> Vec<Segment> {
+    let mut writer = IndexWriter::new(schema().clone());
+
+    for (title, body, tag) in docs {
+        let mut doc = Document::new();
+        doc.add(0, Value::Text((*title).to_string()));
+        doc.add(1, Value::Text((*body).to_string()));
+        doc.add(2, Value::Keyword((*tag).to_string()));
+        writer.add(&doc).expect("should index");
+    }
+
+    writer.flush().map(|s| vec![s]).unwrap_or_default()
+}
