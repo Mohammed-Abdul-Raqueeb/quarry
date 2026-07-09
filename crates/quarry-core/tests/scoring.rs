@@ -405,3 +405,12 @@ fn count_collector_counts_every_match() {
 
     assert_eq!(collector.count(), 7);
 }
+
+#[test]
+fn count_collector_ignores_scores() {
+    let mut collector = CountCollector::new();
+    collector.collect(0, 0.0);
+    collector.collect(1, 99.0);
+
+    assert_eq!(collector.count(), 2);
+}
