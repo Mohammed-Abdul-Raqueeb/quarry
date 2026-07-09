@@ -70,3 +70,12 @@ fn corpus() -> Vec<Segment> {
         ),
     ])
 }
+
+/// The analyzed form of a word, as the index stored it.
+fn term(word: &str) -> String {
+    Analyzer::english()
+        .terms(word)
+        .into_iter()
+        .next()
+        .unwrap_or_else(|| word.to_string())
+}
