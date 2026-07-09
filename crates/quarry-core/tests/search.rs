@@ -111,3 +111,12 @@ fn finds_a_document_by_a_body_term() {
 
     assert_eq!(searcher.search(&query, 10).expect("search").len(), 1);
 }
+
+#[test]
+fn finds_a_document_by_a_keyword() {
+    let segments = corpus();
+    let searcher = Searcher::new(&segments, schema());
+    let query = BooleanQuery::new().must(TermQuery::new(2, "python"));
+
+    assert_eq!(searcher.search(&query, 10).expect("search").len(), 1);
+}
