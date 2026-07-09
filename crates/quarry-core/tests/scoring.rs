@@ -333,3 +333,14 @@ fn topk_has_no_threshold_until_it_is_full() {
 
     assert!(collector.threshold().is_none());
 }
+
+#[test]
+fn topk_reports_its_worst_kept_score_once_full() {
+    // An executor uses this to skip documents that cannot make the cut, which
+    // is where the win from a bounded collector shows up.
+    let mut collector = TopK::new(2);
+    collector.collect(0, 5.0);
+    collector.collect(1, 3.0);
+
+    assert_eq!(collector.threshold(), Some(3.0));
+}
