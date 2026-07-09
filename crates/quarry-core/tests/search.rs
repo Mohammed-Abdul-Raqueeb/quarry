@@ -40,3 +40,33 @@ fn index(docs: &[(&str, &str, &str)]) -> Vec<Segment> {
 
     writer.flush().map(|s| vec![s]).unwrap_or_default()
 }
+
+fn corpus() -> Vec<Segment> {
+    index(&[
+        (
+            "Rust ownership",
+            "The borrow checker enforces ownership",
+            "rust",
+        ),
+        (
+            "Zero cost abstractions",
+            "Iterators compile to tight loops",
+            "rust",
+        ),
+        (
+            "Fearless concurrency",
+            "Rust prevents data races at compile time",
+            "rust",
+        ),
+        (
+            "Python typing",
+            "Gradual typing annotates incrementally",
+            "python",
+        ),
+        (
+            "Borrowing in practice",
+            "Most complaints are real aliasing bugs",
+            "rust",
+        ),
+    ])
+}
