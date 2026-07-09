@@ -366,3 +366,14 @@ fn topk_handles_many_candidates_with_bounded_memory() {
     assert_eq!(collector.len(), 10);
     assert_eq!(collector.total_hits(), 10_000);
 }
+
+#[test]
+fn topk_keeps_the_genuine_best_from_a_large_stream() {
+    let mut collector = TopK::new(3);
+    for doc in 0..1_000u32 {
+        collector.collect(doc, f32::from(u16::try_from(doc).unwrap_or(0)));
+    }
+
+    let docs: Vec<u32> = collector.into_sorted().iter().map(|s| s.doc).collect();
+    assert_eq!(docs, vec![999, 998, 997]);
+}
