@@ -120,3 +120,12 @@ fn finds_a_document_by_a_keyword() {
 
     assert_eq!(searcher.search(&query, 10).expect("search").len(), 1);
 }
+
+#[test]
+fn an_absent_term_matches_nothing() {
+    let segments = corpus();
+    let searcher = Searcher::new(&segments, schema());
+    let query = BooleanQuery::new().must(TermQuery::new(0, "kubernetes"));
+
+    assert!(searcher.search(&query, 10).expect("search").is_empty());
+}
