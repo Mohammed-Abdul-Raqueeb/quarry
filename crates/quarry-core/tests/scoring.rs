@@ -344,3 +344,14 @@ fn topk_reports_its_worst_kept_score_once_full() {
 
     assert_eq!(collector.threshold(), Some(3.0));
 }
+
+#[test]
+fn the_threshold_rises_as_better_matches_arrive() {
+    let mut collector = TopK::new(2);
+    collector.collect(0, 1.0);
+    collector.collect(1, 2.0);
+    assert_eq!(collector.threshold(), Some(1.0));
+
+    collector.collect(2, 3.0);
+    assert_eq!(collector.threshold(), Some(2.0));
+}
