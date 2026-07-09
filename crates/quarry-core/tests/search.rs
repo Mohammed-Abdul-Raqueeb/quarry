@@ -129,3 +129,14 @@ fn an_absent_term_matches_nothing() {
 
     assert!(searcher.search(&query, 10).expect("search").is_empty());
 }
+
+#[test]
+fn an_empty_query_matches_nothing() {
+    let segments = corpus();
+    let searcher = Searcher::new(&segments, schema());
+
+    assert!(searcher
+        .search(&BooleanQuery::new(), 10)
+        .expect("search")
+        .is_empty());
+}
