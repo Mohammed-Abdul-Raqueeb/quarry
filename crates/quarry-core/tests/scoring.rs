@@ -395,3 +395,13 @@ fn topk_handles_negative_scores() {
 fn count_collector_starts_at_zero() {
     assert_eq!(CountCollector::new().count(), 0);
 }
+
+#[test]
+fn count_collector_counts_every_match() {
+    let mut collector = CountCollector::new();
+    for doc in 0..7 {
+        collector.collect(doc, 1.0);
+    }
+
+    assert_eq!(collector.count(), 7);
+}
