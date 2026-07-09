@@ -79,3 +79,14 @@ fn term(word: &str) -> String {
         .next()
         .unwrap_or_else(|| word.to_string())
 }
+
+fn titles(searcher: &Searcher<'_>, results: &quarry_core::Results) -> Vec<String> {
+    results
+        .hits
+        .iter()
+        .filter_map(|hit| searcher.document(hit))
+        .filter_map(|doc| doc.value(0).map(Value::as_text))
+        .collect()
+}
+
+// ---- term queries -------------------------------------------------------
