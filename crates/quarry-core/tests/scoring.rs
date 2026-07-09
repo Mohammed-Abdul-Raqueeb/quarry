@@ -325,3 +325,11 @@ fn topk_with_a_zero_limit_keeps_nothing_but_still_counts() {
     assert_eq!(collector.total_hits(), 1);
     assert!(collector.is_empty());
 }
+
+#[test]
+fn topk_has_no_threshold_until_it_is_full() {
+    let mut collector = TopK::new(3);
+    collector.collect(0, 1.0);
+
+    assert!(collector.threshold().is_none());
+}
