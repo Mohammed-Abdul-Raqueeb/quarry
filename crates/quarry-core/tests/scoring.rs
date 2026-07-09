@@ -390,3 +390,8 @@ fn topk_handles_negative_scores() {
 }
 
 // ---- CountCollector -----------------------------------------------------
+
+#[test]
+fn count_collector_starts_at_zero() {
+    assert_eq!(CountCollector::new().count(), 0);
+}
