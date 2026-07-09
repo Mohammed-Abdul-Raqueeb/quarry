@@ -355,3 +355,14 @@ fn the_threshold_rises_as_better_matches_arrive() {
     collector.collect(2, 3.0);
     assert_eq!(collector.threshold(), Some(2.0));
 }
+
+#[test]
+fn topk_handles_many_candidates_with_bounded_memory() {
+    let mut collector = TopK::new(10);
+    for doc in 0..10_000u32 {
+        collector.collect(doc, f32::from(u16::try_from(doc % 100).unwrap_or(0)));
+    }
+
+    assert_eq!(collector.len(), 10);
+    assert_eq!(collector.total_hits(), 10_000);
+}
