@@ -90,3 +90,15 @@ fn titles(searcher: &Searcher<'_>, results: &quarry_core::Results) -> Vec<String
 }
 
 // ---- term queries -------------------------------------------------------
+
+#[test]
+fn finds_a_document_by_a_title_term() {
+    let segments = corpus();
+    let searcher = Searcher::new(&segments, schema());
+    let query = BooleanQuery::new().must(TermQuery::new(0, term("ownership")));
+
+    assert_eq!(
+        titles(&searcher, &searcher.search(&query, 10).expect("search")),
+        ["Rust ownership"]
+    );
+}
