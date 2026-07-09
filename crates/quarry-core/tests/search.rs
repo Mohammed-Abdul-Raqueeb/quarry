@@ -102,3 +102,12 @@ fn finds_a_document_by_a_title_term() {
         ["Rust ownership"]
     );
 }
+
+#[test]
+fn finds_a_document_by_a_body_term() {
+    let segments = corpus();
+    let searcher = Searcher::new(&segments, schema());
+    let query = BooleanQuery::new().must(TermQuery::new(1, term("iterators")));
+
+    assert_eq!(searcher.search(&query, 10).expect("search").len(), 1);
+}
