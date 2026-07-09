@@ -377,3 +377,16 @@ fn topk_keeps_the_genuine_best_from_a_large_stream() {
     let docs: Vec<u32> = collector.into_sorted().iter().map(|s| s.doc).collect();
     assert_eq!(docs, vec![999, 998, 997]);
 }
+
+#[test]
+fn topk_handles_negative_scores() {
+    let mut collector = TopK::new(2);
+    collector.collect(0, -1.0);
+    collector.collect(1, -5.0);
+    collector.collect(2, -3.0);
+
+    let docs: Vec<u32> = collector.into_sorted().iter().map(|s| s.doc).collect();
+    assert_eq!(docs, vec![0, 2]);
+}
+
+// ---- CountCollector -----------------------------------------------------
