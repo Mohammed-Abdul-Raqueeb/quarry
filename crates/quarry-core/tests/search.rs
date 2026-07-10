@@ -227,3 +227,26 @@ fn must_any_requires_one_match_from_the_group() {
     // this group does not cover.
     assert_eq!(searcher.search(&query, 10).expect("search").len(), 2);
 }
+
+#[test]
+fn must_any_groups_are_intersected_with_each_other() {
+    // This is the case that was broken: `rust AND concurrency` must find the
+    // document with `rust` in the body and `concurrency` in the title.
+    let segments = corpus();
+    let searcher = Searcher::new(&segments, schema());
+
+    let query = BooleanQuery::new()
+        .must_any(vec![
+            TermQuery::new(0, term("rust")),
+            TermQuery::new(1, term("rust")),
+        ])
+        .must_any(vec![
+            TermQuery::new(0, term("concurrency")),
+            TermQuery::new(1, term("concurrency")),
+        ]);
+
+    assert_eq!(
+        titles(&searcher, &searcher.search(&query, 10).expect("search")),
+        ["Fearless concurrency"]
+    );
+}
