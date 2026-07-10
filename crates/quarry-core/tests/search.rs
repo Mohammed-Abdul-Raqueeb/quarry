@@ -308,3 +308,18 @@ fn all_terms_collects_from_every_clause_kind() {
         assert!(terms.contains(&expected.to_string()), "missing {expected}");
     }
 }
+
+#[test]
+fn all_terms_is_deduplicated_and_sorted() {
+    let query = BooleanQuery::new()
+        .must(TermQuery::new(0, "rust"))
+        .should(TermQuery::new(1, "rust"))
+        .should(TermQuery::new(0, "apple"));
+
+    assert_eq!(
+        query.all_terms(),
+        vec!["apple".to_string(), "rust".to_string()]
+    );
+}
+
+// ---- ranking ------------------------------------------------------------
