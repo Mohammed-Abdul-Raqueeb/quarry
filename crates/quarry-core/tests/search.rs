@@ -140,3 +140,15 @@ fn an_empty_query_matches_nothing() {
         .expect("search")
         .is_empty());
 }
+
+#[test]
+fn a_stemmed_query_finds_an_inflected_document() {
+    // The property the analyzer exists for.
+    let segments = corpus();
+    let searcher = Searcher::new(&segments, schema());
+    let query = BooleanQuery::new().must(TermQuery::new(1, term("compiled")));
+
+    assert!(!searcher.search(&query, 10).expect("search").is_empty());
+}
+
+// ---- boolean combinations ----------------------------------------------
