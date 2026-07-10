@@ -209,3 +209,21 @@ fn must_not_on_an_absent_term_excludes_nothing() {
 
     assert_eq!(searcher.search(&query, 10).expect("search").len(), 4);
 }
+
+#[test]
+fn must_any_requires_one_match_from_the_group() {
+    // A bare term across several default fields: the word must appear in one
+    // of title or body, not in both.
+    let segments = corpus();
+    let searcher = Searcher::new(&segments, schema());
+
+    let query = BooleanQuery::new().must_any(vec![
+        TermQuery::new(0, term("rust")),
+        TermQuery::new(1, term("rust")),
+    ]);
+
+    // "Rust ownership" has it in the title, "Fearless concurrency" in the
+    // body. The other three mention it only in the `tag` keyword field, which
+    // this group does not cover.
+    assert_eq!(searcher.search(&query, 10).expect("search").len(), 2);
+}
