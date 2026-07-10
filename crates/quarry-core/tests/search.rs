@@ -392,3 +392,15 @@ fn the_limit_bounds_how_many_hits_come_back() {
 
     assert_eq!(searcher.search(&query, 2).expect("search").len(), 2);
 }
+
+#[test]
+fn total_hits_counts_matches_beyond_the_limit() {
+    // Reporting the returned count here is the bug this guards against.
+    let segments = corpus();
+    let searcher = Searcher::new(&segments, schema());
+    let query = BooleanQuery::new().must(TermQuery::new(2, "rust"));
+
+    let results = searcher.search(&query, 1).expect("search");
+    assert_eq!(results.len(), 1);
+    assert_eq!(results.total_hits, 4);
+}
