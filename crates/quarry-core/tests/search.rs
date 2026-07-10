@@ -354,3 +354,32 @@ fn a_boost_raises_a_clause_contribution() {
 
     assert!(boosted_score > plain_score);
 }
+
+#[test]
+fn a_field_boost_from_the_schema_is_applied() {
+    let boosted_schema = Schema::builder()
+        .text_boosted("title", 5.0)
+        .and_then(|b| b.text("body"))
+        .and_then(|b| b.keyword("tag"))
+        .and_then(SchemaBuilder::build)
+        .expect("should build");
+
+    let mut writer = IndexWriter::new(boosted_schema.clone());
+    let mut doc = Document::new();
+    doc.add(0, Value::Text("rust".to_string()));
+    doc.add(1, Value::Text("rust".to_string()));
+    writer.add(&doc).expect("should index");
+    let segments = vec![writer.flush().expect("flushed")];
+
+    let searcher = Searcher::new(&segments, &boosted_schema);
+    let title_score = searcher
+        .search(&BooleanQuery::new().must(TermQuery::new(0, "rust")), 1)
+        .expect("search")
+        .max_score();
+    let body_score = searcher
+        .search(&BooleanQuery::new().must(TermQuery::new(1, "rust")), 1)
+        .expect("search")
+        .max_score();
+
+    assert!(title_score > body_score);
+}
