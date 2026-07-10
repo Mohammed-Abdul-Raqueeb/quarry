@@ -174,3 +174,14 @@ fn an_unsatisfiable_must_clause_matches_nothing() {
 
     assert!(searcher.search(&query, 10).expect("search").is_empty());
 }
+
+#[test]
+fn should_clauses_are_unioned() {
+    let segments = corpus();
+    let searcher = Searcher::new(&segments, schema());
+    let query = BooleanQuery::new()
+        .should(TermQuery::new(0, term("ownership")))
+        .should(TermQuery::new(0, term("typing")));
+
+    assert_eq!(searcher.search(&query, 10).expect("search").len(), 2);
+}
