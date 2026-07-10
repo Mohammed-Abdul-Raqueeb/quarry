@@ -272,3 +272,8 @@ fn minimum_should_match_filters_weak_matches() {
 
     assert_eq!(searcher.search(&query, 10).expect("search").len(), 1);
 }
+
+#[test]
+fn an_empty_boolean_query_reports_itself_as_empty() {
+    assert!(BooleanQuery::new().is_empty());
+}
