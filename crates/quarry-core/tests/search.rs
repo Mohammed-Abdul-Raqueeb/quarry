@@ -291,3 +291,20 @@ fn must_any_ignores_an_empty_group() {
     // An empty group would otherwise make every document fail the intersection.
     assert!(BooleanQuery::new().must_any(vec![]).is_empty());
 }
+
+#[test]
+fn all_terms_collects_from_every_clause_kind() {
+    let query = BooleanQuery::new()
+        .must(TermQuery::new(0, "must"))
+        .should(TermQuery::new(0, "should"))
+        .must_any(vec![TermQuery::new(0, "any")])
+        .phrase(PhraseQuery::new(
+            0,
+            vec!["one".to_string(), "two".to_string()],
+        ));
+
+    let terms = query.all_terms();
+    for expected in ["must", "should", "any", "one", "two"] {
+        assert!(terms.contains(&expected.to_string()), "missing {expected}");
+    }
+}
