@@ -340,3 +340,17 @@ fn results_come_back_best_first() {
         "scores were {scores:?}"
     );
 }
+
+#[test]
+fn a_boost_raises_a_clause_contribution() {
+    let segments = corpus();
+    let searcher = Searcher::new(&segments, schema());
+
+    let plain = BooleanQuery::new().must(TermQuery::new(0, term("ownership")));
+    let boosted = BooleanQuery::new().must(TermQuery::new(0, term("ownership")).boosted(3.0));
+
+    let plain_score = searcher.search(&plain, 1).expect("search").max_score();
+    let boosted_score = searcher.search(&boosted, 1).expect("search").max_score();
+
+    assert!(boosted_score > plain_score);
+}
