@@ -152,3 +152,14 @@ fn a_stemmed_query_finds_an_inflected_document() {
 }
 
 // ---- boolean combinations ----------------------------------------------
+
+#[test]
+fn must_clauses_are_intersected() {
+    let segments = corpus();
+    let searcher = Searcher::new(&segments, schema());
+    let query = BooleanQuery::new()
+        .must(TermQuery::new(0, term("rust")))
+        .must(TermQuery::new(0, term("ownership")));
+
+    assert_eq!(searcher.search(&query, 10).expect("search").len(), 1);
+}
