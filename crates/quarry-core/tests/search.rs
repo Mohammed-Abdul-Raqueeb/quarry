@@ -198,3 +198,14 @@ fn must_not_excludes_a_document() {
     assert!(!found.contains(&"Rust ownership".to_string()));
     assert_eq!(found.len(), 3);
 }
+
+#[test]
+fn must_not_on_an_absent_term_excludes_nothing() {
+    let segments = corpus();
+    let searcher = Searcher::new(&segments, schema());
+    let query = BooleanQuery::new()
+        .must(TermQuery::new(2, "rust"))
+        .must_not(TermQuery::new(0, "kubernetes"));
+
+    assert_eq!(searcher.search(&query, 10).expect("search").len(), 4);
+}
