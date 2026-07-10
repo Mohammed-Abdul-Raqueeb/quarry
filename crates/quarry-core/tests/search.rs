@@ -323,3 +323,20 @@ fn all_terms_is_deduplicated_and_sorted() {
 }
 
 // ---- ranking ------------------------------------------------------------
+
+#[test]
+fn results_come_back_best_first() {
+    let segments = corpus();
+    let searcher = Searcher::new(&segments, schema());
+    let query = BooleanQuery::new()
+        .should(TermQuery::new(0, term("rust")))
+        .should(TermQuery::new(1, term("rust")));
+
+    let results = searcher.search(&query, 10).expect("search");
+    let scores: Vec<f32> = results.hits.iter().map(|h| h.score).collect();
+
+    assert!(
+        scores.windows(2).all(|w| w[0] >= w[1]),
+        "scores were {scores:?}"
+    );
+}
