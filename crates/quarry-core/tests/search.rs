@@ -277,3 +277,11 @@ fn minimum_should_match_filters_weak_matches() {
 fn an_empty_boolean_query_reports_itself_as_empty() {
     assert!(BooleanQuery::new().is_empty());
 }
+
+#[test]
+fn a_query_with_any_clause_is_not_empty() {
+    assert!(!BooleanQuery::new().must(TermQuery::new(0, "x")).is_empty());
+    assert!(!BooleanQuery::new()
+        .must_any(vec![TermQuery::new(0, "x")])
+        .is_empty());
+}
