@@ -383,3 +383,12 @@ fn a_field_boost_from_the_schema_is_applied() {
 
     assert!(title_score > body_score);
 }
+
+#[test]
+fn the_limit_bounds_how_many_hits_come_back() {
+    let segments = corpus();
+    let searcher = Searcher::new(&segments, schema());
+    let query = BooleanQuery::new().must(TermQuery::new(2, "rust"));
+
+    assert_eq!(searcher.search(&query, 2).expect("search").len(), 2);
+}
