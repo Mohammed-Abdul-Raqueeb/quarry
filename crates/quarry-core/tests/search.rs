@@ -185,3 +185,16 @@ fn should_clauses_are_unioned() {
 
     assert_eq!(searcher.search(&query, 10).expect("search").len(), 2);
 }
+
+#[test]
+fn must_not_excludes_a_document() {
+    let segments = corpus();
+    let searcher = Searcher::new(&segments, schema());
+    let query = BooleanQuery::new()
+        .must(TermQuery::new(2, "rust"))
+        .must_not(TermQuery::new(0, term("ownership")));
+
+    let found = titles(&searcher, &searcher.search(&query, 10).expect("search"));
+    assert!(!found.contains(&"Rust ownership".to_string()));
+    assert_eq!(found.len(), 3);
+}
