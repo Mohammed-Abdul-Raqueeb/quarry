@@ -285,3 +285,9 @@ fn a_query_with_any_clause_is_not_empty() {
         .must_any(vec![TermQuery::new(0, "x")])
         .is_empty());
 }
+
+#[test]
+fn must_any_ignores_an_empty_group() {
+    // An empty group would otherwise make every document fail the intersection.
+    assert!(BooleanQuery::new().must_any(vec![]).is_empty());
+}
