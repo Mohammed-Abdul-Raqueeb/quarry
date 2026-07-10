@@ -259,3 +259,16 @@ fn an_unsatisfiable_must_any_group_matches_nothing() {
     let query = BooleanQuery::new().must_any(vec![TermQuery::new(0, "kubernetes")]);
     assert!(searcher.search(&query, 10).expect("search").is_empty());
 }
+
+#[test]
+fn minimum_should_match_filters_weak_matches() {
+    let segments = corpus();
+    let searcher = Searcher::new(&segments, schema());
+
+    let mut query = BooleanQuery::new()
+        .should(TermQuery::new(0, term("rust")))
+        .should(TermQuery::new(0, term("ownership")));
+    query.minimum_should_match = 2;
+
+    assert_eq!(searcher.search(&query, 10).expect("search").len(), 1);
+}
