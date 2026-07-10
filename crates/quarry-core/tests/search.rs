@@ -250,3 +250,12 @@ fn must_any_groups_are_intersected_with_each_other() {
         ["Fearless concurrency"]
     );
 }
+
+#[test]
+fn an_unsatisfiable_must_any_group_matches_nothing() {
+    let segments = corpus();
+    let searcher = Searcher::new(&segments, schema());
+
+    let query = BooleanQuery::new().must_any(vec![TermQuery::new(0, "kubernetes")]);
+    assert!(searcher.search(&query, 10).expect("search").is_empty());
+}
