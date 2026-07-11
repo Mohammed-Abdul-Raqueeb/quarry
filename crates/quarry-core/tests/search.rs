@@ -456,3 +456,23 @@ fn searches_across_several_segments() {
     let query = BooleanQuery::new().must(TermQuery::new(0, "beta"));
     assert_eq!(searcher.search(&query, 10).expect("search").len(), 1);
 }
+
+#[test]
+fn a_hit_from_a_later_segment_resolves_to_its_document() {
+    let mut segments = index(&[("alpha", "first", "a")]);
+    segments.extend(index(&[("beta", "second", "b")]));
+
+    let searcher = Searcher::new(&segments, schema());
+    let query = BooleanQuery::new().must(TermQuery::new(0, "beta"));
+    let results = searcher.search(&query, 10).expect("search");
+
+    let hit = &results.hits[0];
+    assert_eq!(hit.segment, 1);
+    assert_eq!(hit.local_doc, 0);
+    assert_eq!(
+        searcher
+            .document(hit)
+            .and_then(|d| d.value(0).map(Value::as_text)),
+        Some("beta".to_string())
+    );
+}
