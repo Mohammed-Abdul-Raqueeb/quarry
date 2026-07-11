@@ -556,3 +556,12 @@ fn a_phrase_with_a_missing_term_matches_nothing() {
 
     assert!(searcher.search(&query, 10).expect("search").is_empty());
 }
+
+#[test]
+fn an_empty_phrase_matches_nothing() {
+    let segments = index(&[("anything", "x", "t")]);
+    let searcher = Searcher::new(&segments, schema());
+
+    let query = BooleanQuery::new().phrase(PhraseQuery::new(0, vec![]));
+    assert!(searcher.search(&query, 10).expect("search").is_empty());
+}
