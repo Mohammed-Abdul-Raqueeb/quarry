@@ -429,3 +429,18 @@ fn results_report_how_long_the_query_took() {
             > 0
     );
 }
+
+#[test]
+fn max_score_is_none_for_an_empty_result() {
+    let segments = corpus();
+    let searcher = Searcher::new(&segments, schema());
+    let query = BooleanQuery::new().must(TermQuery::new(0, "absent"));
+
+    assert!(searcher
+        .search(&query, 10)
+        .expect("search")
+        .max_score()
+        .is_none());
+}
+
+// ---- across segments ---------------------------------------------------
