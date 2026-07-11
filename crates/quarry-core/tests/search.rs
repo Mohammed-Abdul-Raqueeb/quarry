@@ -522,3 +522,13 @@ fn a_phrase_does_not_match_reversed_terms() {
 
     assert!(searcher.search(&query, 10).expect("search").is_empty());
 }
+
+#[test]
+fn a_phrase_does_not_match_separated_terms() {
+    let segments = index(&[("zero and cost", "x", "t")]);
+    let searcher = Searcher::new(&segments, schema());
+
+    let query = BooleanQuery::new().phrase(PhraseQuery::new(0, vec![term("zero"), term("cost")]));
+
+    assert!(searcher.search(&query, 10).expect("search").is_empty());
+}
