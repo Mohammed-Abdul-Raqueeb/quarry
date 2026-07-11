@@ -611,3 +611,8 @@ fn a_three_term_phrase_matches() {
 }
 
 // ---- has_ordered_run ----------------------------------------------------
+
+#[test]
+fn ordered_run_finds_adjacent_positions() {
+    assert!(has_ordered_run(&[&[0, 5], &[1]], 0));
+}
