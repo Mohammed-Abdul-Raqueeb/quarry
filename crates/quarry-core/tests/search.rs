@@ -444,3 +444,15 @@ fn max_score_is_none_for_an_empty_result() {
 }
 
 // ---- across segments ---------------------------------------------------
+
+#[test]
+fn searches_across_several_segments() {
+    let mut segments = index(&[("alpha", "first", "a")]);
+    segments.extend(index(&[("beta", "second", "b")]));
+
+    let searcher = Searcher::new(&segments, schema());
+    assert_eq!(searcher.doc_count(), 2);
+
+    let query = BooleanQuery::new().must(TermQuery::new(0, "beta"));
+    assert_eq!(searcher.search(&query, 10).expect("search").len(), 1);
+}
