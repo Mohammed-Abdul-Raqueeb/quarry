@@ -512,3 +512,13 @@ fn a_phrase_matches_adjacent_terms_in_order() {
 
     assert_eq!(searcher.search(&query, 10).expect("search").len(), 1);
 }
+
+#[test]
+fn a_phrase_does_not_match_reversed_terms() {
+    let segments = index(&[("zero cost abstractions", "x", "t")]);
+    let searcher = Searcher::new(&segments, schema());
+
+    let query = BooleanQuery::new().phrase(PhraseQuery::new(0, vec![term("cost"), term("zero")]));
+
+    assert!(searcher.search(&query, 10).expect("search").is_empty());
+}
