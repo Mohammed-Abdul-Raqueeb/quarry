@@ -502,3 +502,13 @@ fn searching_an_empty_index_returns_nothing() {
 }
 
 // ---- phrase queries ----------------------------------------------------
+
+#[test]
+fn a_phrase_matches_adjacent_terms_in_order() {
+    let segments = index(&[("zero cost abstractions", "x", "t")]);
+    let searcher = Searcher::new(&segments, schema());
+
+    let query = BooleanQuery::new().phrase(PhraseQuery::new(0, vec![term("zero"), term("cost")]));
+
+    assert_eq!(searcher.search(&query, 10).expect("search").len(), 1);
+}
