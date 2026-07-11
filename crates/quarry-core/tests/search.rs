@@ -413,3 +413,19 @@ fn count_matches_the_total_from_a_search() {
 
     assert_eq!(searcher.count(&query).expect("count"), 4);
 }
+
+#[test]
+fn results_report_how_long_the_query_took() {
+    let segments = corpus();
+    let searcher = Searcher::new(&segments, schema());
+    let query = BooleanQuery::new().must(TermQuery::new(2, "rust"));
+
+    assert!(
+        searcher
+            .search(&query, 10)
+            .expect("search")
+            .elapsed
+            .as_nanos()
+            > 0
+    );
+}
