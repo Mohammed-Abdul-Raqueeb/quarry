@@ -545,3 +545,14 @@ fn slop_lets_a_phrase_tolerate_a_gap() {
 
     assert_eq!(searcher.search(&query, 10).expect("search").len(), 1);
 }
+
+#[test]
+fn a_phrase_with_a_missing_term_matches_nothing() {
+    let segments = index(&[("zero cost", "x", "t")]);
+    let searcher = Searcher::new(&segments, schema());
+
+    let query =
+        BooleanQuery::new().phrase(PhraseQuery::new(0, vec![term("zero"), term("kubernetes")]));
+
+    assert!(searcher.search(&query, 10).expect("search").is_empty());
+}
