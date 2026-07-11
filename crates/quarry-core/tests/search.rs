@@ -579,3 +579,20 @@ fn a_phrase_on_a_field_without_positions_is_an_error() {
 
     assert!(searcher.search(&query, 10).is_err());
 }
+
+#[test]
+fn a_matching_phrase_still_scores_above_zero() {
+    let segments = index(&[("zero cost", "x", "t")]);
+    let searcher = Searcher::new(&segments, schema());
+
+    let query = BooleanQuery::new().phrase(PhraseQuery::new(0, vec![term("zero"), term("cost")]));
+
+    assert!(
+        searcher
+            .search(&query, 10)
+            .expect("search")
+            .max_score()
+            .unwrap_or(0.0)
+            > 0.0
+    );
+}
