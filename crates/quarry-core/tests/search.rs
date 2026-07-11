@@ -532,3 +532,16 @@ fn a_phrase_does_not_match_separated_terms() {
 
     assert!(searcher.search(&query, 10).expect("search").is_empty());
 }
+
+#[test]
+fn slop_lets_a_phrase_tolerate_a_gap() {
+    // `and` is a stopword, so it leaves a position gap; slop is what lets the
+    // phrase survive it.
+    let segments = index(&[("zero and cost", "x", "t")]);
+    let searcher = Searcher::new(&segments, schema());
+
+    let query = BooleanQuery::new()
+        .phrase(PhraseQuery::new(0, vec![term("zero"), term("cost")]).with_slop(2));
+
+    assert_eq!(searcher.search(&query, 10).expect("search").len(), 1);
+}
