@@ -404,3 +404,12 @@ fn total_hits_counts_matches_beyond_the_limit() {
     assert_eq!(results.len(), 1);
     assert_eq!(results.total_hits, 4);
 }
+
+#[test]
+fn count_matches_the_total_from_a_search() {
+    let segments = corpus();
+    let searcher = Searcher::new(&segments, schema());
+    let query = BooleanQuery::new().must(TermQuery::new(2, "rust"));
+
+    assert_eq!(searcher.count(&query).expect("count"), 4);
+}
