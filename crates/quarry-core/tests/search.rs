@@ -490,3 +490,15 @@ fn global_document_ids_do_not_collide_across_segments() {
     assert_eq!(ids.len(), 2);
     assert_ne!(ids[0], ids[1]);
 }
+
+#[test]
+fn searching_an_empty_index_returns_nothing() {
+    let segments: Vec<Segment> = Vec::new();
+    let searcher = Searcher::new(&segments, schema());
+    let query = BooleanQuery::new().must(TermQuery::new(0, "anything"));
+
+    assert!(searcher.search(&query, 10).expect("search").is_empty());
+    assert_eq!(searcher.doc_count(), 0);
+}
+
+// ---- phrase queries ----------------------------------------------------
