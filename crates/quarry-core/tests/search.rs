@@ -476,3 +476,17 @@ fn a_hit_from_a_later_segment_resolves_to_its_document() {
         Some("beta".to_string())
     );
 }
+
+#[test]
+fn global_document_ids_do_not_collide_across_segments() {
+    let mut segments = index(&[("a", "x", "t")]);
+    segments.extend(index(&[("b", "y", "t")]));
+
+    let searcher = Searcher::new(&segments, schema());
+    let query = BooleanQuery::new().must(TermQuery::new(2, "t"));
+    let results = searcher.search(&query, 10).expect("search");
+
+    let ids: Vec<u32> = results.hits.iter().map(|h| h.doc).collect();
+    assert_eq!(ids.len(), 2);
+    assert_ne!(ids[0], ids[1]);
+}
