@@ -565,3 +565,17 @@ fn an_empty_phrase_matches_nothing() {
     let query = BooleanQuery::new().phrase(PhraseQuery::new(0, vec![]));
     assert!(searcher.search(&query, 10).expect("search").is_empty());
 }
+
+#[test]
+fn a_phrase_on_a_field_without_positions_is_an_error() {
+    // Better than silently returning nothing, which looks like no match.
+    let segments = index(&[("x", "y", "a tag")]);
+    let searcher = Searcher::new(&segments, schema());
+
+    let query = BooleanQuery::new().phrase(PhraseQuery::new(
+        2,
+        vec!["a".to_string(), "tag".to_string()],
+    ));
+
+    assert!(searcher.search(&query, 10).is_err());
+}
