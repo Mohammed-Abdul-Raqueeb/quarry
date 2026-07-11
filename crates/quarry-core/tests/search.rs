@@ -621,3 +621,8 @@ fn ordered_run_finds_adjacent_positions() {
 fn ordered_run_rejects_reversed_positions() {
     assert!(!has_ordered_run(&[&[5], &[1]], 0));
 }
+
+#[test]
+fn ordered_run_rejects_a_gap_beyond_the_slop() {
+    assert!(!has_ordered_run(&[&[0], &[5]], 1));
+}
