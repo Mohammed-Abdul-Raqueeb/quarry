@@ -596,3 +596,18 @@ fn a_matching_phrase_still_scores_above_zero() {
             > 0.0
     );
 }
+
+#[test]
+fn a_three_term_phrase_matches() {
+    let segments = index(&[("alpha beta gamma delta", "x", "t")]);
+    let searcher = Searcher::new(&segments, schema());
+
+    let query = BooleanQuery::new().phrase(PhraseQuery::new(
+        0,
+        vec![term("beta"), term("gamma"), term("delta")],
+    ));
+
+    assert_eq!(searcher.search(&query, 10).expect("search").len(), 1);
+}
+
+// ---- has_ordered_run ----------------------------------------------------
