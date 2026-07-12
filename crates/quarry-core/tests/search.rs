@@ -722,3 +722,16 @@ fn finds_no_spans_when_no_terms_are_given() {
     let analyzer = Analyzer::english();
     assert!(find_spans(&analyzer, "some text", &[]).is_empty());
 }
+
+#[test]
+fn a_snippet_marks_the_matching_term() {
+    let analyzer = Analyzer::english();
+    let built = snippet(
+        &analyzer,
+        "Rust ownership rules",
+        &[term("ownership")],
+        &HighlightOptions::brackets(),
+    );
+
+    assert_eq!(built.as_deref(), Some("Rust [ownership] rules"));
+}
