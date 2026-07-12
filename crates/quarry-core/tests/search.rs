@@ -644,3 +644,8 @@ fn ordered_run_of_a_single_term_is_just_presence() {
     assert!(has_ordered_run(&[&[3]], 0));
     assert!(!has_ordered_run(&[&[]], 0));
 }
+
+#[test]
+fn ordered_run_of_nothing_is_false() {
+    assert!(!has_ordered_run(&[], 0));
+}
