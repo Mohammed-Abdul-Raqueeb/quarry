@@ -688,3 +688,15 @@ fn union_sorted_keeps_its_output_sorted() {
 }
 
 // ---- highlighting -------------------------------------------------------
+
+#[test]
+fn finds_the_span_of_a_matching_term() {
+    let analyzer = Analyzer::english();
+    let spans = find_spans(&analyzer, "Rust ownership rules", &[term("ownership")]);
+
+    assert_eq!(spans.len(), 1);
+    assert_eq!(
+        &"Rust ownership rules"[spans[0].start..spans[0].end],
+        "ownership"
+    );
+}
