@@ -735,3 +735,16 @@ fn a_snippet_marks_the_matching_term() {
 
     assert_eq!(built.as_deref(), Some("Rust [ownership] rules"));
 }
+
+#[test]
+fn a_snippet_is_none_when_nothing_matched() {
+    let analyzer = Analyzer::english();
+    let built = snippet(
+        &analyzer,
+        "Rust ownership",
+        &[term("python")],
+        &HighlightOptions::brackets(),
+    );
+
+    assert!(built.is_none());
+}
