@@ -710,3 +710,9 @@ fn finds_spans_for_an_inflected_form() {
 
     assert_eq!(&text[spans[0].start..spans[0].end], "Running");
 }
+
+#[test]
+fn finds_no_spans_for_an_absent_term() {
+    let analyzer = Analyzer::english();
+    assert!(find_spans(&analyzer, "nothing here", &[term("absent")]).is_empty());
+}
