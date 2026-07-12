@@ -700,3 +700,13 @@ fn finds_the_span_of_a_matching_term() {
         "ownership"
     );
 }
+
+#[test]
+fn finds_spans_for_an_inflected_form() {
+    // The index holds `run`, but the user must see the word `Running`.
+    let analyzer = Analyzer::english();
+    let text = "Running fast";
+    let spans = find_spans(&analyzer, text, &[term("run")]);
+
+    assert_eq!(&text[spans[0].start..spans[0].end], "Running");
+}
