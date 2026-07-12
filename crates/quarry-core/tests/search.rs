@@ -808,3 +808,9 @@ fn a_snippet_handles_multibyte_text() {
 
     assert!(built.unwrap_or_default().contains("[ownership]"));
 }
+
+#[test]
+fn terminal_highlight_options_use_escape_sequences() {
+    let options = HighlightOptions::terminal();
+    assert!(options.open.starts_with('\u{1b}'));
+}
