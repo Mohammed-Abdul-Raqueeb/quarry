@@ -663,3 +663,9 @@ fn ordered_run_handles_a_long_position_list() {
 fn intersect_sorted_keeps_shared_ids() {
     assert_eq!(intersect_sorted(&[1, 2, 5], &[2, 5, 8]), vec![2, 5]);
 }
+
+#[test]
+fn intersect_sorted_handles_empty_inputs() {
+    assert!(intersect_sorted(&[], &[1, 2]).is_empty());
+    assert!(intersect_sorted(&[1, 2], &[]).is_empty());
+}
