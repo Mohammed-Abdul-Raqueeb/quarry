@@ -748,3 +748,17 @@ fn a_snippet_is_none_when_nothing_matched() {
 
     assert!(built.is_none());
 }
+
+#[test]
+fn a_snippet_marks_several_matches() {
+    let analyzer = Analyzer::english();
+    let built = snippet(
+        &analyzer,
+        "rust and more rust",
+        &[term("rust")],
+        &HighlightOptions::brackets(),
+    )
+    .unwrap_or_default();
+
+    assert_eq!(built.matches('[').count(), 2);
+}
