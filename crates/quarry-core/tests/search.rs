@@ -631,3 +631,10 @@ fn ordered_run_rejects_a_gap_beyond_the_slop() {
 fn ordered_run_accepts_a_gap_within_the_slop() {
     assert!(has_ordered_run(&[&[0], &[3]], 2));
 }
+
+#[test]
+fn ordered_run_tries_every_anchor() {
+    // The first occurrence of the leading term does not line up, but the
+    // second does.
+    assert!(has_ordered_run(&[&[0, 10], &[11]], 0));
+}
