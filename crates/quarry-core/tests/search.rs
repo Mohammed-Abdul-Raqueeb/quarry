@@ -649,3 +649,12 @@ fn ordered_run_of_a_single_term_is_just_presence() {
 fn ordered_run_of_nothing_is_false() {
     assert!(!has_ordered_run(&[], 0));
 }
+
+#[test]
+fn ordered_run_handles_a_long_position_list() {
+    let many: Vec<u32> = (0..5_000).collect();
+    let second = [4_999u32];
+    assert!(has_ordered_run(&[&many, &second], 0));
+}
+
+// ---- set helpers --------------------------------------------------------
