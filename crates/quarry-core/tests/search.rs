@@ -680,3 +680,11 @@ fn union_sorted_handles_empty_inputs() {
     assert_eq!(union_sorted(&[], &[1, 2]), vec![1, 2]);
     assert_eq!(union_sorted(&[1, 2], &[]), vec![1, 2]);
 }
+
+#[test]
+fn union_sorted_keeps_its_output_sorted() {
+    let merged = union_sorted(&[1, 9], &[4, 6]);
+    assert!(merged.windows(2).all(|w| w[0] < w[1]));
+}
+
+// ---- highlighting -------------------------------------------------------
