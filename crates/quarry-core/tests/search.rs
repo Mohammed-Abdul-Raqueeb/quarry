@@ -638,3 +638,9 @@ fn ordered_run_tries_every_anchor() {
     // second does.
     assert!(has_ordered_run(&[&[0, 10], &[11]], 0));
 }
+
+#[test]
+fn ordered_run_of_a_single_term_is_just_presence() {
+    assert!(has_ordered_run(&[&[3]], 0));
+    assert!(!has_ordered_run(&[&[]], 0));
+}
