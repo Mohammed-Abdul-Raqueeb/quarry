@@ -795,3 +795,16 @@ fn a_snippet_centres_on_the_match() {
 
     assert!(built.contains("[ownership]"));
 }
+
+#[test]
+fn a_snippet_handles_multibyte_text() {
+    let analyzer = Analyzer::english();
+    let built = snippet(
+        &analyzer,
+        "café ownership naïve",
+        &[term("ownership")],
+        &HighlightOptions::brackets(),
+    );
+
+    assert!(built.unwrap_or_default().contains("[ownership]"));
+}
