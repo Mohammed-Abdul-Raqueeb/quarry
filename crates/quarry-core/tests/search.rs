@@ -674,3 +674,9 @@ fn intersect_sorted_handles_empty_inputs() {
 fn union_sorted_merges_without_duplicates() {
     assert_eq!(union_sorted(&[1, 3], &[3, 5]), vec![1, 3, 5]);
 }
+
+#[test]
+fn union_sorted_handles_empty_inputs() {
+    assert_eq!(union_sorted(&[], &[1, 2]), vec![1, 2]);
+    assert_eq!(union_sorted(&[1, 2], &[]), vec![1, 2]);
+}
