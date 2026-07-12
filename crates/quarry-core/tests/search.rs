@@ -762,3 +762,20 @@ fn a_snippet_marks_several_matches() {
 
     assert_eq!(built.matches('[').count(), 2);
 }
+
+#[test]
+fn a_snippet_of_a_long_text_is_truncated_with_an_ellipsis() {
+    let analyzer = Analyzer::english();
+    let long = format!("{} ownership {}", "filler ".repeat(60), "tail ".repeat(60));
+
+    let built = snippet(
+        &analyzer,
+        &long,
+        &[term("ownership")],
+        &HighlightOptions::brackets(),
+    )
+    .unwrap_or_default();
+
+    assert!(built.contains('…'), "expected an ellipsis in {built}");
+    assert!(built.len() < long.len());
+}
