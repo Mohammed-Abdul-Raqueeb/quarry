@@ -716,3 +716,9 @@ fn finds_no_spans_for_an_absent_term() {
     let analyzer = Analyzer::english();
     assert!(find_spans(&analyzer, "nothing here", &[term("absent")]).is_empty());
 }
+
+#[test]
+fn finds_no_spans_when_no_terms_are_given() {
+    let analyzer = Analyzer::english();
+    assert!(find_spans(&analyzer, "some text", &[]).is_empty());
+}
