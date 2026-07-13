@@ -38,3 +38,9 @@ impl TempDir {
         self.path.join(name)
     }
 }
+
+impl Drop for TempDir {
+    fn drop(&mut self) {
+        let _ = std::fs::remove_dir_all(&self.path);
+    }
+}
