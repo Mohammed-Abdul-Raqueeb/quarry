@@ -106,3 +106,10 @@ fn opening_a_directory_without_a_schema_says_so() {
     let err = IndexDir::open(&temp.path).unwrap_err().to_string();
     assert!(err.contains("not a Quarry index"), "message was: {err}");
 }
+
+#[test]
+fn open_or_create_creates_when_absent() {
+    let temp = TempDir::new("open-or-create");
+    let dir = IndexDir::open_or_create(&temp.path, &schema()).expect("should create");
+    assert_eq!(dir.doc_count(), 0);
+}
