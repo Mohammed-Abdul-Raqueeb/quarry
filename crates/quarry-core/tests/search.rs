@@ -837,3 +837,23 @@ fn a_prefix_snippet_truncates_long_text() {
     assert!(built.ends_with('…'));
     assert!(built.len() < long.len());
 }
+
+#[test]
+fn the_searcher_builds_a_snippet_for_a_hit() {
+    let segments = corpus();
+    let searcher = Searcher::new(&segments, schema());
+    let analyzer = Analyzer::english();
+
+    let query = BooleanQuery::new().must(TermQuery::new(0, term("ownership")));
+    let results = searcher.search(&query, 1).expect("search");
+
+    let built = searcher.snippet(
+        &results.hits[0],
+        0,
+        &query.all_terms(),
+        &analyzer,
+        &HighlightOptions::brackets(),
+    );
+
+    assert_eq!(built.as_deref(), Some("Rust [ownership]"));
+}
