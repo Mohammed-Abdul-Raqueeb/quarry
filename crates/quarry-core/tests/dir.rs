@@ -113,3 +113,15 @@ fn open_or_create_creates_when_absent() {
     let dir = IndexDir::open_or_create(&temp.path, &schema()).expect("should create");
     assert_eq!(dir.doc_count(), 0);
 }
+
+#[test]
+fn open_or_create_opens_when_present() {
+    let temp = TempDir::new("open-or-open");
+    let mut dir = IndexDir::create(&temp.path, &schema()).expect("should create");
+    dir.append(segment_with(&["one"])).expect("should append");
+
+    let reopened = IndexDir::open_or_create(&temp.path, &schema()).expect("should open");
+    assert_eq!(reopened.doc_count(), 1);
+}
+
+// ---- appending ----------------------------------------------------------
