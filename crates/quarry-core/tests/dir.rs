@@ -97,3 +97,12 @@ fn opening_a_missing_directory_is_an_error() {
     let temp = TempDir::new("missing");
     assert!(IndexDir::open(temp.join("nope")).is_err());
 }
+
+#[test]
+fn opening_a_directory_without_a_schema_says_so() {
+    let temp = TempDir::new("not-an-index");
+    std::fs::create_dir_all(&temp.path).expect("should create dir");
+
+    let err = IndexDir::open(&temp.path).unwrap_err().to_string();
+    assert!(err.contains("not a Quarry index"), "message was: {err}");
+}
