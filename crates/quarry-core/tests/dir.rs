@@ -64,3 +64,12 @@ fn segment_with(titles: &[&str]) -> quarry_core::Segment {
 }
 
 // ---- create and open ----------------------------------------------------
+
+#[test]
+fn creates_a_directory_and_writes_a_schema() {
+    let temp = TempDir::new("create");
+    let dir = IndexDir::create(&temp.path, &schema()).expect("should create");
+
+    assert!(dir.path().join(SCHEMA_FILE).exists());
+    assert_eq!(dir.doc_count(), 0);
+}
