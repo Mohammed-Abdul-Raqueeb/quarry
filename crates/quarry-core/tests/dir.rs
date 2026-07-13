@@ -82,3 +82,12 @@ fn refuses_to_create_over_an_existing_index() {
 
     assert!(IndexDir::create(&temp.path, &schema()).is_err());
 }
+
+#[test]
+fn opens_an_index_that_was_created_earlier() {
+    let temp = TempDir::new("reopen");
+    IndexDir::create(&temp.path, &schema()).expect("should create");
+
+    let reopened = IndexDir::open(&temp.path).expect("should open");
+    assert_eq!(reopened.schema().len(), 2);
+}
