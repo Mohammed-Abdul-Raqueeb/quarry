@@ -125,3 +125,14 @@ fn open_or_create_opens_when_present() {
 }
 
 // ---- appending ----------------------------------------------------------
+
+#[test]
+fn appends_a_segment_and_keeps_it_loaded() {
+    let temp = TempDir::new("append");
+    let mut dir = IndexDir::create(&temp.path, &schema()).expect("should create");
+
+    dir.append(segment_with(&["alpha"])).expect("should append");
+
+    assert_eq!(dir.segments().len(), 1);
+    assert_eq!(dir.doc_count(), 1);
+}
