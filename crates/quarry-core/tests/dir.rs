@@ -52,3 +52,15 @@ fn schema() -> Schema {
         .and_then(SchemaBuilder::build)
         .expect("schema should build")
 }
+
+fn segment_with(titles: &[&str]) -> quarry_core::Segment {
+    let mut writer = IndexWriter::new(schema());
+    for title in titles {
+        let mut doc = Document::new();
+        doc.add(0, Value::Text((*title).to_string()));
+        writer.add(&doc).expect("should index");
+    }
+    writer.flush().expect("a document was added")
+}
+
+// ---- create and open ----------------------------------------------------
