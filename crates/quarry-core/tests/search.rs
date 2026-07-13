@@ -827,3 +827,13 @@ fn a_prefix_snippet_returns_short_text_whole() {
     let options = HighlightOptions::default();
     assert_eq!(prefix_snippet("short", &options), "short");
 }
+
+#[test]
+fn a_prefix_snippet_truncates_long_text() {
+    let options = HighlightOptions::default();
+    let long = "x".repeat(500);
+
+    let built = prefix_snippet(&long, &options);
+    assert!(built.ends_with('…'));
+    assert!(built.len() < long.len());
+}
