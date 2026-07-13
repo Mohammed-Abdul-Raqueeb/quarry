@@ -814,3 +814,10 @@ fn terminal_highlight_options_use_escape_sequences() {
     let options = HighlightOptions::terminal();
     assert!(options.open.starts_with('\u{1b}'));
 }
+
+#[test]
+fn default_highlight_options_use_mark_tags() {
+    let options = HighlightOptions::default();
+    assert_eq!(options.open, "<mark>");
+    assert_eq!(options.close, "</mark>");
+}
