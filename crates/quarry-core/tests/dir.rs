@@ -15,3 +15,5 @@ use quarry_core::schema::{Schema, SchemaBuilder};
 use quarry_core::{Document, IndexDir, IndexWriter, Value};
 use std::path::PathBuf;
 use std::sync::atomic::{AtomicU32, Ordering};
+
+static COUNTER: AtomicU32 = AtomicU32::new(0);
