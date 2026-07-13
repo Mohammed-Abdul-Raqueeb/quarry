@@ -857,3 +857,24 @@ fn the_searcher_builds_a_snippet_for_a_hit() {
 
     assert_eq!(built.as_deref(), Some("Rust [ownership]"));
 }
+
+#[test]
+fn the_searcher_returns_no_snippet_for_an_unmatched_field() {
+    let segments = corpus();
+    let searcher = Searcher::new(&segments, schema());
+    let analyzer = Analyzer::english();
+
+    let query = BooleanQuery::new().must(TermQuery::new(0, term("ownership")));
+    let results = searcher.search(&query, 1).expect("search");
+
+    // The tag field contains none of the query terms.
+    let built = searcher.snippet(
+        &results.hits[0],
+        2,
+        &query.all_terms(),
+        &analyzer,
+        &HighlightOptions::brackets(),
+    );
+
+    assert!(built.is_none());
+}
