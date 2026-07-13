@@ -91,3 +91,9 @@ fn opens_an_index_that_was_created_earlier() {
     let reopened = IndexDir::open(&temp.path).expect("should open");
     assert_eq!(reopened.schema().len(), 2);
 }
+
+#[test]
+fn opening_a_missing_directory_is_an_error() {
+    let temp = TempDir::new("missing");
+    assert!(IndexDir::open(temp.join("nope")).is_err());
+}
