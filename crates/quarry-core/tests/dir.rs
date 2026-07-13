@@ -73,3 +73,12 @@ fn creates_a_directory_and_writes_a_schema() {
     assert!(dir.path().join(SCHEMA_FILE).exists());
     assert_eq!(dir.doc_count(), 0);
 }
+
+#[test]
+fn refuses_to_create_over_an_existing_index() {
+    // Replacing the schema would orphan every segment written against it.
+    let temp = TempDir::new("no-clobber");
+    IndexDir::create(&temp.path, &schema()).expect("first create");
+
+    assert!(IndexDir::create(&temp.path, &schema()).is_err());
+}
