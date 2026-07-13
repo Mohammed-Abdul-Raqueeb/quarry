@@ -17,3 +17,8 @@ use std::path::PathBuf;
 use std::sync::atomic::{AtomicU32, Ordering};
 
 static COUNTER: AtomicU32 = AtomicU32::new(0);
+
+/// A directory that deletes itself when the test ends, including on panic.
+struct TempDir {
+    path: PathBuf,
+}
