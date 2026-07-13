@@ -821,3 +821,9 @@ fn default_highlight_options_use_mark_tags() {
     assert_eq!(options.open, "<mark>");
     assert_eq!(options.close, "</mark>");
 }
+
+#[test]
+fn a_prefix_snippet_returns_short_text_whole() {
+    let options = HighlightOptions::default();
+    assert_eq!(prefix_snippet("short", &options), "short");
+}
