@@ -336,3 +336,16 @@ fn a_corrupt_segment_file_fails_the_open_and_names_itself() {
     let err = IndexDir::open(&temp.path).unwrap_err().to_string();
     assert!(err.contains("00000001"), "message was: {err}");
 }
+
+#[test]
+fn size_on_disk_grows_with_appended_segments() {
+    let temp = TempDir::new("size");
+    let mut dir = IndexDir::create(&temp.path, &schema()).expect("should create");
+    assert_eq!(dir.size_on_disk().expect("should size"), 0);
+
+    dir.append(segment_with(&["some text here"]))
+        .expect("should append");
+    assert!(dir.size_on_disk().expect("should size") > 0);
+}
+
+// ---- schema serialization -----------------------------------------------
