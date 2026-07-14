@@ -193,3 +193,15 @@ fn reopening_preserves_document_order_across_segments() {
     assert_eq!(reopened.segments()[0].index.doc_freq(0, "first"), 1);
     assert_eq!(reopened.segments()[1].index.doc_freq(0, "second"), 1);
 }
+
+#[test]
+fn appending_a_segment_from_another_schema_is_rejected() {
+    let temp = TempDir::new("schema-guard");
+    let other = Schema::builder()
+        .text("different")
+        .and_then(SchemaBuilder::build)
+        .expect("should build");
+
+    let mut dir = IndexDir::create(&temp.path, &other).expect("should create");
+    assert!(dir.append(segment_with(&["x"])).is_err());
+}
