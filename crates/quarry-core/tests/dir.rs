@@ -247,3 +247,20 @@ fn merging_collapses_the_segments_on_disk() {
     assert_eq!(dir.segments().len(), 1);
     assert_eq!(dir.doc_count(), 3);
 }
+
+#[test]
+fn a_merged_index_survives_a_reopen() {
+    let temp = TempDir::new("merge-persist");
+    {
+        let mut dir = IndexDir::create(&temp.path, &schema()).expect("should create");
+        for title in ["alpha", "beta", "gamma"] {
+            dir.append(segment_with(&[title])).expect("should append");
+        }
+        dir.merge_all().expect("should merge");
+    }
+
+    let reopened = IndexDir::open(&temp.path).expect("should open");
+    assert_eq!(reopened.segments().len(), 1);
+    assert_eq!(reopened.doc_count(), 3);
+    assert_eq!(reopened.segments()[0].index.doc_freq(0, "gamma"), 1);
+}
