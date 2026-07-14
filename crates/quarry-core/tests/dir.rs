@@ -150,3 +150,15 @@ fn appended_segments_survive_a_reopen() {
     assert_eq!(reopened.doc_count(), 2);
     assert_eq!(reopened.segments()[0].index.doc_freq(0, "alpha"), 1);
 }
+
+#[test]
+fn appending_numbers_segments_sequentially() {
+    let temp = TempDir::new("numbering");
+    let mut dir = IndexDir::create(&temp.path, &schema()).expect("should create");
+
+    let first = dir.append(segment_with(&["a"])).expect("should append");
+    let second = dir.append(segment_with(&["b"])).expect("should append");
+
+    assert!(first.to_string_lossy().contains("00000001"));
+    assert!(second.to_string_lossy().contains("00000002"));
+}
