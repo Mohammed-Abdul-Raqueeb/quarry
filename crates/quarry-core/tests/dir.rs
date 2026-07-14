@@ -284,3 +284,12 @@ fn merging_removes_the_old_segment_files() {
 }
 
 // ---- housekeeping -------------------------------------------------------
+
+#[test]
+fn clean_temp_files_removes_an_interrupted_write() {
+    let temp = TempDir::new("clean");
+    let dir = IndexDir::create(&temp.path, &schema()).expect("should create");
+    std::fs::write(temp.join("00000009.qseg.tmp"), b"partial").expect("should write");
+
+    assert_eq!(dir.clean_temp_files().expect("should clean"), 1);
+}
