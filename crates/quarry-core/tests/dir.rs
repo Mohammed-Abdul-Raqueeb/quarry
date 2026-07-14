@@ -349,3 +349,11 @@ fn size_on_disk_grows_with_appended_segments() {
 }
 
 // ---- schema serialization -----------------------------------------------
+
+#[test]
+fn a_schema_round_trips_through_json() {
+    let original = schema();
+    let restored = schema_from_json(&schema_to_json(&original)).expect("should parse");
+
+    assert_eq!(restored, original);
+}
