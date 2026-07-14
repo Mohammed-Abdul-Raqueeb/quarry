@@ -387,3 +387,9 @@ fn parsing_a_schema_without_fields_is_an_error() {
     let json = parse(r#"{"version":1}"#).expect("valid json");
     assert!(schema_from_json(&json).is_err());
 }
+
+#[test]
+fn parsing_a_schema_with_an_unknown_type_is_an_error() {
+    let json = parse(r#"{"fields":[{"name":"x","type":"vector"}]}"#).expect("valid json");
+    assert!(schema_from_json(&json).is_err());
+}
