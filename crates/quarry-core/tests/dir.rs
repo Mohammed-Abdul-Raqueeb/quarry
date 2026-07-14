@@ -357,3 +357,17 @@ fn a_schema_round_trips_through_json() {
 
     assert_eq!(restored, original);
 }
+
+#[test]
+fn schema_json_records_every_option() {
+    let original = Schema::builder()
+        .text_boosted("title", 2.5)
+        .and_then(SchemaBuilder::build)
+        .expect("should build");
+
+    let restored = schema_from_json(&schema_to_json(&original)).expect("should parse");
+    let field = restored.field("title").expect("field exists");
+
+    assert_eq!(field.options.boost, 2.5);
+    assert!(field.options.positions);
+}
