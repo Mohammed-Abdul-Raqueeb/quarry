@@ -162,3 +162,19 @@ fn appending_numbers_segments_sequentially() {
     assert!(first.to_string_lossy().contains("00000001"));
     assert!(second.to_string_lossy().contains("00000002"));
 }
+
+#[test]
+fn segment_names_are_zero_padded_so_they_sort_numerically() {
+    // Without padding, `10.qseg` would sort before `9.qseg` and a reopened
+    // index would stitch segments together in the wrong document order.
+    let temp = TempDir::new("padding");
+    let mut dir = IndexDir::create(&temp.path, &schema()).expect("should create");
+
+    for i in 0..11 {
+        dir.append(segment_with(&[&format!("doc{i}")]))
+            .expect("should append");
+    }
+
+    let reopened = IndexDir::open(&temp.path).expect("should open");
+    assert_eq!(reopened.segments().len(), 11);
+}
