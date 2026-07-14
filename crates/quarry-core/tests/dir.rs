@@ -381,3 +381,9 @@ fn schema_json_preserves_field_order() {
         Some("title")
     );
 }
+
+#[test]
+fn parsing_a_schema_without_fields_is_an_error() {
+    let json = parse(r#"{"version":1}"#).expect("valid json");
+    assert!(schema_from_json(&json).is_err());
+}
