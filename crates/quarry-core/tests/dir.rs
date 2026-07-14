@@ -371,3 +371,13 @@ fn schema_json_records_every_option() {
     assert_eq!(field.options.boost, 2.5);
     assert!(field.options.positions);
 }
+
+#[test]
+fn schema_json_preserves_field_order() {
+    // Field ids are positional, so order is part of the contract.
+    let restored = schema_from_json(&schema_to_json(&schema())).expect("should parse");
+    assert_eq!(
+        restored.field_by_id(0).map(|f| f.name.as_str()),
+        Some("title")
+    );
+}
