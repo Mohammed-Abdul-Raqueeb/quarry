@@ -264,3 +264,23 @@ fn a_merged_index_survives_a_reopen() {
     assert_eq!(reopened.doc_count(), 3);
     assert_eq!(reopened.segments()[0].index.doc_freq(0, "gamma"), 1);
 }
+
+#[test]
+fn merging_removes_the_old_segment_files() {
+    let temp = TempDir::new("merge-cleanup");
+    let mut dir = IndexDir::create(&temp.path, &schema()).expect("should create");
+    for title in ["a", "b", "c"] {
+        dir.append(segment_with(&[title])).expect("should append");
+    }
+    dir.merge_all().expect("should merge");
+
+    let files = std::fs::read_dir(&temp.path)
+        .expect("should list")
+        .filter_map(Result::ok)
+        .filter(|e| e.path().extension().is_some_and(|ext| ext == "qseg"))
+        .count();
+
+    assert_eq!(files, 1);
+}
+
+// ---- housekeeping -------------------------------------------------------
