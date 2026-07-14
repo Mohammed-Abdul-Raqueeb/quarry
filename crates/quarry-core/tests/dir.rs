@@ -205,3 +205,22 @@ fn appending_a_segment_from_another_schema_is_rejected() {
     let mut dir = IndexDir::create(&temp.path, &other).expect("should create");
     assert!(dir.append(segment_with(&["x"])).is_err());
 }
+
+#[test]
+fn an_appended_segment_leaves_no_temporary_file() {
+    // The write is a temp file plus a rename; a leftover means the rename
+    // did not happen.
+    let temp = TempDir::new("no-temp");
+    let mut dir = IndexDir::create(&temp.path, &schema()).expect("should create");
+    dir.append(segment_with(&["x"])).expect("should append");
+
+    let leftovers = std::fs::read_dir(&temp.path)
+        .expect("should list")
+        .filter_map(Result::ok)
+        .filter(|e| e.path().extension().is_some_and(|ext| ext == "tmp"))
+        .count();
+
+    assert_eq!(leftovers, 0);
+}
+
+// ---- merging ------------------------------------------------------------
