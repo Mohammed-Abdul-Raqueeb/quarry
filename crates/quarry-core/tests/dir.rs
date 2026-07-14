@@ -307,3 +307,19 @@ fn clean_temp_files_leaves_real_segments_alone() {
         1
     );
 }
+
+#[test]
+fn a_stray_temp_file_does_not_break_opening() {
+    // The reader only considers `.qseg`, so leftovers are inert.
+    let temp = TempDir::new("stray");
+    {
+        let mut dir = IndexDir::create(&temp.path, &schema()).expect("should create");
+        dir.append(segment_with(&["x"])).expect("should append");
+    }
+    std::fs::write(temp.join("00000099.qseg.tmp"), b"junk").expect("should write");
+
+    assert_eq!(
+        IndexDir::open(&temp.path).expect("should open").doc_count(),
+        1
+    );
+}
