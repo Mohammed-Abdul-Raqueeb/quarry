@@ -224,3 +224,13 @@ fn an_appended_segment_leaves_no_temporary_file() {
 }
 
 // ---- merging ------------------------------------------------------------
+
+#[test]
+fn merging_fewer_than_two_segments_does_nothing() {
+    let temp = TempDir::new("merge-one");
+    let mut dir = IndexDir::create(&temp.path, &schema()).expect("should create");
+    dir.append(segment_with(&["only"])).expect("should append");
+
+    assert!(dir.merge_all().expect("should merge").is_none());
+    assert_eq!(dir.segments().len(), 1);
+}
