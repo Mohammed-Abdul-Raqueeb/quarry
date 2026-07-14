@@ -323,3 +323,16 @@ fn a_stray_temp_file_does_not_break_opening() {
         1
     );
 }
+
+#[test]
+fn a_corrupt_segment_file_fails_the_open_and_names_itself() {
+    let temp = TempDir::new("corrupt");
+    {
+        let mut dir = IndexDir::create(&temp.path, &schema()).expect("should create");
+        dir.append(segment_with(&["x"])).expect("should append");
+    }
+    std::fs::write(temp.join("00000001.qseg"), b"not a segment at all").expect("should write");
+
+    let err = IndexDir::open(&temp.path).unwrap_err().to_string();
+    assert!(err.contains("00000001"), "message was: {err}");
+}
