@@ -136,3 +136,17 @@ fn appends_a_segment_and_keeps_it_loaded() {
     assert_eq!(dir.segments().len(), 1);
     assert_eq!(dir.doc_count(), 1);
 }
+
+#[test]
+fn appended_segments_survive_a_reopen() {
+    let temp = TempDir::new("persist");
+    {
+        let mut dir = IndexDir::create(&temp.path, &schema()).expect("should create");
+        dir.append(segment_with(&["alpha", "beta"]))
+            .expect("should append");
+    }
+
+    let reopened = IndexDir::open(&temp.path).expect("should open");
+    assert_eq!(reopened.doc_count(), 2);
+    assert_eq!(reopened.segments()[0].index.doc_freq(0, "alpha"), 1);
+}
