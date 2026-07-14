@@ -178,3 +178,18 @@ fn segment_names_are_zero_padded_so_they_sort_numerically() {
     let reopened = IndexDir::open(&temp.path).expect("should open");
     assert_eq!(reopened.segments().len(), 11);
 }
+
+#[test]
+fn reopening_preserves_document_order_across_segments() {
+    let temp = TempDir::new("order");
+    {
+        let mut dir = IndexDir::create(&temp.path, &schema()).expect("should create");
+        dir.append(segment_with(&["first"])).expect("should append");
+        dir.append(segment_with(&["second"]))
+            .expect("should append");
+    }
+
+    let reopened = IndexDir::open(&temp.path).expect("should open");
+    assert_eq!(reopened.segments()[0].index.doc_freq(0, "first"), 1);
+    assert_eq!(reopened.segments()[1].index.doc_freq(0, "second"), 1);
+}
