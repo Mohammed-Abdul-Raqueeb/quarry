@@ -293,3 +293,17 @@ fn clean_temp_files_removes_an_interrupted_write() {
 
     assert_eq!(dir.clean_temp_files().expect("should clean"), 1);
 }
+
+#[test]
+fn clean_temp_files_leaves_real_segments_alone() {
+    let temp = TempDir::new("clean-safe");
+    let mut dir = IndexDir::create(&temp.path, &schema()).expect("should create");
+    dir.append(segment_with(&["keep"])).expect("should append");
+
+    dir.clean_temp_files().expect("should clean");
+
+    assert_eq!(
+        IndexDir::open(&temp.path).expect("should open").doc_count(),
+        1
+    );
+}
