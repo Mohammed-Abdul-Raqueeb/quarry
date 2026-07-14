@@ -234,3 +234,16 @@ fn merging_fewer_than_two_segments_does_nothing() {
     assert!(dir.merge_all().expect("should merge").is_none());
     assert_eq!(dir.segments().len(), 1);
 }
+
+#[test]
+fn merging_collapses_the_segments_on_disk() {
+    let temp = TempDir::new("merge-many");
+    let mut dir = IndexDir::create(&temp.path, &schema()).expect("should create");
+    for title in ["a", "b", "c"] {
+        dir.append(segment_with(&[title])).expect("should append");
+    }
+
+    assert!(dir.merge_all().expect("should merge").is_some());
+    assert_eq!(dir.segments().len(), 1);
+    assert_eq!(dir.doc_count(), 3);
+}
