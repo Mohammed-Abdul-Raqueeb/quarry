@@ -101,3 +101,27 @@ impl fmt::Display for QueryError {
                 } else if !available.is_empty() {
                     write!(f, "; available fields: {}", available.join(", "))?;
                 }
+                Ok(())
+            }
+            Self::NotRangeable { field, found } => {
+                write!(
+                    f,
+                    "field {field:?} is {found}, and only numeric fields support ranges"
+                )
+            }
+            Self::NoPositions { field } => {
+                write!(
+                    f,
+                    "field {field:?} was indexed without positions, so it cannot be phrase-matched"
+                )
+            }
+            Self::BadFuzzyDistance { found, max } => {
+                write!(f, "fuzzy distance {found} is above the maximum of {max}")
+            }
+            Self::EmptyRange { field } => {
+                write!(f, "the range on {field:?} cannot match: its bounds cross")
+            }
+            Self::Empty => f.write_str("the query has no searchable terms"),
+        }
+    }
+}
