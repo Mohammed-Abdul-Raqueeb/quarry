@@ -76,3 +76,22 @@ pub enum Query {
     /// return early rather than scanning.
     MatchNone,
 }
+
+impl Query {
+    /// A bare term on the default fields.
+    #[must_use]
+    pub fn term(text: impl Into<String>) -> Self {
+        Self::Term {
+            field: None,
+            text: text.into(),
+        }
+    }
+
+    /// A term scoped to a field.
+    #[must_use]
+    pub fn field_term(field: impl Into<String>, text: impl Into<String>) -> Self {
+        Self::Term {
+            field: Some(field.into()),
+            text: text.into(),
+        }
+    }
