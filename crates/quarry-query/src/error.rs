@@ -41,3 +41,37 @@ pub enum QueryError {
         /// The limit.
         max: usize,
     },
+    /// A field in the query is not in the schema.
+    UnknownField {
+        /// The name that was not found.
+        name: String,
+        /// Field names that exist, for a suggestion.
+        available: Vec<String>,
+    },
+    /// A range was used on a field that is not numeric.
+    NotRangeable {
+        /// The field named.
+        field: String,
+        /// The type it actually has.
+        found: String,
+    },
+    /// A phrase was used on a field indexed without positions.
+    NoPositions {
+        /// The field named.
+        field: String,
+    },
+    /// A fuzzy distance outside the supported range.
+    BadFuzzyDistance {
+        /// What was asked for.
+        found: u32,
+        /// The largest supported.
+        max: u8,
+    },
+    /// A range whose bounds cross.
+    EmptyRange {
+        /// The field named.
+        field: String,
+    },
+    /// The query had no searchable clauses.
+    Empty,
+}
