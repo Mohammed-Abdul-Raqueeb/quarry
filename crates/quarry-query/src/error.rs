@@ -127,3 +127,6 @@ impl fmt::Display for QueryError {
 }
 
 impl std::error::Error for QueryError {}
+
+/// Shorthand for the crate.
+pub type Result<T> = std::result::Result<T, QueryError>;
