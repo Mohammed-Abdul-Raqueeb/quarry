@@ -132,3 +132,25 @@ impl Query {
             _ => 1,
         }
     }
+
+    /// How many leaf clauses the query has.
+    #[must_use]
+    pub fn leaf_count(&self) -> usize {
+        match self {
+            Self::And(children) | Self::Or(children) => children.iter().map(Self::leaf_count).sum(),
+            Self::Not(child) => child.leaf_count(),
+            Self::Boost { query, .. } => query.leaf_count(),
+            Self::MatchAll | Self::MatchNone => 0,
+            _ => 1,
+        }
+    }
+
+    /// Every field named anywhere in the query.
+    #[must_use]
+    pub fn referenced_fields(&self) -> Vec<String> {
+        let mut fields = Vec::new();
+        self.collect_fields(&mut fields);
+        fields.sort();
+        fields.dedup();
+        fields
+    }
