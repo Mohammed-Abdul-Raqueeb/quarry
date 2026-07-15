@@ -58,3 +58,21 @@ pub enum Query {
     /// All of these must match.
     And(Vec<Query>),
     /// Any of these may match.
+    Or(Vec<Query>),
+    /// This must not match.
+    Not(Box<Query>),
+    /// A subquery whose score is multiplied.
+    Boost {
+        /// The subquery.
+        query: Box<Query>,
+        /// The multiplier.
+        factor: f32,
+    },
+    /// Matches every document.
+    MatchAll,
+    /// Matches nothing.
+    ///
+    /// Produced when a clause is provably unsatisfiable, so the executor can
+    /// return early rather than scanning.
+    MatchNone,
+}
