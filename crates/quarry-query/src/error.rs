@@ -130,3 +130,20 @@ impl std::error::Error for QueryError {}
 
 /// Shorthand for the crate.
 pub type Result<T> = std::result::Result<T, QueryError>;
+
+/// The candidate within edit distance 2 of `name`, if there is one.
+///
+/// Deliberately strict: suggesting a field that merely shares a letter is worse
+/// than suggesting nothing, because it sends the user down the wrong path.
+fn closest_match(name: &str, candidates: &[String]) -> Option<String> {
+    let lowered = name.to_lowercase();
+
+    candidates
+        .iter()
+        .filter_map(|candidate| {
+            let distance = crate::fuzzy::levenshtein(&lowered, &candidate.to_lowercase());
+            (distance <= 2).then_some((distance, candidate.clone()))
+        })
+        .min_by_key(|(distance, _)| *distance)
+        .map(|(_, candidate)| candidate)
+}
