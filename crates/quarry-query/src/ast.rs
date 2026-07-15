@@ -20,3 +20,22 @@ pub enum Query {
     /// A quoted sequence of words that must appear in order.
     Phrase {
         /// Field name, or `None` for the default fields.
+        field: Option<String>,
+        /// The words, unanalyzed.
+        terms: Vec<String>,
+        /// Positions of slack allowed between adjacent terms.
+        slop: u32,
+    },
+    /// A word with a bounded number of edits allowed.
+    Fuzzy {
+        /// Field name, or `None` for the default fields.
+        field: Option<String>,
+        /// The word, unanalyzed.
+        text: String,
+        /// Maximum edit distance.
+        distance: u8,
+    },
+    /// A word with a trailing wildcard.
+    Prefix {
+        /// Field name, or `None` for the default fields.
+        field: Option<String>,
