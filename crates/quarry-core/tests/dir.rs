@@ -399,3 +399,14 @@ fn parsing_a_schema_field_without_a_name_is_an_error() {
     let json = parse(r#"{"fields":[{"type":"text"}]}"#).expect("valid json");
     assert!(schema_from_json(&json).is_err());
 }
+
+#[test]
+fn schema_json_defaults_missing_options() {
+    let json = parse(r#"{"fields":[{"name":"x","type":"text"}]}"#).expect("valid json");
+    let restored = schema_from_json(&json).expect("should parse");
+    let field = restored.field("x").expect("field exists");
+
+    assert!(field.options.indexed);
+    assert!(field.options.stored);
+    assert!(!field.options.positions);
+}
