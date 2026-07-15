@@ -75,3 +75,29 @@ pub enum QueryError {
     /// The query had no searchable clauses.
     Empty,
 }
+
+impl fmt::Display for QueryError {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        match self {
+            Self::Unexpected { found, position } => {
+                write!(f, "unexpected {found:?} at position {position}")
+            }
+            Self::UnexpectedEnd { expected } => {
+                write!(f, "query ended while expecting {expected}")
+            }
+            Self::UnterminatedQuote { position } => {
+                write!(f, "unterminated quote opened at position {position}")
+            }
+            Self::UnbalancedParens => f.write_str("unbalanced parentheses"),
+            Self::TooLong { len, max } => {
+                write!(f, "query is {len} bytes, over the {max} byte limit")
+            }
+            Self::TooDeep { max } => write!(f, "query nests deeper than {max} levels"),
+            Self::UnknownField { name, available } => {
+                write!(f, "no field named {name:?}")?;
+                // Suggesting the closest name turns a typo into a one-step fix.
+                if let Some(closest) = closest_match(name, available) {
+                    write!(f, "; did you mean {closest:?}?")?;
+                } else if !available.is_empty() {
+                    write!(f, "; available fields: {}", available.join(", "))?;
+                }
