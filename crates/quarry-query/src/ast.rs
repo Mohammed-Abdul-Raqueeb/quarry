@@ -95,3 +95,24 @@ impl Query {
             text: text.into(),
         }
     }
+
+    /// Wraps this query in a boost.
+    #[must_use]
+    pub fn boost(self, factor: f32) -> Self {
+        Self::Boost {
+            query: Box::new(self),
+            factor,
+        }
+    }
+
+    /// Negates this query.
+    #[must_use]
+    pub fn negate(self) -> Self {
+        Self::Not(Box::new(self))
+    }
+
+    /// Whether the query can match anything at all.
+    #[must_use]
+    pub fn is_match_none(&self) -> bool {
+        matches!(self, Self::MatchNone)
+    }
