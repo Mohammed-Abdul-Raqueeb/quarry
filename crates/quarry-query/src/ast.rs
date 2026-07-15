@@ -39,3 +39,22 @@ pub enum Query {
     Prefix {
         /// Field name, or `None` for the default fields.
         field: Option<String>,
+        /// The prefix, unanalyzed.
+        text: String,
+    },
+    /// A numeric range.
+    Range {
+        /// Field name. A range always names its field.
+        field: String,
+        /// Lower bound, if any.
+        lower: Option<f64>,
+        /// Upper bound, if any.
+        upper: Option<f64>,
+        /// Whether the lower bound is inclusive.
+        include_lower: bool,
+        /// Whether the upper bound is inclusive.
+        include_upper: bool,
+    },
+    /// All of these must match.
+    And(Vec<Query>),
+    /// Any of these may match.
