@@ -116,3 +116,19 @@ impl Query {
     pub fn is_match_none(&self) -> bool {
         matches!(self, Self::MatchNone)
     }
+
+    /// How deeply the query nests.
+    ///
+    /// The parser caps this; a deeply nested query is cheap to write and
+    /// expensive to plan.
+    #[must_use]
+    pub fn depth(&self) -> usize {
+        match self {
+            Self::And(children) | Self::Or(children) => {
+                1 + children.iter().map(Self::depth).max().unwrap_or(0)
+            }
+            Self::Not(child) => 1 + child.depth(),
+            Self::Boost { query, .. } => 1 + query.depth(),
+            _ => 1,
+        }
+    }
