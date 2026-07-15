@@ -1,0 +1,15 @@
+[package]
+name = "quarry-query"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+authors.workspace = true
+license.workspace = true
+repository.workspace = true
+description = "Query language: lexer, parser, planner and fuzzy matching."
+
+[lints]
+workspace = true
+
+[dependencies]
+quarry-core = { path = "../quarry-core" }
