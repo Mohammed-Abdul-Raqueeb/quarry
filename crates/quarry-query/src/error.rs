@@ -125,3 +125,5 @@ impl fmt::Display for QueryError {
         }
     }
 }
+
+impl std::error::Error for QueryError {}
