@@ -217,3 +217,20 @@ fn push_word(tokens: &mut Vec<Tok>, word: String) {
         }
     }
 }
+
+/// Reads a word up to the next character with syntactic meaning.
+fn read_word(chars: &[char], start: usize) -> (String, usize) {
+    let mut out = String::new();
+    let mut i = start;
+
+    while i < chars.len() {
+        let ch = chars[i];
+        if ch.is_whitespace() || is_special(ch) {
+            break;
+        }
+        out.push(ch);
+        i += 1;
+    }
+
+    (out, i)
+}
