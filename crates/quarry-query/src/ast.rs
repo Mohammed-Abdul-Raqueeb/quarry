@@ -210,3 +210,36 @@ impl Query {
                     match child.simplify() {
                         Self::Or(inner) => flat.extend(inner),
                         // Anything OR everything is everything.
+                        Self::MatchAll => return Self::MatchAll,
+                        Self::MatchNone => {}
+                        other => flat.push(other),
+                    }
+                }
+                match flat.len() {
+                    0 => Self::MatchNone,
+                    1 => flat.remove(0),
+                    _ => Self::Or(flat),
+                }
+            }
+            Self::Not(child) => match child.simplify() {
+                Self::MatchNone => Self::MatchAll,
+                Self::MatchAll => Self::MatchNone,
+                // Double negation cancels.
+                Self::Not(inner) => *inner,
+                other => Self::Not(Box::new(other)),
+            },
+            Self::Boost { query, factor } => {
+                // A boost of exactly 1 changes nothing.
+                if (factor - 1.0).abs() < f32::EPSILON {
+                    query.simplify()
+                } else {
+                    Self::Boost {
+                        query: Box::new(query.simplify()),
+                        factor,
+                    }
+                }
+            }
+            other => other,
+        }
+    }
+}
