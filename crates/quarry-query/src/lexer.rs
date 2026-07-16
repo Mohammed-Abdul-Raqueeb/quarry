@@ -42,3 +42,24 @@ pub enum Tok {
     /// `+`, marking a required clause
     Plus,
 }
+
+impl Tok {
+    /// Whether this token can begin a clause.
+    ///
+    /// Used to decide where an implicit `OR` goes between adjacent clauses.
+    #[must_use]
+    pub fn starts_clause(&self) -> bool {
+        matches!(
+            self,
+            Self::Word(_)
+                | Self::Quoted(_)
+                | Self::Number(_)
+                | Self::Not
+                | Self::LParen
+                | Self::LBracket
+                | Self::LBrace
+                | Self::Plus
+                | Self::Star
+        )
+    }
+}
