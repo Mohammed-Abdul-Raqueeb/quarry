@@ -154,3 +154,25 @@ impl Query {
         fields.dedup();
         fields
     }
+
+    fn collect_fields(&self, out: &mut Vec<String>) {
+        match self {
+            Self::Term { field, .. }
+            | Self::Phrase { field, .. }
+            | Self::Fuzzy { field, .. }
+            | Self::Prefix { field, .. } => {
+                if let Some(name) = field {
+                    out.push(name.clone());
+                }
+            }
+            Self::Range { field, .. } => out.push(field.clone()),
+            Self::And(children) | Self::Or(children) => {
+                for child in children {
+                    child.collect_fields(out);
+                }
+            }
+            Self::Not(child) => child.collect_fields(out),
+            Self::Boost { query, .. } => query.collect_fields(out),
+            Self::MatchAll | Self::MatchNone => {}
+        }
+    }
