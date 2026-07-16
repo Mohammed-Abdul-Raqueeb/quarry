@@ -196,3 +196,6 @@ pub fn tokenize(input: &str) -> Result<Vec<Tok>> {
             }
         }
     }
+
+    Ok(tokens)
+}
