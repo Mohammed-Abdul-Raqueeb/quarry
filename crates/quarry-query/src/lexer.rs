@@ -120,3 +120,29 @@ pub fn tokenize(input: &str) -> Result<Vec<Tok>> {
                 tokens.push(Tok::RBrace);
                 i += 1;
             }
+            ':' => {
+                tokens.push(Tok::Colon);
+                i += 1;
+            }
+            '~' => {
+                tokens.push(Tok::Tilde);
+                i += 1;
+            }
+            '^' => {
+                tokens.push(Tok::Caret);
+                i += 1;
+            }
+            '*' => {
+                tokens.push(Tok::Star);
+                i += 1;
+            }
+            '+' => {
+                tokens.push(Tok::Plus);
+                i += 1;
+            }
+            '!' => {
+                tokens.push(Tok::Not);
+                i += 1;
+            }
+            '-' => {
+                // A `-` is negation only where a clause can start; inside a
