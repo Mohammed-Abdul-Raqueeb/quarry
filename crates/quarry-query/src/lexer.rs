@@ -199,3 +199,21 @@ pub fn tokenize(input: &str) -> Result<Vec<Tok>> {
 
     Ok(tokens)
 }
+
+/// Classifies a word as an operator, a number or a term.
+fn push_word(tokens: &mut Vec<Tok>, word: String) {
+    match word.as_str() {
+        "AND" => tokens.push(Tok::And),
+        "OR" => tokens.push(Tok::Or),
+        "NOT" => tokens.push(Tok::Not),
+        "TO" => tokens.push(Tok::To),
+        _ => {
+            // Only a fully numeric word is a number; `3d` is a term.
+            if let Ok(number) = word.parse::<f64>() {
+                tokens.push(Tok::Number(number));
+            } else {
+                tokens.push(Tok::Word(word));
+            }
+        }
+    }
+}
