@@ -176,3 +176,37 @@ impl Query {
             Self::MatchAll | Self::MatchNone => {}
         }
     }
+
+    /// Collapses redundant structure.
+    ///
+    /// Single-child boolean nodes, nested nodes of the same kind, and clauses
+    /// adjacent to `MatchNone` all simplify. Worth doing because the parser
+    /// naturally produces them and the planner is simpler if it never sees them.
+    #[must_use]
+    pub fn simplify(self) -> Self {
+        match self {
+            Self::And(children) => {
+                let mut flat = Vec::new();
+                for child in children {
+                    match child.simplify() {
+                        // `a AND (b AND c)` is `a AND b AND c`.
+                        Self::And(inner) => flat.extend(inner),
+                        // Anything AND nothing is nothing.
+                        Self::MatchNone => return Self::MatchNone,
+                        // MatchAll adds no constraint.
+                        Self::MatchAll => {}
+                        other => flat.push(other),
+                    }
+                }
+                match flat.len() {
+                    0 => Self::MatchAll,
+                    1 => flat.remove(0),
+                    _ => Self::And(flat),
+                }
+            }
+            Self::Or(children) => {
+                let mut flat = Vec::new();
+                for child in children {
+                    match child.simplify() {
+                        Self::Or(inner) => flat.extend(inner),
+                        // Anything OR everything is everything.
