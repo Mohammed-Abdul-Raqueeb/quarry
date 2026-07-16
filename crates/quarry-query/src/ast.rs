@@ -305,3 +305,14 @@ impl fmt::Display for Query {
         }
     }
 }
+
+fn write_joined(f: &mut fmt::Formatter<'_>, children: &[Query], sep: &str) -> fmt::Result {
+    f.write_str("(")?;
+    for (i, child) in children.iter().enumerate() {
+        if i > 0 {
+            f.write_str(sep)?;
+        }
+        write!(f, "{child}")?;
+    }
+    f.write_str(")")
+}
