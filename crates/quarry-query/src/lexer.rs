@@ -70,3 +70,27 @@ impl Tok {
 /// generous for anything typed and small enough that a pathological generated
 /// query cannot make planning expensive.
 pub const MAX_QUERY_LEN: usize = 4096;
+
+/// Splits query text into tokens.
+///
+/// Reserved words are matched case-sensitively: `AND` is an operator but `and`
+/// is the English word, which someone will eventually search for.
+pub fn tokenize(input: &str) -> Result<Vec<Tok>> {
+    if input.len() > MAX_QUERY_LEN {
+        return Err(QueryError::TooLong {
+            len: input.len(),
+            max: MAX_QUERY_LEN,
+        });
+    }
+
+    let chars: Vec<char> = input.chars().collect();
+    let mut tokens = Vec::new();
+    let mut i = 0;
+
+    while i < chars.len() {
+        let ch = chars[i];
+
+        if ch.is_whitespace() {
+            i += 1;
+            continue;
+        }
