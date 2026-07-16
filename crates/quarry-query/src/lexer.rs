@@ -22,3 +22,23 @@ pub enum Tok {
     /// `(`
     LParen,
     /// `)`
+    RParen,
+    /// `[`
+    LBracket,
+    /// `]`
+    RBracket,
+    /// `{`
+    LBrace,
+    /// `}`
+    RBrace,
+    /// `:`
+    Colon,
+    /// `~`
+    Tilde,
+    /// `^`
+    Caret,
+    /// `*`
+    Star,
+    /// `+`, marking a required clause
+    Plus,
+}
