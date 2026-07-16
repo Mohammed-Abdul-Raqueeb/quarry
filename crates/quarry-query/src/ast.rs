@@ -243,3 +243,35 @@ impl Query {
         }
     }
 }
+
+impl fmt::Display for Query {
+    /// Renders the query back into something the parser accepts.
+    ///
+    /// Round-tripping is what the parser tests assert against, so a change to
+    /// either side that breaks the other shows up immediately.
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        match self {
+            Self::Term { field, text } => {
+                if let Some(name) = field {
+                    write!(f, "{name}:")?;
+                }
+                write!(f, "{text}")
+            }
+            Self::Phrase { field, terms, slop } => {
+                if let Some(name) = field {
+                    write!(f, "{name}:")?;
+                }
+                write!(f, "\"{}\"", terms.join(" "))?;
+                if *slop > 0 {
+                    write!(f, "~{slop}")?;
+                }
+                Ok(())
+            }
+            Self::Fuzzy {
+                field,
+                text,
+                distance,
+            } => {
+                if let Some(name) = field {
+                    write!(f, "{name}:")?;
+                }
