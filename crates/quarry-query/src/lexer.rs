@@ -146,3 +146,28 @@ pub fn tokenize(input: &str) -> Result<Vec<Tok>> {
             }
             '-' => {
                 // A `-` is negation only where a clause can start; inside a
+                // word it belongs to the word, so `well-known` stays one term.
+                if tokens.last().is_none_or(|t| !t.starts_clause()) {
+                    tokens.push(Tok::Not);
+                    i += 1;
+                } else {
+                    let (word, next) = read_word(&chars, i);
+                    i = next;
+                    push_word(&mut tokens, word);
+                }
+            }
+            '&' => {
+                if chars.get(i + 1) == Some(&'&') {
+                    tokens.push(Tok::And);
+                    i += 2;
+                } else {
+                    return Err(QueryError::Unexpected {
+                        found: "&".to_string(),
+                        position: i,
+                    });
+                }
+            }
+            '|' => {
+                if chars.get(i + 1) == Some(&'|') {
+                    tokens.push(Tok::Or);
+                    i += 2;
