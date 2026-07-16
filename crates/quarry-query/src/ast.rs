@@ -275,3 +275,33 @@ impl fmt::Display for Query {
                 if let Some(name) = field {
                     write!(f, "{name}:")?;
                 }
+                write!(f, "{text}~{distance}")
+            }
+            Self::Prefix { field, text } => {
+                if let Some(name) = field {
+                    write!(f, "{name}:")?;
+                }
+                write!(f, "{text}*")
+            }
+            Self::Range {
+                field,
+                lower,
+                upper,
+                include_lower,
+                include_upper,
+            } => {
+                let open = if *include_lower { '[' } else { '{' };
+                let close = if *include_upper { ']' } else { '}' };
+                let low = lower.map_or_else(|| "*".to_string(), format_bound);
+                let high = upper.map_or_else(|| "*".to_string(), format_bound);
+                write!(f, "{field}:{open}{low} TO {high}{close}")
+            }
+            Self::And(children) => write_joined(f, children, " AND "),
+            Self::Or(children) => write_joined(f, children, " OR "),
+            Self::Not(child) => write!(f, "NOT {child}"),
+            Self::Boost { query, factor } => write!(f, "({query})^{factor}"),
+            Self::MatchAll => f.write_str("*:*"),
+            Self::MatchNone => f.write_str("(none)"),
+        }
+    }
+}
