@@ -94,3 +94,29 @@ pub fn tokenize(input: &str) -> Result<Vec<Tok>> {
             i += 1;
             continue;
         }
+
+        match ch {
+            '(' => {
+                tokens.push(Tok::LParen);
+                i += 1;
+            }
+            ')' => {
+                tokens.push(Tok::RParen);
+                i += 1;
+            }
+            '[' => {
+                tokens.push(Tok::LBracket);
+                i += 1;
+            }
+            ']' => {
+                tokens.push(Tok::RBracket);
+                i += 1;
+            }
+            '{' => {
+                tokens.push(Tok::LBrace);
+                i += 1;
+            }
+            '}' => {
+                tokens.push(Tok::RBrace);
+                i += 1;
+            }
