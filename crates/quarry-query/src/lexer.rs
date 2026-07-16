@@ -63,3 +63,10 @@ impl Tok {
         )
     }
 }
+
+/// Longest query accepted, in bytes.
+///
+/// A query is user input reaching a parser, so it gets a bound. The limit is
+/// generous for anything typed and small enough that a pathological generated
+/// query cannot make planning expensive.
+pub const MAX_QUERY_LEN: usize = 4096;
