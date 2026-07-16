@@ -316,3 +316,11 @@ fn write_joined(f: &mut fmt::Formatter<'_>, children: &[Query], sep: &str) -> fm
     }
     f.write_str(")")
 }
+
+fn format_bound(value: f64) -> String {
+    if value.fract() == 0.0 && value.abs() < 1e15 {
+        format!("{}", value as i64)
+    } else {
+        format!("{value}")
+    }
+}
