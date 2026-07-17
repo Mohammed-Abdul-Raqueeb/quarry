@@ -16,3 +16,9 @@
 /// Stands in for "unreachable" inside the banded table. Half of `usize::MAX`
 /// so that adding one during a comparison cannot overflow.
 const UNREACHABLE: usize = usize::MAX / 2;
+
+/// Largest edit distance supported.
+///
+/// Beyond two, a fuzzy match stops being a typo correction and starts matching
+/// unrelated words — `cat` within three edits reaches `dogs`.
+pub const MAX_DISTANCE: u8 = 2;
