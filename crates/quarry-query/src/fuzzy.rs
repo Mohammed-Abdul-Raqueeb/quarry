@@ -80,3 +80,21 @@ pub fn bounded_levenshtein(a: &str, b: &str, max: usize) -> Option<usize> {
     if a.len().abs_diff(b.len()) > max {
         return None;
     }
+
+    if a.is_empty() {
+        return (b.len() <= max).then_some(b.len());
+    }
+    if b.is_empty() {
+        return (a.len() <= max).then_some(a.len());
+    }
+
+    let mut previous: Vec<usize> = (0..=b.len()).collect();
+    let mut current = vec![0usize; b.len() + 1];
+
+    for (i, &ca) in a.iter().enumerate() {
+        let row = i + 1;
+
+        // Only cells within `max` of the diagonal can be reached inside the
+        // budget. Everything outside the band is marked rather than computed.
+        let lo = row.saturating_sub(max);
+        let hi = (row + max).min(b.len());
