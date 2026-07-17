@@ -98,3 +98,26 @@ pub fn bounded_levenshtein(a: &str, b: &str, max: usize) -> Option<usize> {
         // budget. Everything outside the band is marked rather than computed.
         let lo = row.saturating_sub(max);
         let hi = (row + max).min(b.len());
+
+        for cell in current.iter_mut().take(lo) {
+            *cell = UNREACHABLE;
+        }
+        for cell in current.iter_mut().skip(hi + 1) {
+            *cell = UNREACHABLE;
+        }
+
+        // Column zero is only reachable while the band still touches it;
+        // past that, reaching it would need more deletions than the budget.
+        if lo == 0 {
+            current[0] = row;
+        }
+
+        // Writes every cell of the band, column `lo` included. Starting the
+        // loop one column further left — writing `current[j + 1]` from `j` —
+        // leaves `current[lo]` holding whatever the buffer had two rows ago,
+        // and the stale value makes the distance come out too low.
+        for j in lo.max(1)..=hi {
+            let cost = usize::from(ca != b[j - 1]);
+            let deletion = previous[j].saturating_add(1);
+            let insertion = current[j - 1].saturating_add(1);
+            let substitution = previous[j - 1].saturating_add(cost);
