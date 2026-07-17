@@ -42,3 +42,22 @@ pub fn levenshtein(a: &str, b: &str) -> usize {
     if b.is_empty() {
         return a.len();
     }
+
+    let mut previous: Vec<usize> = (0..=b.len()).collect();
+    let mut current = vec![0usize; b.len() + 1];
+
+    for (i, &ca) in a.iter().enumerate() {
+        current[0] = i + 1;
+
+        for (j, &cb) in b.iter().enumerate() {
+            let cost = usize::from(ca != cb);
+            current[j + 1] = (previous[j + 1] + 1)
+                .min(current[j] + 1)
+                .min(previous[j] + cost);
+        }
+
+        std::mem::swap(&mut previous, &mut current);
+    }
+
+    previous[b.len()]
+}
