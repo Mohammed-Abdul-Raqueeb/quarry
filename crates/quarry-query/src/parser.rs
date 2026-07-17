@@ -25,3 +25,20 @@ use crate::lexer::{tokenize, Tok};
 
 /// Deepest nesting the parser accepts.
 pub const MAX_DEPTH: usize = 24;
+
+/// Parses query text into an AST.
+///
+/// The result is already simplified, so a caller never has to handle the
+/// redundant single-child nodes the grammar naturally produces.
+pub fn parse(input: &str) -> Result<Query> {
+    let tokens = tokenize(input)?;
+
+    if tokens.is_empty() {
+        return Err(QueryError::Empty);
+    }
+
+    let mut parser = Parser {
+        tokens,
+        pos: 0,
+        depth: 0,
+    };
