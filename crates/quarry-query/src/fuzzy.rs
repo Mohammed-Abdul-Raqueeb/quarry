@@ -22,3 +22,23 @@ const UNREACHABLE: usize = usize::MAX / 2;
 /// Beyond two, a fuzzy match stops being a typo correction and starts matching
 /// unrelated words — `cat` within three edits reaches `dogs`.
 pub const MAX_DISTANCE: u8 = 2;
+
+/// Levenshtein distance: insertions, deletions and substitutions.
+///
+/// Uses two rows rather than the full table, since each row only depends on the
+/// one before it.
+#[must_use]
+pub fn levenshtein(a: &str, b: &str) -> usize {
+    if a == b {
+        return 0;
+    }
+
+    let a: Vec<char> = a.chars().collect();
+    let b: Vec<char> = b.chars().collect();
+
+    if a.is_empty() {
+        return b.len();
+    }
+    if b.is_empty() {
+        return a.len();
+    }
