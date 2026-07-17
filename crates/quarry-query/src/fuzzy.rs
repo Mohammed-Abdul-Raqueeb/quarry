@@ -208,3 +208,37 @@ pub struct FuzzyMatch {
     /// Its edit distance from the target.
     pub distance: usize,
 }
+
+/// Terms within `max` edits of `target`, best first.
+///
+/// `prefix_len` keeps the first characters fixed, which is the standard
+/// optimisation: typos are rare in the first letter, and requiring a shared
+/// prefix lets a sorted dictionary be scanned as a range instead of in full.
+#[must_use]
+pub fn find_matches(
+    target: &str,
+    candidates: &[&str],
+    max: usize,
+    prefix_len: usize,
+) -> Vec<FuzzyMatch> {
+    let required_prefix: String = target.chars().take(prefix_len).collect();
+
+    let mut matches: Vec<FuzzyMatch> = candidates
+        .iter()
+        .filter(|candidate| candidate.starts_with(&required_prefix))
+        .filter_map(|candidate| {
+            bounded_levenshtein(target, candidate, max).map(|distance| FuzzyMatch {
+                term: (*candidate).to_string(),
+                distance,
+            })
+        })
+        .collect();
+
+    // Closest first, then alphabetically so the order is deterministic.
+    matches.sort_by(|a, b| {
+        a.distance
+            .cmp(&b.distance)
+            .then_with(|| a.term.cmp(&b.term))
+    });
+    matches
+}
