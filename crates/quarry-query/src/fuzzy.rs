@@ -61,3 +61,22 @@ pub fn levenshtein(a: &str, b: &str) -> usize {
 
     previous[b.len()]
 }
+
+/// Levenshtein distance, giving up once it exceeds `max`.
+///
+/// Returns `None` when the distance is above `max`. That is the common case
+/// during a dictionary scan, and returning early is what makes the scan
+/// affordable.
+#[must_use]
+pub fn bounded_levenshtein(a: &str, b: &str, max: usize) -> Option<usize> {
+    if a == b {
+        return Some(0);
+    }
+
+    let a: Vec<char> = a.chars().collect();
+    let b: Vec<char> = b.chars().collect();
+
+    // A length difference alone already exceeds the budget.
+    if a.len().abs_diff(b.len()) > max {
+        return None;
+    }
