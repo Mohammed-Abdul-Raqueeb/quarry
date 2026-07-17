@@ -234,3 +234,10 @@ fn read_word(chars: &[char], start: usize) -> (String, usize) {
 
     (out, i)
 }
+
+fn is_special(ch: char) -> bool {
+    matches!(
+        ch,
+        '(' | ')' | '[' | ']' | '{' | '}' | ':' | '~' | '^' | '*' | '"' | '+' | '!' | '&' | '|'
+    )
+}
