@@ -12,3 +12,7 @@
 //!
 //! Together those make a dictionary scan practical without building an
 //! automaton.
+
+/// Stands in for "unreachable" inside the banded table. Half of `usize::MAX`
+/// so that adding one during a comparison cannot overflow.
+const UNREACHABLE: usize = usize::MAX / 2;
