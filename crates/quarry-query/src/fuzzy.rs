@@ -121,3 +121,23 @@ pub fn bounded_levenshtein(a: &str, b: &str, max: usize) -> Option<usize> {
             let deletion = previous[j].saturating_add(1);
             let insertion = current[j - 1].saturating_add(1);
             let substitution = previous[j - 1].saturating_add(cost);
+
+            current[j] = deletion.min(insertion).min(substitution);
+        }
+
+        // Nothing in the band is within budget, so no completion can be.
+        let best = current[lo..=hi]
+            .iter()
+            .copied()
+            .min()
+            .unwrap_or(UNREACHABLE);
+        if best > max {
+            return None;
+        }
+
+        std::mem::swap(&mut previous, &mut current);
+    }
+
+    let distance = previous[b.len()];
+    (distance <= max).then_some(distance)
+}
