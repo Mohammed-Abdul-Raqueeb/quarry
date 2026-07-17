@@ -22,3 +22,6 @@ use crate::ast::Query;
 use crate::error::{QueryError, Result};
 use crate::fuzzy;
 use crate::lexer::{tokenize, Tok};
+
+/// Deepest nesting the parser accepts.
+pub const MAX_DEPTH: usize = 24;
