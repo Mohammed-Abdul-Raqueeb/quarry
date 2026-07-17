@@ -241,3 +241,33 @@ fn is_special(ch: char) -> bool {
         '(' | ')' | '[' | ']' | '{' | '}' | ':' | '~' | '^' | '*' | '"' | '+' | '!' | '&' | '|'
     )
 }
+
+/// Reads a double-quoted string, honouring `\"` and `\\`.
+fn read_quoted(chars: &[char], start: usize) -> Result<(String, usize)> {
+    debug_assert_eq!(chars[start], '"');
+
+    let mut out = String::new();
+    let mut i = start + 1;
+
+    while i < chars.len() {
+        match chars[i] {
+            '"' => return Ok((out, i + 1)),
+            '\\' => {
+                // A backslash escapes the next character verbatim, which is
+                // enough to put a quote inside a phrase.
+                if let Some(next) = chars.get(i + 1) {
+                    out.push(*next);
+                    i += 2;
+                } else {
+                    return Err(QueryError::UnterminatedQuote { position: start });
+                }
+            }
+            ch => {
+                out.push(ch);
+                i += 1;
+            }
+        }
+    }
+
+    Err(QueryError::UnterminatedQuote { position: start })
+}
