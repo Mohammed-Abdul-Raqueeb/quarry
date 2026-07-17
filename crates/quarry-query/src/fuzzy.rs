@@ -141,3 +141,23 @@ pub fn bounded_levenshtein(a: &str, b: &str, max: usize) -> Option<usize> {
     let distance = previous[b.len()];
     (distance <= max).then_some(distance)
 }
+
+/// Damerau-Levenshtein: also counts a transposition as one edit.
+///
+/// `teh` -> `the` is one transposition, which plain Levenshtein charges two
+/// substitutions for. Transposed letters are the single most common typing
+/// error, so this ranks real typos better.
+#[must_use]
+pub fn damerau_levenshtein(a: &str, b: &str) -> usize {
+    let a: Vec<char> = a.chars().collect();
+    let b: Vec<char> = b.chars().collect();
+
+    if a.is_empty() {
+        return b.len();
+    }
+    if b.is_empty() {
+        return a.len();
+    }
+
+    // The full table is needed here: a transposition looks two rows back.
+    let mut table = vec![vec![0usize; b.len() + 1]; a.len() + 1];
