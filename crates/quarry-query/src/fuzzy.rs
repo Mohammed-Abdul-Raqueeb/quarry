@@ -199,3 +199,12 @@ pub fn similarity(a: &str, b: &str) -> f64 {
     }
     1.0 - (levenshtein(a, b) as f64 / longest as f64)
 }
+
+/// A dictionary term within `max` edits of `target`.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct FuzzyMatch {
+    /// The matching term.
+    pub term: String,
+    /// Its edit distance from the target.
+    pub distance: usize,
+}
