@@ -242,3 +242,17 @@ pub fn find_matches(
     });
     matches
 }
+
+/// The edit distance to use for a term of the given length.
+///
+/// Elasticsearch's `AUTO` heuristic, and for the same reason: allowing two
+/// edits on a three-letter word matches almost everything, so short terms get a
+/// tighter budget.
+#[must_use]
+pub fn auto_distance(term_len: usize) -> u8 {
+    match term_len {
+        0..=2 => 0,
+        3..=5 => 1,
+        _ => 2,
+    }
+}
