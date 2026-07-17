@@ -185,3 +185,17 @@ pub fn damerau_levenshtein(a: &str, b: &str) -> usize {
 
     table[a.len()][b.len()]
 }
+
+/// Similarity on a 0..=1 scale, where 1 is identical.
+///
+/// Normalised by the longer string, so it is comparable across word lengths —
+/// one edit in a three-letter word matters far more than one in a twenty-letter
+/// word, and the raw distance hides that.
+#[must_use]
+pub fn similarity(a: &str, b: &str) -> f64 {
+    let longest = a.chars().count().max(b.chars().count());
+    if longest == 0 {
+        return 1.0;
+    }
+    1.0 - (levenshtein(a, b) as f64 / longest as f64)
+}
