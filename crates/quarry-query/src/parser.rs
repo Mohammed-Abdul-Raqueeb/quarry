@@ -246,3 +246,29 @@ impl Parser {
             }),
         }
     }
+
+    /// Parses whatever follows `field:`.
+    fn parse_field_value(&mut self, field: &str) -> Result<Query> {
+        match self.peek().cloned() {
+            Some(Tok::Word(word)) => {
+                self.pos += 1;
+                self.finish_term(Some(field.to_string()), word)
+            }
+            Some(Tok::Number(n)) => {
+                self.pos += 1;
+                self.finish_term(Some(field.to_string()), format_number(n))
+            }
+            Some(Tok::Quoted(text)) => {
+                self.pos += 1;
+                Ok(self.finish_phrase(Some(field.to_string()), &text))
+            }
+            Some(Tok::Star) => {
+                self.pos += 1;
+                // `field:*` means "has any value for this field".
+                Ok(Query::Prefix {
+                    field: Some(field.to_string()),
+                    text: String::new(),
+                })
+            }
+            Some(Tok::LBracket) => {
+                self.pos += 1;
