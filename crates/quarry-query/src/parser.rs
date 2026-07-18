@@ -158,3 +158,23 @@ impl Parser {
         // require it against, so it is accepted and ignored; the planner reads
         // the requirement from the AND/OR structure instead.
         self.eat(&Tok::Plus);
+
+        let mut query = self.parse_primary()?;
+
+        if self.eat(&Tok::Caret) {
+            let factor = match self.bump() {
+                Some(Tok::Number(n)) => n as f32,
+                Some(tok) => {
+                    return Err(QueryError::Unexpected {
+                        found: describe(&tok),
+                        position: self.pos - 1,
+                    })
+                }
+                None => {
+                    return Err(QueryError::UnexpectedEnd {
+                        expected: "a boost factor".to_string(),
+                    })
+                }
+            };
+            query = query.boost(factor);
+        }
