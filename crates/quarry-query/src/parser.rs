@@ -111,3 +111,26 @@ impl Parser {
                 clauses.push(self.parse_and()?);
                 continue;
             }
+
+            // An implicit OR: the next token starts a clause with no operator
+            // between them.
+            match self.peek() {
+                Some(tok) if tok.starts_clause() => {
+                    clauses.push(self.parse_and()?);
+                }
+                _ => break,
+            }
+        }
+
+        self.leave();
+
+        Ok(if clauses.len() == 1 {
+            clauses.remove(0)
+        } else {
+            Query::Or(clauses)
+        })
+    }
+
+    fn parse_and(&mut self) -> Result<Query> {
+        self.enter()?;
+        let mut clauses = vec![self.parse_unary()?];
