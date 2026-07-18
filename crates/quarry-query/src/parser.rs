@@ -402,3 +402,37 @@ impl Parser {
             include_upper,
         })
     }
+
+    /// One end of a range. `*` means unbounded.
+    fn parse_bound(&mut self) -> Result<Option<f64>> {
+        match self.bump() {
+            Some(Tok::Number(n)) => Ok(Some(n)),
+            Some(Tok::Star) => Ok(None),
+            Some(Tok::Not) => {
+                // A negative bound lexes as Not followed by a number, because
+                // `-` is ambiguous until this point.
+                match self.bump() {
+                    Some(Tok::Number(n)) => Ok(Some(-n)),
+                    _ => Err(QueryError::UnexpectedEnd {
+                        expected: "a number after '-'".to_string(),
+                    }),
+                }
+            }
+            Some(Tok::Word(word)) => {
+                word.parse::<f64>()
+                    .map(Some)
+                    .map_err(|_| QueryError::Unexpected {
+                        found: word,
+                        position: self.pos - 1,
+                    })
+            }
+            Some(tok) => Err(QueryError::Unexpected {
+                found: describe(&tok),
+                position: self.pos - 1,
+            }),
+            None => Err(QueryError::UnexpectedEnd {
+                expected: "a range bound".to_string(),
+            }),
+        }
+    }
+}
