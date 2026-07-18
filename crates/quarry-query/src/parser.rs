@@ -383,3 +383,22 @@ impl Parser {
                 expected: "] or } to close the range".to_string(),
             });
         };
+
+        // Caught here rather than at execution time so the user gets told the
+        // range is impossible instead of just getting nothing back.
+        if let (Some(low), Some(high)) = (lower, upper) {
+            if low > high {
+                return Err(QueryError::EmptyRange {
+                    field: field.to_string(),
+                });
+            }
+        }
+
+        Ok(Query::Range {
+            field: field.to_string(),
+            lower,
+            upper,
+            include_lower,
+            include_upper,
+        })
+    }
