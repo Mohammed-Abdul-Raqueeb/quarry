@@ -321,3 +321,23 @@ impl Parser {
                 }
                 _ => fuzzy::auto_distance(text.chars().count()),
             };
+
+            return Ok(Query::Fuzzy {
+                field,
+                text,
+                distance,
+            });
+        }
+
+        Ok(Query::Term { field, text })
+    }
+
+    /// Applies a trailing `~slop` to a phrase.
+    fn finish_phrase(&mut self, field: Option<String>, text: &str) -> Query {
+        let terms: Vec<String> = text.split_whitespace().map(ToString::to_string).collect();
+
+        if terms.is_empty() {
+            // An empty phrase cannot match, and saying so beats a confusing
+            // "no results" with no explanation.
+            return Query::MatchNone;
+        }
