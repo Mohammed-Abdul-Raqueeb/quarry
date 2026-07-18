@@ -436,3 +436,31 @@ impl Parser {
         }
     }
 }
+
+/// Pushes a field name down into every leaf that does not have one.
+///
+/// This is what makes `title:(rust OR go)` mean `title:rust OR title:go`. A
+/// leaf that already names a field keeps it, so `title:(body:x)` is respected
+/// rather than silently rewritten.
+fn apply_field(query: Query, field: &str) -> Query {
+    match query {
+        Query::Term { field: None, text } => Query::Term {
+            field: Some(field.to_string()),
+            text,
+        },
+        Query::Phrase {
+            field: None,
+            terms,
+            slop,
+        } => Query::Phrase {
+            field: Some(field.to_string()),
+            terms,
+            slop,
+        },
+        Query::Fuzzy {
+            field: None,
+            text,
+            distance,
+        } => Query::Fuzzy {
+            field: Some(field.to_string()),
+            text,
