@@ -464,3 +464,29 @@ fn apply_field(query: Query, field: &str) -> Query {
         } => Query::Fuzzy {
             field: Some(field.to_string()),
             text,
+            distance,
+        },
+        Query::Prefix { field: None, text } => Query::Prefix {
+            field: Some(field.to_string()),
+            text,
+        },
+        Query::And(children) => Query::And(
+            children
+                .into_iter()
+                .map(|c| apply_field(c, field))
+                .collect(),
+        ),
+        Query::Or(children) => Query::Or(
+            children
+                .into_iter()
+                .map(|c| apply_field(c, field))
+                .collect(),
+        ),
+        Query::Not(child) => Query::Not(Box::new(apply_field(*child, field))),
+        Query::Boost { query, factor } => Query::Boost {
+            query: Box::new(apply_field(*query, field)),
+            factor,
+        },
+        other => other,
+    }
+}
