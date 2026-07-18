@@ -178,3 +178,24 @@ impl Parser {
             };
             query = query.boost(factor);
         }
+
+        Ok(query)
+    }
+
+    fn parse_primary(&mut self) -> Result<Query> {
+        self.enter()?;
+        let result = self.parse_primary_inner();
+        self.leave();
+        result
+    }
+
+    fn parse_primary_inner(&mut self) -> Result<Query> {
+        match self.peek().cloned() {
+            Some(Tok::LParen) => {
+                self.pos += 1;
+                let inner = self.parse_or()?;
+                if !self.eat(&Tok::RParen) {
+                    return Err(QueryError::UnbalancedParens);
+                }
+                Ok(inner)
+            }
