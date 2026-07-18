@@ -361,3 +361,25 @@ impl Parser {
 
         Query::Phrase { field, terms, slop }
     }
+
+    /// Parses `lower TO upper` plus the closing bracket.
+    fn parse_range(&mut self, field: &str, include_lower: bool) -> Result<Query> {
+        let lower = self.parse_bound()?;
+
+        if !self.eat(&Tok::To) {
+            return Err(QueryError::UnexpectedEnd {
+                expected: "TO inside a range".to_string(),
+            });
+        }
+
+        let upper = self.parse_bound()?;
+
+        let include_upper = if self.eat(&Tok::RBracket) {
+            true
+        } else if self.eat(&Tok::RBrace) {
+            false
+        } else {
+            return Err(QueryError::UnexpectedEnd {
+                expected: "] or } to close the range".to_string(),
+            });
+        };
