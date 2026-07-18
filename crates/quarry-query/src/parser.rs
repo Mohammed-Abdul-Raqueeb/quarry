@@ -219,3 +219,30 @@ impl Parser {
 
                 self.finish_term(None, word)
             }
+
+            Some(Tok::Number(n)) => {
+                self.pos += 1;
+                // A number used as a term is searched as written.
+                self.finish_term(None, format_number(n))
+            }
+
+            Some(Tok::Quoted(text)) => {
+                self.pos += 1;
+                Ok(self.finish_phrase(None, &text))
+            }
+
+            Some(Tok::LBracket | Tok::LBrace) => Err(QueryError::Unexpected {
+                found: "a range without a field".to_string(),
+                position: self.pos,
+            }),
+
+            Some(tok) => Err(QueryError::Unexpected {
+                found: describe(&tok),
+                position: self.pos,
+            }),
+
+            None => Err(QueryError::UnexpectedEnd {
+                expected: "a term".to_string(),
+            }),
+        }
+    }
