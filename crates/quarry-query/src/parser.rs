@@ -67,3 +67,25 @@ struct Parser {
     pos: usize,
     depth: usize,
 }
+
+impl Parser {
+    fn peek(&self) -> Option<&Tok> {
+        self.tokens.get(self.pos)
+    }
+
+    fn bump(&mut self) -> Option<Tok> {
+        let tok = self.tokens.get(self.pos).cloned();
+        if tok.is_some() {
+            self.pos += 1;
+        }
+        tok
+    }
+
+    fn eat(&mut self, want: &Tok) -> bool {
+        if self.peek() == Some(want) {
+            self.pos += 1;
+            true
+        } else {
+            false
+        }
+    }
