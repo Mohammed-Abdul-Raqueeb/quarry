@@ -134,3 +134,27 @@ impl Parser {
     fn parse_and(&mut self) -> Result<Query> {
         self.enter()?;
         let mut clauses = vec![self.parse_unary()?];
+
+        while self.eat(&Tok::And) {
+            clauses.push(self.parse_unary()?);
+        }
+
+        self.leave();
+
+        Ok(if clauses.len() == 1 {
+            clauses.remove(0)
+        } else {
+            Query::And(clauses)
+        })
+    }
+
+    fn parse_unary(&mut self) -> Result<Query> {
+        if self.eat(&Tok::Not) {
+            let inner = self.parse_unary()?;
+            return Ok(inner.negate());
+        }
+
+        // `+term` marks a clause required. At this level there is nothing to
+        // require it against, so it is accepted and ignored; the planner reads
+        // the requirement from the AND/OR structure instead.
+        self.eat(&Tok::Plus);
