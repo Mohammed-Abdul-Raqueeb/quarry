@@ -199,3 +199,23 @@ impl Parser {
                 }
                 Ok(inner)
             }
+
+            // `*:*` or a bare `*` matches everything.
+            Some(Tok::Star) => {
+                self.pos += 1;
+                if self.eat(&Tok::Colon) {
+                    self.eat(&Tok::Star);
+                }
+                Ok(Query::MatchAll)
+            }
+
+            Some(Tok::Word(word)) => {
+                self.pos += 1;
+
+                // A colon makes the word a field name rather than a term.
+                if self.eat(&Tok::Colon) {
+                    return self.parse_field_value(&word);
+                }
+
+                self.finish_term(None, word)
+            }
