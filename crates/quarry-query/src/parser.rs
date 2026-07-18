@@ -341,3 +341,23 @@ impl Parser {
             // "no results" with no explanation.
             return Query::MatchNone;
         }
+
+        let mut slop = 0u32;
+        if self.eat(&Tok::Tilde) {
+            if let Some(Tok::Number(n)) = self.peek() {
+                slop = n.round().max(0.0) as u32;
+                self.pos += 1;
+            }
+        }
+
+        // A one-word phrase is just a term, and planning it as a phrase would
+        // demand positions the field may not have.
+        if terms.len() == 1 && slop == 0 {
+            return Query::Term {
+                field,
+                text: terms.into_iter().next().unwrap_or_default(),
+            };
+        }
+
+        Query::Phrase { field, terms, slop }
+    }
