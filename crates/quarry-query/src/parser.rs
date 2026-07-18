@@ -89,3 +89,25 @@ impl Parser {
             false
         }
     }
+
+    fn enter(&mut self) -> Result<()> {
+        self.depth += 1;
+        if self.depth > MAX_DEPTH {
+            return Err(QueryError::TooDeep { max: MAX_DEPTH });
+        }
+        Ok(())
+    }
+
+    fn leave(&mut self) {
+        self.depth -= 1;
+    }
+
+    fn parse_or(&mut self) -> Result<Query> {
+        self.enter()?;
+        let mut clauses = vec![self.parse_and()?];
+
+        loop {
+            if self.eat(&Tok::Or) {
+                clauses.push(self.parse_and()?);
+                continue;
+            }
