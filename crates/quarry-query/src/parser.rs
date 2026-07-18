@@ -61,3 +61,9 @@ pub fn parse(input: &str) -> Result<Query> {
 
     Ok(query.simplify())
 }
+
+struct Parser {
+    tokens: Vec<Tok>,
+    pos: usize,
+    depth: usize,
+}
