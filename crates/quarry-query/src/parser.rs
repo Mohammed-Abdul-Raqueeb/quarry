@@ -42,3 +42,22 @@ pub fn parse(input: &str) -> Result<Query> {
         pos: 0,
         depth: 0,
     };
+
+    let query = parser.parse_or()?;
+
+    if parser.pos != parser.tokens.len() {
+        // Leftover tokens almost always mean an unbalanced paren.
+        return match parser.peek() {
+            Some(Tok::RParen) => Err(QueryError::UnbalancedParens),
+            Some(tok) => Err(QueryError::Unexpected {
+                found: describe(tok),
+                position: parser.pos,
+            }),
+            None => Err(QueryError::UnexpectedEnd {
+                expected: "end of query".to_string(),
+            }),
+        };
+    }
+
+    Ok(query.simplify())
+}
