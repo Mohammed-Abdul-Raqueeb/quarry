@@ -272,3 +272,27 @@ impl Parser {
             }
             Some(Tok::LBracket) => {
                 self.pos += 1;
+                self.parse_range(field, true)
+            }
+            Some(Tok::LBrace) => {
+                self.pos += 1;
+                self.parse_range(field, false)
+            }
+            Some(Tok::LParen) => {
+                self.pos += 1;
+                // `field:(a OR b)` scopes a whole group to one field.
+                let inner = self.parse_or()?;
+                if !self.eat(&Tok::RParen) {
+                    return Err(QueryError::UnbalancedParens);
+                }
+                Ok(apply_field(inner, field))
+            }
+            Some(tok) => Err(QueryError::Unexpected {
+                found: describe(&tok),
+                position: self.pos,
+            }),
+            None => Err(QueryError::UnexpectedEnd {
+                expected: format!("a value for {field}"),
+            }),
+        }
+    }
