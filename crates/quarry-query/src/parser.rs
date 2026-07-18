@@ -296,3 +296,28 @@ impl Parser {
             }),
         }
     }
+
+    /// Applies a trailing `*` or `~` to a bare term.
+    fn finish_term(&mut self, field: Option<String>, text: String) -> Result<Query> {
+        if self.eat(&Tok::Star) {
+            return Ok(Query::Prefix { field, text });
+        }
+
+        if self.eat(&Tok::Tilde) {
+            // A bare `~` uses the length-based default rather than demanding a
+            // number, since that is what a user means by "about this word".
+            let distance = match self.peek() {
+                Some(Tok::Number(n)) => {
+                    let requested = *n;
+                    self.pos += 1;
+                    let rounded = requested.round().max(0.0) as u32;
+                    if rounded > u32::from(fuzzy::MAX_DISTANCE) {
+                        return Err(QueryError::BadFuzzyDistance {
+                            found: rounded,
+                            max: fuzzy::MAX_DISTANCE,
+                        });
+                    }
+                    rounded as u8
+                }
+                _ => fuzzy::auto_distance(text.chars().count()),
+            };
