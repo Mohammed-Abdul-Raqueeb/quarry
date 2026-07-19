@@ -61,3 +61,11 @@ pub struct Plan {
     /// query means, so they are reported rather than hidden.
     pub notes: Vec<String>,
 }
+
+impl Plan {
+    /// Whether the plan can match anything.
+    #[must_use]
+    pub fn is_empty(&self) -> bool {
+        self.query.is_empty()
+    }
+}
