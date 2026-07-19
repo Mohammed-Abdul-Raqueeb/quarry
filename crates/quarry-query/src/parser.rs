@@ -513,3 +513,11 @@ fn describe(tok: &Tok) -> String {
         Tok::Plus => "+".to_string(),
     }
 }
+
+fn format_number(n: f64) -> String {
+    if n.fract() == 0.0 && n.abs() < 1e15 {
+        format!("{}", n as i64)
+    } else {
+        format!("{n}")
+    }
+}
