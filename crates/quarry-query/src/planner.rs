@@ -134,3 +134,30 @@ impl Occur {
         }
     }
 }
+
+fn walk(
+    query: &Query,
+    ctx: &PlanContext<'_>,
+    occur: Occur,
+    boost: f32,
+    out: &mut BooleanQuery,
+    notes: &mut Vec<String>,
+    // Set once any leaf resolved to a real term, which separates "nothing
+    // matched" from "nothing to search for".
+    resolved: &mut bool,
+) -> Result<()> {
+    match query {
+        Query::MatchAll | Query::MatchNone => {
+            // Neither has a term to look up. MatchAll is handled by the caller
+            // seeing an empty query; MatchNone contributes nothing.
+            Ok(())
+        }
+
+        Query::Term { field, text } => {
+            let fields = resolve_fields(field.as_deref(), ctx)?;
+            let terms = analyze(text, ctx, &fields);
+
+            if terms.is_empty() {
+                notes.push(format!("{text:?} analyzed to nothing and was dropped"));
+                return Ok(());
+            }
