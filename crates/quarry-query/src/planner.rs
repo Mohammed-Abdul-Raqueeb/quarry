@@ -257,3 +257,29 @@ fn walk(
                     .iter()
                     .filter_map(|word| ctx.analyzer.terms(word).into_iter().next())
                     .collect();
+
+                if analyzed.len() < 2 {
+                    notes.push(format!(
+                        "phrase {terms:?} analyzed to fewer than two terms; matching as terms instead"
+                    ));
+                    for term in analyzed {
+                        push(out, occur, TermQuery::new(field_id, term).boosted(boost));
+                    }
+                    continue;
+                }
+
+                *resolved = true;
+                out.phrases
+                    .push(PhraseQuery::new(field_id, analyzed).with_slop(*slop));
+            }
+            Ok(())
+        }
+
+        Query::Range { field, .. } => {
+            let definition = ctx
+                .schema
+                .field(field)
+                .ok_or_else(|| QueryError::UnknownField {
+                    name: field.clone(),
+                    available: field_names(ctx.schema),
+                })?;
