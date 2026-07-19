@@ -161,3 +161,27 @@ fn walk(
                 notes.push(format!("{text:?} analyzed to nothing and was dropped"));
                 return Ok(());
             }
+
+            *resolved = true;
+            push_expansion(out, occur, terms, boost);
+            Ok(())
+        }
+
+        Query::Prefix { field, text } => {
+            let fields = resolve_fields(field.as_deref(), ctx)?;
+            // Lowercased rather than fully analyzed: stemming a prefix would
+            // change the characters being matched against.
+            let prefix = text.to_lowercase();
+            // The prefix itself resolved, whether or not it expands to
+            // anything in this corpus.
+            *resolved = true;
+
+            let mut total = 0;
+            for field_id in fields {
+                let expansions = expand_prefix(ctx, field_id, &prefix);
+                total += expansions.len();
+
+                for term in expansions {
+                    push(out, occur, TermQuery::new(field_id, term).boosted(boost));
+                }
+            }
