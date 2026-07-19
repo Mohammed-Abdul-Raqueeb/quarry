@@ -185,3 +185,26 @@ fn walk(
                     push(out, occur, TermQuery::new(field_id, term).boosted(boost));
                 }
             }
+
+            if total == 0 {
+                notes.push(format!("no terms start with {prefix:?}"));
+            } else if total >= MAX_EXPANSIONS {
+                notes.push(format!(
+                    "prefix {prefix:?} matched more than {MAX_EXPANSIONS} terms and was truncated"
+                ));
+            }
+            Ok(())
+        }
+
+        Query::Fuzzy {
+            field,
+            text,
+            distance,
+        } => {
+            let fields = resolve_fields(field.as_deref(), ctx)?;
+            let analyzed = analyze(text, ctx, &fields);
+
+            if analyzed.is_empty() {
+                notes.push(format!("{text:?} analyzed to nothing and was dropped"));
+                return Ok(());
+            }
