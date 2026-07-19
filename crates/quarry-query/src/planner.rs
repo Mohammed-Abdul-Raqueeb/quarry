@@ -30,3 +30,13 @@ use quarry_core::tokenize::Analyzer;
 /// A prefix like `a*` can match a large fraction of the dictionary; without a
 /// cap, one character of input turns into a query with thousands of clauses.
 pub const MAX_EXPANSIONS: usize = 64;
+
+/// What the planner needs to resolve a query.
+pub struct PlanContext<'a> {
+    /// Fields and their types.
+    pub schema: &'a Schema,
+    /// The analyzer the documents were indexed with.
+    pub analyzer: &'a Analyzer,
+    /// Segments, for expanding fuzzy and prefix clauses against the dictionary.
+    pub segments: &'a [Segment],
+}
