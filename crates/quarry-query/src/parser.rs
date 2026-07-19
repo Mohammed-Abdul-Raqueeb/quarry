@@ -490,3 +490,26 @@ fn apply_field(query: Query, field: &str) -> Query {
         other => other,
     }
 }
+
+fn describe(tok: &Tok) -> String {
+    match tok {
+        Tok::Word(w) => w.clone(),
+        Tok::Quoted(q) => format!("\"{q}\""),
+        Tok::Number(n) => format_number(*n),
+        Tok::And => "AND".to_string(),
+        Tok::Or => "OR".to_string(),
+        Tok::Not => "NOT".to_string(),
+        Tok::To => "TO".to_string(),
+        Tok::LParen => "(".to_string(),
+        Tok::RParen => ")".to_string(),
+        Tok::LBracket => "[".to_string(),
+        Tok::RBracket => "]".to_string(),
+        Tok::LBrace => "{".to_string(),
+        Tok::RBrace => "}".to_string(),
+        Tok::Colon => ":".to_string(),
+        Tok::Tilde => "~".to_string(),
+        Tok::Caret => "^".to_string(),
+        Tok::Star => "*".to_string(),
+        Tok::Plus => "+".to_string(),
+    }
+}
