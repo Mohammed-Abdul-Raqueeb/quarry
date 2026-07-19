@@ -300,3 +300,31 @@ fn walk(
             ));
             Ok(())
         }
+
+        Query::And(children) => {
+            for child in children {
+                // Inside an AND, an optional clause becomes required.
+                let child_occur = if occur == Occur::Should {
+                    Occur::Must
+                } else {
+                    occur
+                };
+                walk(child, ctx, child_occur, boost, out, notes, resolved)?;
+            }
+            Ok(())
+        }
+
+        Query::Or(children) => {
+            for child in children {
+                walk(child, ctx, Occur::Should, boost, out, notes, resolved)?;
+            }
+            Ok(())
+        }
+
+        Query::Not(child) => walk(child, ctx, occur.negate(), boost, out, notes, resolved),
+
+        Query::Boost { query, factor } => {
+            walk(query, ctx, occur, boost * factor, out, notes, resolved)
+        }
+    }
+}
