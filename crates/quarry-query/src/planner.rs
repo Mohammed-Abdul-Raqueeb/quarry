@@ -232,3 +232,28 @@ fn walk(
             }
             Ok(())
         }
+
+        Query::Phrase { field, terms, slop } => {
+            let fields = resolve_fields(field.as_deref(), ctx)?;
+
+            for field_id in fields {
+                let definition =
+                    ctx.schema
+                        .field_by_id(field_id)
+                        .ok_or_else(|| QueryError::UnknownField {
+                            name: field_id.to_string(),
+                            available: field_names(ctx.schema),
+                        })?;
+
+                if !definition.options.positions {
+                    return Err(QueryError::NoPositions {
+                        field: definition.name.clone(),
+                    });
+                }
+
+                // Each word analyzed separately, so the phrase keeps one term
+                // per input word even if one of them analyzes to nothing.
+                let analyzed: Vec<String> = terms
+                    .iter()
+                    .filter_map(|word| ctx.analyzer.terms(word).into_iter().next())
+                    .collect();
