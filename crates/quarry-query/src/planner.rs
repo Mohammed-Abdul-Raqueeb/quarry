@@ -85,3 +85,31 @@ pub fn plan(query: &Query, ctx: &PlanContext<'_>) -> Result<Plan> {
         &mut notes,
         &mut resolved_any,
     )?;
+
+    // Two different ways to end up with no clauses, and they deserve different
+    // answers.
+    //
+    // Nothing resolved at all — a query of pure stopwords, or one with no
+    // leaves — is a user error, and saying so beats silently returning
+    // nothing. But a term that resolved and simply matched no dictionary
+    // entry, like a prefix nobody has indexed, is an ordinary empty result:
+    // the query was well formed, the corpus just does not contain it.
+    if boolean.is_empty() && !resolved_any {
+        return Err(QueryError::Empty);
+    }
+
+    // With no required clauses, demand at least one optional match so an
+    // implicit OR does not degenerate into matching every document.
+    if boolean.must.is_empty()
+        && boolean.must_any.is_empty()
+        && boolean.phrases.is_empty()
+        && !boolean.should.is_empty()
+    {
+        boolean.minimum_should_match = 1;
+    }
+
+    Ok(Plan {
+        query: boolean,
+        notes,
+    })
+}
