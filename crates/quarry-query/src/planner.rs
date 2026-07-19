@@ -40,3 +40,12 @@ pub struct PlanContext<'a> {
     /// Segments, for expanding fuzzy and prefix clauses against the dictionary.
     pub segments: &'a [Segment],
 }
+
+impl std::fmt::Debug for PlanContext<'_> {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.debug_struct("PlanContext")
+            .field("fields", &self.schema.len())
+            .field("segments", &self.segments.len())
+            .finish()
+    }
+}
