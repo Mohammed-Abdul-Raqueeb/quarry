@@ -69,3 +69,19 @@ impl Plan {
         self.query.is_empty()
     }
 }
+
+/// Plans a parsed query.
+pub fn plan(query: &Query, ctx: &PlanContext<'_>) -> Result<Plan> {
+    let mut boolean = BooleanQuery::new();
+    let mut notes = Vec::new();
+
+    let mut resolved_any = false;
+    walk(
+        query,
+        ctx,
+        Occur::Should,
+        1.0,
+        &mut boolean,
+        &mut notes,
+        &mut resolved_any,
+    )?;
