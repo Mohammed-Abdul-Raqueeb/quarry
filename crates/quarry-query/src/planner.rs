@@ -208,3 +208,27 @@ fn walk(
                 notes.push(format!("{text:?} analyzed to nothing and was dropped"));
                 return Ok(());
             }
+
+            *resolved = true;
+
+            for (field_id, term) in analyzed {
+                let matches = expand_fuzzy(ctx, field_id, &term, *distance as usize);
+
+                if matches.is_empty() {
+                    notes.push(format!("nothing within {distance} edits of {term:?}"));
+                    continue;
+                }
+
+                for found in matches {
+                    // Closer matches score higher, so an exact hit outranks a
+                    // two-edit neighbour.
+                    let decay = 1.0 / (1.0 + found.distance as f32);
+                    push(
+                        out,
+                        occur,
+                        TermQuery::new(field_id, found.term).boosted(boost * decay),
+                    );
+                }
+            }
+            Ok(())
+        }
