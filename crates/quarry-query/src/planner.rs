@@ -121,3 +121,16 @@ enum Occur {
     Should,
     MustNot,
 }
+
+impl Occur {
+    /// Flips `must` and `must_not` under a negation.
+    ///
+    /// `should` also becomes `must_not`: inside a `NOT`, matching an optional
+    /// clause is what disqualifies a document.
+    fn negate(self) -> Self {
+        match self {
+            Self::Must | Self::Should => Self::MustNot,
+            Self::MustNot => Self::Must,
+        }
+    }
+}
