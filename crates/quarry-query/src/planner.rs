@@ -49,3 +49,15 @@ impl std::fmt::Debug for PlanContext<'_> {
             .finish()
     }
 }
+
+/// A planned query plus what the planner did to it.
+#[derive(Debug, Clone)]
+pub struct Plan {
+    /// The executable query.
+    pub query: BooleanQuery,
+    /// Notes worth showing the user.
+    ///
+    /// Dropped stopwords and truncated expansions both silently change what a
+    /// query means, so they are reported rather than hidden.
+    pub notes: Vec<String>,
+}
