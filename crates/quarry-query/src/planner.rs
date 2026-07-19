@@ -113,3 +113,11 @@ pub fn plan(query: &Query, ctx: &PlanContext<'_>) -> Result<Plan> {
         notes,
     })
 }
+
+/// Where a clause lands in the flat boolean.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+enum Occur {
+    Must,
+    Should,
+    MustNot,
+}
