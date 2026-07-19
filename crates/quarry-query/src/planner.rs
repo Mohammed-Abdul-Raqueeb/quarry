@@ -24,3 +24,9 @@ use quarry_core::index::Segment;
 use quarry_core::schema::{FieldId, FieldType, Schema};
 use quarry_core::search::{BooleanQuery, PhraseQuery, TermQuery};
 use quarry_core::tokenize::Analyzer;
+
+/// Most dictionary terms one fuzzy or prefix clause may expand to.
+///
+/// A prefix like `a*` can match a large fraction of the dictionary; without a
+/// cap, one character of input turns into a query with thousands of clauses.
+pub const MAX_EXPANSIONS: usize = 64;
