@@ -283,3 +283,20 @@ fn walk(
                     name: field.clone(),
                     available: field_names(ctx.schema),
                 })?;
+
+            if definition.ty != FieldType::Numeric {
+                return Err(QueryError::NotRangeable {
+                    field: field.clone(),
+                    found: definition.ty.as_str().to_string(),
+                });
+            }
+
+            // Ranges are not pushed into the inverted index: numeric fields are
+            // indexed by their exact decimal form, so a range has to be applied
+            // as a post-filter over stored values. The executor does not do
+            // that yet, so this is reported rather than silently ignored.
+            notes.push(format!(
+                "range on {field:?} is parsed but not yet executed; see docs/query-language.md"
+            ));
+            Ok(())
+        }
