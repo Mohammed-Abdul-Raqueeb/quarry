@@ -464,3 +464,7 @@ fn expand_fuzzy(
     all.truncate(MAX_EXPANSIONS);
     all
 }
+
+fn field_names(schema: &Schema) -> Vec<String> {
+    schema.fields().iter().map(|f| f.name.clone()).collect()
+}
