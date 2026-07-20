@@ -12,3 +12,9 @@ use quarry_query::{parse, Query, QueryError};
 fn parsed(input: &str) -> Query {
     parse(input).unwrap_or_else(|err| panic!("{input:?} should parse, got {err}"))
 }
+
+fn rejected(input: &str) -> QueryError {
+    parse(input).expect_err(&format!("{input:?} should have been rejected"))
+}
+
+// ---- lexer --------------------------------------------------------------
