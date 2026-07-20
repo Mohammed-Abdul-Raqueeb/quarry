@@ -328,3 +328,26 @@ fn walk(
         }
     }
 }
+
+/// Places a term that expanded across several fields.
+///
+/// Under `must`, the expansion is a disjunction: the word has to appear in one
+/// of the default fields, not in every one of them. Pushing each expansion as
+/// its own `must` clause would instead demand that a document repeat the word
+/// in title and body alike — a bug that surfaces as a query returning nothing
+/// rather than as an error, which is why it gets its own function.
+fn push_expansion(out: &mut BooleanQuery, occur: Occur, terms: Vec<(FieldId, String)>, boost: f32) {
+    if occur == Occur::Must && terms.len() > 1 {
+        out.must_any.push(
+            terms
+                .into_iter()
+                .map(|(field, term)| TermQuery::new(field, term).boosted(boost))
+                .collect(),
+        );
+        return;
+    }
+
+    for (field, term) in terms {
+        push(out, occur, TermQuery::new(field, term).boosted(boost));
+    }
+}
