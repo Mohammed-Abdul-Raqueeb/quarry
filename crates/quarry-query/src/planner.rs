@@ -359,3 +359,25 @@ fn push(out: &mut BooleanQuery, occur: Occur, term: TermQuery) {
         Occur::MustNot => out.must_not.push(term),
     }
 }
+
+/// The field ids a clause applies to.
+fn resolve_fields(field: Option<&str>, ctx: &PlanContext<'_>) -> Result<Vec<FieldId>> {
+    if let Some(name) = field {
+        let definition = ctx
+            .schema
+            .field(name)
+            .ok_or_else(|| QueryError::UnknownField {
+                name: name.to_string(),
+                available: field_names(ctx.schema),
+            })?;
+        Ok(vec![definition.id])
+    } else {
+        let fields = ctx.schema.default_search_fields();
+        if fields.is_empty() {
+            // Nothing to search means every bare term would be dropped,
+            // which is worth an error rather than empty results.
+            return Err(QueryError::Empty);
+        }
+        Ok(fields)
+    }
+}
