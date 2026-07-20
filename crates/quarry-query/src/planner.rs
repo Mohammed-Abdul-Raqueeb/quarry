@@ -428,3 +428,22 @@ fn expand_prefix(ctx: &PlanContext<'_>, field: FieldId, prefix: &str) -> Vec<Str
     terms.truncate(MAX_EXPANSIONS);
     terms
 }
+
+/// Dictionary terms in `field` within `distance` edits of `term`.
+fn expand_fuzzy(
+    ctx: &PlanContext<'_>,
+    field: FieldId,
+    term: &str,
+    distance: usize,
+) -> Vec<fuzzy::FuzzyMatch> {
+    if distance == 0 {
+        return vec![fuzzy::FuzzyMatch {
+            term: term.to_string(),
+            distance: 0,
+        }];
+    }
+
+    // Requiring a shared first character turns a full dictionary scan into a
+    // range scan. Typos in the first letter are rare enough that the recall
+    // lost is worth the cost saved.
+    let prefix_len = usize::from(term.chars().count() > 3);
