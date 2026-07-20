@@ -36,3 +36,11 @@ pub mod error;
 pub mod fuzzy;
 pub mod lexer;
 pub mod parser;
+pub mod planner;
+
+pub use ast::Query;
+pub use error::{QueryError, Result};
+pub use fuzzy::{bounded_levenshtein, damerau_levenshtein, levenshtein, similarity, FuzzyMatch};
+pub use lexer::{tokenize, Tok};
+pub use parser::parse;
+pub use planner::{plan, Plan, PlanContext};
