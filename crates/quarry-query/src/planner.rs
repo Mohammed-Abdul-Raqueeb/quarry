@@ -447,3 +447,20 @@ fn expand_fuzzy(
     // range scan. Typos in the first letter are rare enough that the recall
     // lost is worth the cost saved.
     let prefix_len = usize::from(term.chars().count() > 3);
+
+    let mut all: Vec<fuzzy::FuzzyMatch> = Vec::new();
+
+    for segment in ctx.segments {
+        let candidates = segment.index.terms_in_field(field);
+        all.extend(fuzzy::find_matches(term, &candidates, distance, prefix_len));
+    }
+
+    all.sort_by(|a, b| {
+        a.distance
+            .cmp(&b.distance)
+            .then_with(|| a.term.cmp(&b.term))
+    });
+    all.dedup_by(|a, b| a.term == b.term);
+    all.truncate(MAX_EXPANSIONS);
+    all
+}
