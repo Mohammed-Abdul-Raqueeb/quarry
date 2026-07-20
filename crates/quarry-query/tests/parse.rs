@@ -18,3 +18,11 @@ fn rejected(input: &str) -> QueryError {
 }
 
 // ---- lexer --------------------------------------------------------------
+
+#[test]
+fn lexes_a_bare_word() {
+    assert_eq!(
+        tokenize("rust").ok(),
+        Some(vec![Tok::Word("rust".to_string())])
+    );
+}
