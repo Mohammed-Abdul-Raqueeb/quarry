@@ -381,3 +381,30 @@ fn resolve_fields(field: Option<&str>, ctx: &PlanContext<'_>) -> Result<Vec<Fiel
         Ok(fields)
     }
 }
+
+/// Analyzes a term for each field, respecting that field's type.
+///
+/// A keyword field is lowercased but not stemmed, so `Rust-Lang` stays one
+/// term; a text field goes through the full pipeline.
+fn analyze(text: &str, ctx: &PlanContext<'_>, fields: &[FieldId]) -> Vec<(FieldId, String)> {
+    let mut out = Vec::new();
+
+    for &field_id in fields {
+        let Some(definition) = ctx.schema.field_by_id(field_id) else {
+            continue;
+        };
+
+        match definition.ty {
+            FieldType::Text => {
+                for term in ctx.analyzer.terms(text) {
+                    out.push((field_id, term));
+                }
+            }
+            FieldType::Keyword | FieldType::Numeric => {
+                out.push((field_id, text.to_lowercase()));
+            }
+        }
+    }
+
+    out
+}
