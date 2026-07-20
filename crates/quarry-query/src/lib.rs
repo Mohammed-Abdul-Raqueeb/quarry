@@ -44,3 +44,6 @@ pub use fuzzy::{bounded_levenshtein, damerau_levenshtein, levenshtein, similarit
 pub use lexer::{tokenize, Tok};
 pub use parser::parse;
 pub use planner::{plan, Plan, PlanContext};
+
+/// The version of this crate, from Cargo.
+pub const VERSION: &str = env!("CARGO_PKG_VERSION");
