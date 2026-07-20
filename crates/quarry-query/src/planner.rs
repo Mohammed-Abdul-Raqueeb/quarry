@@ -351,3 +351,11 @@ fn push_expansion(out: &mut BooleanQuery, occur: Occur, terms: Vec<(FieldId, Str
         push(out, occur, TermQuery::new(field, term).boosted(boost));
     }
 }
+
+fn push(out: &mut BooleanQuery, occur: Occur, term: TermQuery) {
+    match occur {
+        Occur::Must => out.must.push(term),
+        Occur::Should => out.should.push(term),
+        Occur::MustNot => out.must_not.push(term),
+    }
+}
