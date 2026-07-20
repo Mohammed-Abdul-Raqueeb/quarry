@@ -408,3 +408,23 @@ fn analyze(text: &str, ctx: &PlanContext<'_>, fields: &[FieldId]) -> Vec<(FieldI
 
     out
 }
+
+/// Dictionary terms in `field` starting with `prefix`.
+fn expand_prefix(ctx: &PlanContext<'_>, field: FieldId, prefix: &str) -> Vec<String> {
+    let mut terms = Vec::new();
+
+    for segment in ctx.segments {
+        for term in segment.index.terms_with_prefix(field, prefix) {
+            terms.push(term.to_string());
+            if terms.len() >= MAX_EXPANSIONS {
+                break;
+            }
+        }
+    }
+
+    // The same term can appear in several segments.
+    terms.sort();
+    terms.dedup();
+    terms.truncate(MAX_EXPANSIONS);
+    terms
+}
