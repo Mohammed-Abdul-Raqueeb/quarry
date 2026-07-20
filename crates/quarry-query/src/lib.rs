@@ -30,3 +30,5 @@
 //! assert_eq!(query.leaf_count(), 2);
 //! # Ok::<(), quarry_query::QueryError>(())
 //! ```
+
+pub mod ast;
