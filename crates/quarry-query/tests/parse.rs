@@ -36,3 +36,8 @@ fn lexes_several_words() {
 fn skips_surrounding_whitespace() {
     assert_eq!(tokenize("  rust  ").ok().map(|t| t.len()), Some(1));
 }
+
+#[test]
+fn lexes_an_empty_query_to_no_tokens() {
+    assert_eq!(tokenize("").ok().map(|t| t.len()), Some(0));
+}
