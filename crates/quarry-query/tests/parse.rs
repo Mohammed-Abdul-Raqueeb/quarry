@@ -148,3 +148,9 @@ fn rejects_a_query_over_the_length_limit() {
     let long = "a".repeat(MAX_QUERY_LEN + 1);
     assert!(matches!(tokenize(&long), Err(QueryError::TooLong { .. })));
 }
+
+#[test]
+fn accepts_a_query_at_the_length_limit() {
+    let long = "a".repeat(MAX_QUERY_LEN);
+    assert!(tokenize(&long).is_ok());
+}
