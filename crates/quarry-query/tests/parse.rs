@@ -65,3 +65,9 @@ fn lexes_the_symbolic_operators() {
     assert_eq!(tokenize("||").ok(), Some(vec![Tok::Or]));
     assert_eq!(tokenize("!").ok(), Some(vec![Tok::Not]));
 }
+
+#[test]
+fn rejects_a_single_ampersand_or_pipe() {
+    assert!(tokenize("&").is_err());
+    assert!(tokenize("|").is_err());
+}
