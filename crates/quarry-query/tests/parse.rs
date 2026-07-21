@@ -117,3 +117,11 @@ fn lexes_an_escaped_quote_inside_a_phrase() {
         Some(vec![Tok::Quoted("say \"hi\"".to_string())])
     );
 }
+
+#[test]
+fn rejects_an_unterminated_quote() {
+    assert!(matches!(
+        tokenize("\"open"),
+        Err(QueryError::UnterminatedQuote { .. })
+    ));
+}
