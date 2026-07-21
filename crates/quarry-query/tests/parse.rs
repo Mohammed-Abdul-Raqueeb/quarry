@@ -96,3 +96,8 @@ fn lexes_a_number() {
 fn lexes_a_fractional_number() {
     assert_eq!(tokenize("1.5").ok(), Some(vec![Tok::Number(1.5)]));
 }
+
+#[test]
+fn a_word_with_digits_is_not_a_number() {
+    assert_eq!(tokenize("3d").ok(), Some(vec![Tok::Word("3d".to_string())]));
+}
