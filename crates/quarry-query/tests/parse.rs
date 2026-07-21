@@ -31,3 +31,8 @@ fn lexes_a_bare_word() {
 fn lexes_several_words() {
     assert_eq!(tokenize("a b").ok().map(|t| t.len()), Some(2));
 }
+
+#[test]
+fn skips_surrounding_whitespace() {
+    assert_eq!(tokenize("  rust  ").ok().map(|t| t.len()), Some(1));
+}
