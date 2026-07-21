@@ -91,3 +91,8 @@ fn lexes_the_punctuation_tokens() {
 fn lexes_a_number() {
     assert_eq!(tokenize("42").ok(), Some(vec![Tok::Number(42.0)]));
 }
+
+#[test]
+fn lexes_a_fractional_number() {
+    assert_eq!(tokenize("1.5").ok(), Some(vec![Tok::Number(1.5)]));
+}
