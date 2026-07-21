@@ -154,3 +154,13 @@ fn accepts_a_query_at_the_length_limit() {
     let long = "a".repeat(MAX_QUERY_LEN);
     assert!(tokenize(&long).is_ok());
 }
+
+#[test]
+fn starts_clause_identifies_clause_openers() {
+    assert!(Tok::Word("x".to_string()).starts_clause());
+    assert!(Tok::LParen.starts_clause());
+    assert!(!Tok::And.starts_clause());
+    assert!(!Tok::RParen.starts_clause());
+}
+
+// ---- parsing simple queries --------------------------------------------
