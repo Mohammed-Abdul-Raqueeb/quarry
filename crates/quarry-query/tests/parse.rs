@@ -101,3 +101,11 @@ fn lexes_a_fractional_number() {
 fn a_word_with_digits_is_not_a_number() {
     assert_eq!(tokenize("3d").ok(), Some(vec![Tok::Word("3d".to_string())]));
 }
+
+#[test]
+fn lexes_a_quoted_phrase() {
+    assert_eq!(
+        tokenize("\"zero cost\"").ok(),
+        Some(vec![Tok::Quoted("zero cost".to_string())])
+    );
+}
