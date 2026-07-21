@@ -49,3 +49,12 @@ fn lexes_the_word_operators() {
     assert_eq!(tokenize("NOT").ok(), Some(vec![Tok::Not]));
     assert_eq!(tokenize("TO").ok(), Some(vec![Tok::To]));
 }
+
+#[test]
+fn operators_are_case_sensitive() {
+    // `and` is an English word someone will search for.
+    assert_eq!(
+        tokenize("and").ok(),
+        Some(vec![Tok::Word("and".to_string())])
+    );
+}
