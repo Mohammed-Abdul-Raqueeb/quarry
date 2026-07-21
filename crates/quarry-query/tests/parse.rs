@@ -58,3 +58,10 @@ fn operators_are_case_sensitive() {
         Some(vec![Tok::Word("and".to_string())])
     );
 }
+
+#[test]
+fn lexes_the_symbolic_operators() {
+    assert_eq!(tokenize("&&").ok(), Some(vec![Tok::And]));
+    assert_eq!(tokenize("||").ok(), Some(vec![Tok::Or]));
+    assert_eq!(tokenize("!").ok(), Some(vec![Tok::Not]));
+}
