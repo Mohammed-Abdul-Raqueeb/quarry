@@ -125,3 +125,11 @@ fn rejects_an_unterminated_quote() {
         Err(QueryError::UnterminatedQuote { .. })
     ));
 }
+
+#[test]
+fn a_leading_minus_is_negation() {
+    assert_eq!(
+        tokenize("-rust").ok(),
+        Some(vec![Tok::Not, Tok::Word("rust".to_string())])
+    );
+}
