@@ -133,3 +133,12 @@ fn a_leading_minus_is_negation() {
         Some(vec![Tok::Not, Tok::Word("rust".to_string())])
     );
 }
+
+#[test]
+fn an_internal_minus_stays_part_of_the_word() {
+    // `well-known` is one term, not a negation of `known`.
+    assert_eq!(
+        tokenize("well-known").ok(),
+        Some(vec![Tok::Word("well-known".to_string())])
+    );
+}
