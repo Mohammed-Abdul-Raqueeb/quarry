@@ -71,3 +71,18 @@ fn rejects_a_single_ampersand_or_pipe() {
     assert!(tokenize("&").is_err());
     assert!(tokenize("|").is_err());
 }
+
+#[test]
+fn lexes_the_punctuation_tokens() {
+    assert_eq!(tokenize("(").ok(), Some(vec![Tok::LParen]));
+    assert_eq!(tokenize(")").ok(), Some(vec![Tok::RParen]));
+    assert_eq!(tokenize("[").ok(), Some(vec![Tok::LBracket]));
+    assert_eq!(tokenize("]").ok(), Some(vec![Tok::RBracket]));
+    assert_eq!(tokenize("{").ok(), Some(vec![Tok::LBrace]));
+    assert_eq!(tokenize("}").ok(), Some(vec![Tok::RBrace]));
+    assert_eq!(tokenize(":").ok(), Some(vec![Tok::Colon]));
+    assert_eq!(tokenize("~").ok(), Some(vec![Tok::Tilde]));
+    assert_eq!(tokenize("^").ok(), Some(vec![Tok::Caret]));
+    assert_eq!(tokenize("*").ok(), Some(vec![Tok::Star]));
+    assert_eq!(tokenize("+").ok(), Some(vec![Tok::Plus]));
+}
