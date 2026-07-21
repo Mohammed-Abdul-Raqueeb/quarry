@@ -41,3 +41,11 @@ fn skips_surrounding_whitespace() {
 fn lexes_an_empty_query_to_no_tokens() {
     assert_eq!(tokenize("").ok().map(|t| t.len()), Some(0));
 }
+
+#[test]
+fn lexes_the_word_operators() {
+    assert_eq!(tokenize("AND").ok(), Some(vec![Tok::And]));
+    assert_eq!(tokenize("OR").ok(), Some(vec![Tok::Or]));
+    assert_eq!(tokenize("NOT").ok(), Some(vec![Tok::Not]));
+    assert_eq!(tokenize("TO").ok(), Some(vec![Tok::To]));
+}
