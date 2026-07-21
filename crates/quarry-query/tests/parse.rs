@@ -86,3 +86,8 @@ fn lexes_the_punctuation_tokens() {
     assert_eq!(tokenize("*").ok(), Some(vec![Tok::Star]));
     assert_eq!(tokenize("+").ok(), Some(vec![Tok::Plus]));
 }
+
+#[test]
+fn lexes_a_number() {
+    assert_eq!(tokenize("42").ok(), Some(vec![Tok::Number(42.0)]));
+}
