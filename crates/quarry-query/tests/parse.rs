@@ -26,3 +26,8 @@ fn lexes_a_bare_word() {
         Some(vec![Tok::Word("rust".to_string())])
     );
 }
+
+#[test]
+fn lexes_several_words() {
+    assert_eq!(tokenize("a b").ok().map(|t| t.len()), Some(2));
+}
