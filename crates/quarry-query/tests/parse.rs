@@ -164,3 +164,8 @@ fn starts_clause_identifies_clause_openers() {
 }
 
 // ---- parsing simple queries --------------------------------------------
+
+#[test]
+fn parses_a_bare_term() {
+    assert_eq!(parsed("rust"), Query::term("rust"));
+}
