@@ -109,3 +109,11 @@ fn lexes_a_quoted_phrase() {
         Some(vec![Tok::Quoted("zero cost".to_string())])
     );
 }
+
+#[test]
+fn lexes_an_escaped_quote_inside_a_phrase() {
+    assert_eq!(
+        tokenize(r#""say \"hi\"""#).ok(),
+        Some(vec![Tok::Quoted("say \"hi\"".to_string())])
+    );
+}
