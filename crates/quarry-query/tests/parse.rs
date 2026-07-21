@@ -142,3 +142,9 @@ fn an_internal_minus_stays_part_of_the_word() {
         Some(vec![Tok::Word("well-known".to_string())])
     );
 }
+
+#[test]
+fn rejects_a_query_over_the_length_limit() {
+    let long = "a".repeat(MAX_QUERY_LEN + 1);
+    assert!(matches!(tokenize(&long), Err(QueryError::TooLong { .. })));
+}
