@@ -202,3 +202,11 @@ fn parses_a_match_all_query() {
 }
 
 // ---- boolean structure --------------------------------------------------
+
+#[test]
+fn parses_an_explicit_and() {
+    assert_eq!(
+        parsed("a AND b"),
+        Query::And(vec![Query::term("a"), Query::term("b")])
+    );
+}
