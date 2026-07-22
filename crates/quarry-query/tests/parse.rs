@@ -189,3 +189,8 @@ fn parses_a_field_scoped_number() {
 fn rejects_an_empty_query() {
     assert_eq!(rejected(""), QueryError::Empty);
 }
+
+#[test]
+fn rejects_a_whitespace_only_query() {
+    assert_eq!(rejected("   "), QueryError::Empty);
+}
