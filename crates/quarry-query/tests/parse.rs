@@ -194,3 +194,11 @@ fn rejects_an_empty_query() {
 fn rejects_a_whitespace_only_query() {
     assert_eq!(rejected("   "), QueryError::Empty);
 }
+
+#[test]
+fn parses_a_match_all_query() {
+    assert_eq!(parsed("*:*"), Query::MatchAll);
+    assert_eq!(parsed("*"), Query::MatchAll);
+}
+
+// ---- boolean structure --------------------------------------------------
