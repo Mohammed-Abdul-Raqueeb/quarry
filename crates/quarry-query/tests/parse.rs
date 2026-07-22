@@ -210,3 +210,11 @@ fn parses_an_explicit_and() {
         Query::And(vec![Query::term("a"), Query::term("b")])
     );
 }
+
+#[test]
+fn parses_an_explicit_or() {
+    assert_eq!(
+        parsed("a OR b"),
+        Query::Or(vec![Query::term("a"), Query::term("b")])
+    );
+}
