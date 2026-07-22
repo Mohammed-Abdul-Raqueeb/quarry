@@ -250,3 +250,8 @@ fn parentheses_override_precedence() {
         ])
     );
 }
+
+#[test]
+fn parses_a_negation() {
+    assert_eq!(parsed("NOT a"), Query::term("a").negate());
+}
