@@ -174,3 +174,8 @@ fn parses_a_bare_term() {
 fn parses_a_field_scoped_term() {
     assert_eq!(parsed("title:rust"), Query::field_term("title", "rust"));
 }
+
+#[test]
+fn parses_a_number_as_a_term() {
+    assert_eq!(parsed("2021"), Query::term("2021"));
+}
