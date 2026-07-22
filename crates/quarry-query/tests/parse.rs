@@ -184,3 +184,8 @@ fn parses_a_number_as_a_term() {
 fn parses_a_field_scoped_number() {
     assert_eq!(parsed("year:2021"), Query::field_term("year", "2021"));
 }
+
+#[test]
+fn rejects_an_empty_query() {
+    assert_eq!(rejected(""), QueryError::Empty);
+}
