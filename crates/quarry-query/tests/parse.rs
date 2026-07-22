@@ -273,3 +273,9 @@ fn parses_a_negated_clause_inside_an_and() {
         Query::And(vec![Query::term("a"), Query::term("b").negate()])
     );
 }
+
+#[test]
+fn a_leading_plus_is_accepted_and_ignored() {
+    // The requirement is read from the AND/OR structure instead.
+    assert_eq!(parsed("+rust"), Query::term("rust"));
+}
