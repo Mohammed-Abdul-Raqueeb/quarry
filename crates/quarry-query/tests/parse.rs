@@ -169,3 +169,8 @@ fn starts_clause_identifies_clause_openers() {
 fn parses_a_bare_term() {
     assert_eq!(parsed("rust"), Query::term("rust"));
 }
+
+#[test]
+fn parses_a_field_scoped_term() {
+    assert_eq!(parsed("title:rust"), Query::field_term("title", "rust"));
+}
