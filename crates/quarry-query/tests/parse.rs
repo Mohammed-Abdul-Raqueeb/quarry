@@ -265,3 +265,11 @@ fn parses_a_minus_as_a_negation() {
 fn parses_a_bang_as_a_negation() {
     assert_eq!(parsed("!a"), Query::term("a").negate());
 }
+
+#[test]
+fn parses_a_negated_clause_inside_an_and() {
+    assert_eq!(
+        parsed("a AND NOT b"),
+        Query::And(vec![Query::term("a"), Query::term("b").negate()])
+    );
+}
