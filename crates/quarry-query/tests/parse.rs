@@ -297,3 +297,9 @@ fn rejects_an_unbalanced_open_paren() {
 fn rejects_an_unbalanced_close_paren() {
     assert_eq!(rejected("a)"), QueryError::UnbalancedParens);
 }
+
+#[test]
+fn rejects_a_dangling_operator() {
+    assert!(parse("a AND").is_err());
+    assert!(parse("OR b").is_err());
+}
