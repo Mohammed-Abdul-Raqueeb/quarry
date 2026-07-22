@@ -255,3 +255,8 @@ fn parentheses_override_precedence() {
 fn parses_a_negation() {
     assert_eq!(parsed("NOT a"), Query::term("a").negate());
 }
+
+#[test]
+fn parses_a_minus_as_a_negation() {
+    assert_eq!(parsed("-a"), Query::term("a").negate());
+}
