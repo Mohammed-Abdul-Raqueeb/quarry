@@ -239,3 +239,14 @@ fn and_binds_tighter_than_or() {
         ])
     );
 }
+
+#[test]
+fn parentheses_override_precedence() {
+    assert_eq!(
+        parsed("(a OR b) AND c"),
+        Query::And(vec![
+            Query::Or(vec![Query::term("a"), Query::term("b")]),
+            Query::term("c")
+        ])
+    );
+}
