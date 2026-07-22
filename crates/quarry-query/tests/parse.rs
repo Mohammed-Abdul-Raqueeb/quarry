@@ -287,3 +287,8 @@ fn flattens_nested_nodes_of_the_same_kind() {
         Query::And(vec![Query::term("a"), Query::term("b"), Query::term("c")])
     );
 }
+
+#[test]
+fn rejects_an_unbalanced_open_paren() {
+    assert_eq!(rejected("(a"), QueryError::UnbalancedParens);
+}
