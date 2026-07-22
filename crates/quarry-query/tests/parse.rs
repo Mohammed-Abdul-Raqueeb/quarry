@@ -218,3 +218,13 @@ fn parses_an_explicit_or() {
         Query::Or(vec![Query::term("a"), Query::term("b")])
     );
 }
+
+#[test]
+fn two_adjacent_terms_are_an_implicit_or() {
+    // What a user typing `rust ownership` means: either word, ranked by how
+    // many matched.
+    assert_eq!(
+        parsed("a b"),
+        Query::Or(vec![Query::term("a"), Query::term("b")])
+    );
+}
