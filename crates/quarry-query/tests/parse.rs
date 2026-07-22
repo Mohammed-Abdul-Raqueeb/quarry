@@ -292,3 +292,8 @@ fn flattens_nested_nodes_of_the_same_kind() {
 fn rejects_an_unbalanced_open_paren() {
     assert_eq!(rejected("(a"), QueryError::UnbalancedParens);
 }
+
+#[test]
+fn rejects_an_unbalanced_close_paren() {
+    assert_eq!(rejected("a)"), QueryError::UnbalancedParens);
+}
