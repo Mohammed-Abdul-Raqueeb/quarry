@@ -279,3 +279,11 @@ fn a_leading_plus_is_accepted_and_ignored() {
     // The requirement is read from the AND/OR structure instead.
     assert_eq!(parsed("+rust"), Query::term("rust"));
 }
+
+#[test]
+fn flattens_nested_nodes_of_the_same_kind() {
+    assert_eq!(
+        parsed("a AND b AND c"),
+        Query::And(vec![Query::term("a"), Query::term("b"), Query::term("c")])
+    );
+}
