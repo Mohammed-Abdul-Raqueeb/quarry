@@ -228,3 +228,14 @@ fn two_adjacent_terms_are_an_implicit_or() {
         Query::Or(vec![Query::term("a"), Query::term("b")])
     );
 }
+
+#[test]
+fn and_binds_tighter_than_or() {
+    assert_eq!(
+        parsed("a OR b AND c"),
+        Query::Or(vec![
+            Query::term("a"),
+            Query::And(vec![Query::term("b"), Query::term("c")])
+        ])
+    );
+}
