@@ -406,3 +406,11 @@ fn parses_a_prefix_term() {
         }
     );
 }
+
+#[test]
+fn parses_a_field_scoped_prefix() {
+    assert!(matches!(
+        parsed("title:own*"),
+        Query::Prefix { field: Some(_), .. }
+    ));
+}
