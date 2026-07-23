@@ -361,3 +361,15 @@ fn a_phrase_collapses_repeated_whitespace() {
 }
 
 // ---- fuzzy and prefix ---------------------------------------------------
+
+#[test]
+fn parses_a_fuzzy_term_with_an_explicit_distance() {
+    assert_eq!(
+        parsed("rust~1"),
+        Query::Fuzzy {
+            field: None,
+            text: "rust".to_string(),
+            distance: 1,
+        }
+    );
+}
