@@ -442,3 +442,8 @@ fn parses_a_fractional_boost() {
 fn parses_a_boost_on_a_group() {
     assert!(matches!(parsed("(a OR b)^3"), Query::Boost { .. }));
 }
+
+#[test]
+fn a_boost_of_one_is_simplified_away() {
+    assert_eq!(parsed("rust^1"), Query::term("rust"));
+}
