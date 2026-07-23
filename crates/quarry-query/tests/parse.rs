@@ -327,3 +327,11 @@ fn parses_a_phrase() {
         }
     );
 }
+
+#[test]
+fn parses_a_field_scoped_phrase() {
+    assert!(matches!(
+        parsed("title:\"zero cost\""),
+        Query::Phrase { field: Some(_), .. }
+    ));
+}
