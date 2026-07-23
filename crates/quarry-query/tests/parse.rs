@@ -335,3 +335,8 @@ fn parses_a_field_scoped_phrase() {
         Query::Phrase { field: Some(_), .. }
     ));
 }
+
+#[test]
+fn parses_a_phrase_with_slop() {
+    assert!(matches!(parsed("\"a b\"~2"), Query::Phrase { slop: 2, .. }));
+}
