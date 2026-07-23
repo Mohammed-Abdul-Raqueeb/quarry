@@ -351,3 +351,13 @@ fn a_single_word_phrase_becomes_a_term() {
 fn an_empty_phrase_matches_nothing() {
     assert_eq!(parsed("\"\""), Query::MatchNone);
 }
+
+#[test]
+fn a_phrase_collapses_repeated_whitespace() {
+    assert!(matches!(
+        parsed("\"a    b\""),
+        Query::Phrase { ref terms, .. } if terms.len() == 2
+    ));
+}
+
+// ---- fuzzy and prefix ---------------------------------------------------
