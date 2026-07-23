@@ -373,3 +373,15 @@ fn parses_a_fuzzy_term_with_an_explicit_distance() {
         }
     );
 }
+
+#[test]
+fn a_bare_tilde_uses_the_length_based_default() {
+    // What a user means by "about this word". The budget scales with length:
+    // two edits on a three-letter word would match almost anything.
+    assert!(matches!(
+        parsed("ownership~"),
+        Query::Fuzzy { distance: 2, .. }
+    ));
+    assert!(matches!(parsed("cat~"), Query::Fuzzy { distance: 1, .. }));
+    assert!(matches!(parsed("go~"), Query::Fuzzy { distance: 0, .. }));
+}
