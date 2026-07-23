@@ -432,3 +432,8 @@ fn a_bare_field_star_means_any_value() {
 fn parses_a_boost() {
     assert_eq!(parsed("rust^2"), Query::term("rust").boost(2.0));
 }
+
+#[test]
+fn parses_a_fractional_boost() {
+    assert!(matches!(parsed("rust^0.5"), Query::Boost { factor, .. } if factor == 0.5));
+}
