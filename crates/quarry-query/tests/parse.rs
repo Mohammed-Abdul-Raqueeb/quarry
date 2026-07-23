@@ -346,3 +346,8 @@ fn a_single_word_phrase_becomes_a_term() {
     // Planning it as a phrase would demand positions the field may not have.
     assert_eq!(parsed("\"rust\""), Query::term("rust"));
 }
+
+#[test]
+fn an_empty_phrase_matches_nothing() {
+    assert_eq!(parsed("\"\""), Query::MatchNone);
+}
