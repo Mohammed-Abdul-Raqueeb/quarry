@@ -395,3 +395,14 @@ fn rejects_a_fuzzy_distance_above_the_maximum() {
         Err(QueryError::BadFuzzyDistance { .. })
     ));
 }
+
+#[test]
+fn parses_a_prefix_term() {
+    assert_eq!(
+        parsed("own*"),
+        Query::Prefix {
+            field: None,
+            text: "own".to_string(),
+        }
+    );
+}
