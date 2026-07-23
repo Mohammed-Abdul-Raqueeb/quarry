@@ -437,3 +437,8 @@ fn parses_a_boost() {
 fn parses_a_fractional_boost() {
     assert!(matches!(parsed("rust^0.5"), Query::Boost { factor, .. } if factor == 0.5));
 }
+
+#[test]
+fn parses_a_boost_on_a_group() {
+    assert!(matches!(parsed("(a OR b)^3"), Query::Boost { .. }));
+}
