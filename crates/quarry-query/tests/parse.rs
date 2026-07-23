@@ -454,3 +454,17 @@ fn rejects_a_boost_without_a_number() {
 }
 
 // ---- ranges -------------------------------------------------------------
+
+#[test]
+fn parses_an_inclusive_range() {
+    assert_eq!(
+        parsed("year:[2000 TO 2020]"),
+        Query::Range {
+            field: "year".to_string(),
+            lower: Some(2000.0),
+            upper: Some(2020.0),
+            include_lower: true,
+            include_upper: true,
+        }
+    );
+}
