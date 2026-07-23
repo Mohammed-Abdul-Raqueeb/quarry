@@ -385,3 +385,13 @@ fn a_bare_tilde_uses_the_length_based_default() {
     assert!(matches!(parsed("cat~"), Query::Fuzzy { distance: 1, .. }));
     assert!(matches!(parsed("go~"), Query::Fuzzy { distance: 0, .. }));
 }
+
+#[test]
+fn rejects_a_fuzzy_distance_above_the_maximum() {
+    // Beyond two edits a fuzzy match stops correcting typos and starts
+    // matching unrelated words.
+    assert!(matches!(
+        parse("rust~5"),
+        Err(QueryError::BadFuzzyDistance { .. })
+    ));
+}
