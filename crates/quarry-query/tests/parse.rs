@@ -468,3 +468,15 @@ fn parses_an_inclusive_range() {
         }
     );
 }
+
+#[test]
+fn parses_an_exclusive_range() {
+    assert!(matches!(
+        parsed("year:{2000 TO 2020}"),
+        Query::Range {
+            include_lower: false,
+            include_upper: false,
+            ..
+        }
+    ));
+}
