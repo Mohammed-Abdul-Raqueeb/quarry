@@ -414,3 +414,16 @@ fn parses_a_field_scoped_prefix() {
         Query::Prefix { field: Some(_), .. }
     ));
 }
+
+#[test]
+fn a_bare_field_star_means_any_value() {
+    assert_eq!(
+        parsed("title:*"),
+        Query::Prefix {
+            field: Some("title".to_string()),
+            text: String::new(),
+        }
+    );
+}
+
+// ---- boosts -------------------------------------------------------------
