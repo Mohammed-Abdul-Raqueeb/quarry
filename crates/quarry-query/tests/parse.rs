@@ -303,3 +303,15 @@ fn rejects_a_dangling_operator() {
     assert!(parse("a AND").is_err());
     assert!(parse("OR b").is_err());
 }
+
+#[test]
+fn rejects_nesting_past_the_depth_limit() {
+    let deep = format!(
+        "{}a{}",
+        "(".repeat(MAX_DEPTH + 5),
+        ")".repeat(MAX_DEPTH + 5)
+    );
+    assert!(matches!(parse(&deep), Err(QueryError::TooDeep { .. })));
+}
+
+// ---- phrases ------------------------------------------------------------
