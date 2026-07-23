@@ -447,3 +447,10 @@ fn parses_a_boost_on_a_group() {
 fn a_boost_of_one_is_simplified_away() {
     assert_eq!(parsed("rust^1"), Query::term("rust"));
 }
+
+#[test]
+fn rejects_a_boost_without_a_number() {
+    assert!(parse("rust^").is_err());
+}
+
+// ---- ranges -------------------------------------------------------------
