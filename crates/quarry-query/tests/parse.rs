@@ -315,3 +315,15 @@ fn rejects_nesting_past_the_depth_limit() {
 }
 
 // ---- phrases ------------------------------------------------------------
+
+#[test]
+fn parses_a_phrase() {
+    assert_eq!(
+        parsed("\"zero cost\""),
+        Query::Phrase {
+            field: None,
+            terms: vec!["zero".to_string(), "cost".to_string()],
+            slop: 0,
+        }
+    );
+}
