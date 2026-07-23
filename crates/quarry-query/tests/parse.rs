@@ -340,3 +340,9 @@ fn parses_a_field_scoped_phrase() {
 fn parses_a_phrase_with_slop() {
     assert!(matches!(parsed("\"a b\"~2"), Query::Phrase { slop: 2, .. }));
 }
+
+#[test]
+fn a_single_word_phrase_becomes_a_term() {
+    // Planning it as a phrase would demand positions the field may not have.
+    assert_eq!(parsed("\"rust\""), Query::term("rust"));
+}
