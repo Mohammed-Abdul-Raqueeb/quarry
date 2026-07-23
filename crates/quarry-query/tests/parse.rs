@@ -427,3 +427,8 @@ fn a_bare_field_star_means_any_value() {
 }
 
 // ---- boosts -------------------------------------------------------------
+
+#[test]
+fn parses_a_boost() {
+    assert_eq!(parsed("rust^2"), Query::term("rust").boost(2.0));
+}
