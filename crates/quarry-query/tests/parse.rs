@@ -500,3 +500,11 @@ fn parses_an_unbounded_range_end() {
         Query::Range { upper: None, .. }
     ));
 }
+
+#[test]
+fn parses_a_negative_range_bound() {
+    assert!(matches!(
+        parsed("score:[-10 TO 10]"),
+        Query::Range { lower: Some(l), .. } if (l + 10.0).abs() < f64::EPSILON
+    ));
+}
