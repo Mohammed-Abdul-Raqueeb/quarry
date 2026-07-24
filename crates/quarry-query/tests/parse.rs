@@ -492,3 +492,11 @@ fn parses_a_half_open_range() {
         }
     ));
 }
+
+#[test]
+fn parses_an_unbounded_range_end() {
+    assert!(matches!(
+        parsed("year:[2000 TO *]"),
+        Query::Range { upper: None, .. }
+    ));
+}
