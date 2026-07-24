@@ -508,3 +508,13 @@ fn parses_a_negative_range_bound() {
         Query::Range { lower: Some(l), .. } if (l + 10.0).abs() < f64::EPSILON
     ));
 }
+
+#[test]
+fn rejects_a_range_whose_bounds_cross() {
+    // Caught here so the user is told the range is impossible rather than
+    // just getting nothing back.
+    assert!(matches!(
+        parse("year:[2020 TO 2000]"),
+        Err(QueryError::EmptyRange { .. })
+    ));
+}
