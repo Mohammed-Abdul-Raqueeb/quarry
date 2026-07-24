@@ -28,3 +28,8 @@ fn distance_from_empty_is_the_other_length() {
     assert_eq!(levenshtein("", "rust"), 4);
     assert_eq!(levenshtein("rust", ""), 4);
 }
+
+#[test]
+fn counts_a_substitution_as_one() {
+    assert_eq!(levenshtein("cat", "bat"), 1);
+}
