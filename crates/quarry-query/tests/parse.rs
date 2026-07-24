@@ -528,3 +528,10 @@ fn rejects_a_range_without_to() {
 fn rejects_an_unclosed_range() {
     assert!(parse("year:[2000 TO 2020").is_err());
 }
+
+#[test]
+fn rejects_a_range_without_a_field() {
+    assert!(parse("[2000 TO 2020]").is_err());
+}
+
+// ---- field scoping over groups -----------------------------------------
