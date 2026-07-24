@@ -17,3 +17,8 @@ use quarry_query::fuzzy::{
 fn distance_to_itself_is_zero() {
     assert_eq!(levenshtein("rust", "rust"), 0);
 }
+
+#[test]
+fn distance_between_empty_strings_is_zero() {
+    assert_eq!(levenshtein("", ""), 0);
+}
