@@ -22,3 +22,9 @@ fn distance_to_itself_is_zero() {
 fn distance_between_empty_strings_is_zero() {
     assert_eq!(levenshtein("", ""), 0);
 }
+
+#[test]
+fn distance_from_empty_is_the_other_length() {
+    assert_eq!(levenshtein("", "rust"), 4);
+    assert_eq!(levenshtein("rust", ""), 4);
+}
