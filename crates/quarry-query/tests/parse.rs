@@ -535,3 +535,14 @@ fn rejects_a_range_without_a_field() {
 }
 
 // ---- field scoping over groups -----------------------------------------
+
+#[test]
+fn a_field_scopes_a_whole_group() {
+    assert_eq!(
+        parsed("title:(rust OR go)"),
+        Query::Or(vec![
+            Query::field_term("title", "rust"),
+            Query::field_term("title", "go")
+        ])
+    );
+}
