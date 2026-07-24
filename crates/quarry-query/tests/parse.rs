@@ -558,3 +558,10 @@ fn a_field_scopes_a_nested_group() {
 }
 
 // ---- realistic queries --------------------------------------------------
+
+#[test]
+fn parses_a_realistic_mixed_query() {
+    let query = parsed("title:rust^2 AND \"zero cost\" AND NOT deprecated");
+    assert_eq!(query.referenced_fields(), vec!["title".to_string()]);
+    assert_eq!(query.leaf_count(), 3);
+}
