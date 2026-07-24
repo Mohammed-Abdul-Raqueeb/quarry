@@ -565,3 +565,9 @@ fn parses_a_realistic_mixed_query() {
     assert_eq!(query.referenced_fields(), vec!["title".to_string()]);
     assert_eq!(query.leaf_count(), 3);
 }
+
+#[test]
+fn parses_a_query_with_every_feature() {
+    let query = parsed("(title:rust~1 OR body:own*) AND year:[2000 TO *] AND NOT tag:draft");
+    assert!(query.leaf_count() >= 4);
+}
