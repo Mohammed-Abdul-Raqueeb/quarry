@@ -546,3 +546,8 @@ fn a_field_scopes_a_whole_group() {
         ])
     );
 }
+
+#[test]
+fn an_inner_field_is_respected_rather_than_overwritten() {
+    assert_eq!(parsed("title:(body:x)"), Query::field_term("body", "x"));
+}
