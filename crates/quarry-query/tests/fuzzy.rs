@@ -12,3 +12,8 @@ use quarry_query::fuzzy::{
 };
 
 // ---- levenshtein --------------------------------------------------------
+
+#[test]
+fn distance_to_itself_is_zero() {
+    assert_eq!(levenshtein("rust", "rust"), 0);
+}
