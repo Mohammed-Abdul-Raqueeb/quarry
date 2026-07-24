@@ -571,3 +571,12 @@ fn parses_a_query_with_every_feature() {
     let query = parsed("(title:rust~1 OR body:own*) AND year:[2000 TO *] AND NOT tag:draft");
     assert!(query.leaf_count() >= 4);
 }
+
+#[test]
+fn referenced_fields_is_sorted_and_deduplicated() {
+    let query = parsed("title:a OR body:b OR title:c");
+    assert_eq!(
+        query.referenced_fields(),
+        vec!["body".to_string(), "title".to_string()]
+    );
+}
