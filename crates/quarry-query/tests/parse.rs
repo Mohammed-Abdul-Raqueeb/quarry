@@ -518,3 +518,8 @@ fn rejects_a_range_whose_bounds_cross() {
         Err(QueryError::EmptyRange { .. })
     ));
 }
+
+#[test]
+fn rejects_a_range_without_to() {
+    assert!(parse("year:[2000 2020]").is_err());
+}
