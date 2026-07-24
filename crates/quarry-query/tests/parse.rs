@@ -580,3 +580,8 @@ fn referenced_fields_is_sorted_and_deduplicated() {
         vec!["body".to_string(), "title".to_string()]
     );
 }
+
+#[test]
+fn leaf_count_ignores_structural_nodes() {
+    assert_eq!(parsed("(a AND b) OR (c AND d)").leaf_count(), 4);
+}
