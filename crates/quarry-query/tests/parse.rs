@@ -523,3 +523,8 @@ fn rejects_a_range_whose_bounds_cross() {
 fn rejects_a_range_without_to() {
     assert!(parse("year:[2000 2020]").is_err());
 }
+
+#[test]
+fn rejects_an_unclosed_range() {
+    assert!(parse("year:[2000 TO 2020").is_err());
+}
