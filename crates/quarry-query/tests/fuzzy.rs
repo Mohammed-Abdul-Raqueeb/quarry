@@ -153,3 +153,9 @@ fn damerau_counts_a_transposition_as_one() {
     // one edit matches real typos better.
     assert_eq!(damerau_levenshtein("teh", "the"), 1);
 }
+
+#[test]
+fn damerau_agrees_with_levenshtein_without_transpositions() {
+    assert_eq!(damerau_levenshtein("cat", "bat"), 1);
+    assert_eq!(damerau_levenshtein("kitten", "sitting"), 3);
+}
