@@ -49,3 +49,10 @@ fn counts_a_transposition_as_two() {
     // Plain Levenshtein charges two substitutions; Damerau charges one.
     assert_eq!(levenshtein("teh", "the"), 2);
 }
+
+#[test]
+fn computes_the_textbook_distances() {
+    assert_eq!(levenshtein("kitten", "sitting"), 3);
+    assert_eq!(levenshtein("saturday", "sunday"), 3);
+    assert_eq!(levenshtein("flaw", "lawn"), 2);
+}
