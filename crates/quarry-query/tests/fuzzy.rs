@@ -56,3 +56,10 @@ fn computes_the_textbook_distances() {
     assert_eq!(levenshtein("saturday", "sunday"), 3);
     assert_eq!(levenshtein("flaw", "lawn"), 2);
 }
+
+#[test]
+fn distance_is_symmetric() {
+    for (a, b) in [("kitten", "sitting"), ("rust", "trust"), ("", "x")] {
+        assert_eq!(levenshtein(a, b), levenshtein(b, a), "{a} vs {b}");
+    }
+}
