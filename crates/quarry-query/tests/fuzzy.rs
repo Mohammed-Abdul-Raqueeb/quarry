@@ -79,3 +79,12 @@ fn handles_multibyte_characters() {
     assert_eq!(levenshtein("café", "cafe"), 1);
     assert_eq!(levenshtein("日本", "日本"), 0);
 }
+
+#[test]
+fn handles_a_long_pair_without_panicking() {
+    let a = "a".repeat(500);
+    let b = "b".repeat(500);
+    assert_eq!(levenshtein(&a, &b), 500);
+}
+
+// ---- bounded levenshtein ------------------------------------------------
