@@ -125,3 +125,24 @@ fn bounded_with_a_zero_budget_demands_equality() {
     assert_eq!(bounded_levenshtein("rust", "rust", 0), Some(0));
     assert_eq!(bounded_levenshtein("rust", "rusty", 0), None);
 }
+
+#[test]
+fn bounded_matches_unbounded_across_a_sample() {
+    let words = [
+        "rust", "trust", "crust", "rusty", "ruse", "go", "golang", "",
+    ];
+
+    for a in words {
+        for b in words {
+            let exact = levenshtein(a, b);
+            let bounded = bounded_levenshtein(a, b, 2);
+            if exact <= 2 {
+                assert_eq!(bounded, Some(exact), "{a} vs {b}");
+            } else {
+                assert_eq!(bounded, None, "{a} vs {b}");
+            }
+        }
+    }
+}
+
+// ---- damerau ------------------------------------------------------------
