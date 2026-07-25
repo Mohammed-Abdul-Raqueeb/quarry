@@ -146,3 +146,10 @@ fn bounded_matches_unbounded_across_a_sample() {
 }
 
 // ---- damerau ------------------------------------------------------------
+
+#[test]
+fn damerau_counts_a_transposition_as_one() {
+    // Transposed letters are the most common typing error, so ranking them as
+    // one edit matches real typos better.
+    assert_eq!(damerau_levenshtein("teh", "the"), 1);
+}
