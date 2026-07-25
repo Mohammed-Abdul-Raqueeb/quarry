@@ -96,3 +96,8 @@ fn bounded_agrees_with_unbounded_when_within_budget() {
         assert_eq!(bounded_levenshtein(a, b, exact), Some(exact), "{a} vs {b}");
     }
 }
+
+#[test]
+fn bounded_gives_up_past_the_budget() {
+    assert_eq!(bounded_levenshtein("kitten", "sitting", 2), None);
+}
