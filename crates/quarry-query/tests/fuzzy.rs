@@ -108,3 +108,8 @@ fn bounded_rejects_on_a_length_difference_alone() {
     // scan.
     assert_eq!(bounded_levenshtein("a", "abcdef", 2), None);
 }
+
+#[test]
+fn bounded_handles_identical_strings() {
+    assert_eq!(bounded_levenshtein("rust", "rust", 0), Some(0));
+}
