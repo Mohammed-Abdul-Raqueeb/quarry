@@ -166,3 +166,12 @@ fn damerau_handles_empty_inputs() {
     assert_eq!(damerau_levenshtein("", "ab"), 2);
     assert_eq!(damerau_levenshtein("ab", ""), 2);
 }
+
+#[test]
+fn damerau_is_never_greater_than_levenshtein() {
+    for (a, b) in [("teh", "the"), ("kitten", "sitting"), ("ab", "ba")] {
+        assert!(damerau_levenshtein(a, b) <= levenshtein(a, b), "{a} vs {b}");
+    }
+}
+
+// ---- similarity ---------------------------------------------------------
