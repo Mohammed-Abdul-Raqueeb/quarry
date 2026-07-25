@@ -43,3 +43,9 @@ fn counts_an_insertion_as_one() {
 fn counts_a_deletion_as_one() {
     assert_eq!(levenshtein("cart", "cat"), 1);
 }
+
+#[test]
+fn counts_a_transposition_as_two() {
+    // Plain Levenshtein charges two substitutions; Damerau charges one.
+    assert_eq!(levenshtein("teh", "the"), 2);
+}
