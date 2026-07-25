@@ -101,3 +101,10 @@ fn bounded_agrees_with_unbounded_when_within_budget() {
 fn bounded_gives_up_past_the_budget() {
     assert_eq!(bounded_levenshtein("kitten", "sitting", 2), None);
 }
+
+#[test]
+fn bounded_rejects_on_a_length_difference_alone() {
+    // The cheapest possible rejection, and the common case in a dictionary
+    // scan.
+    assert_eq!(bounded_levenshtein("a", "abcdef", 2), None);
+}
