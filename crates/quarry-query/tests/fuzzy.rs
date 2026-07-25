@@ -71,3 +71,11 @@ fn distance_never_exceeds_the_longer_length() {
         assert!(levenshtein(a, b) <= bound);
     }
 }
+
+#[test]
+fn handles_multibyte_characters() {
+    // Measured in characters, not bytes: a byte-based count would report two
+    // edits for one changed accent.
+    assert_eq!(levenshtein("café", "cafe"), 1);
+    assert_eq!(levenshtein("日本", "日本"), 0);
+}
