@@ -113,3 +113,9 @@ fn bounded_rejects_on_a_length_difference_alone() {
 fn bounded_handles_identical_strings() {
     assert_eq!(bounded_levenshtein("rust", "rust", 0), Some(0));
 }
+
+#[test]
+fn bounded_handles_an_empty_input() {
+    assert_eq!(bounded_levenshtein("", "ab", 2), Some(2));
+    assert_eq!(bounded_levenshtein("", "abc", 2), None);
+}
