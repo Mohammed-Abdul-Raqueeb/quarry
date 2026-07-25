@@ -119,3 +119,9 @@ fn bounded_handles_an_empty_input() {
     assert_eq!(bounded_levenshtein("", "ab", 2), Some(2));
     assert_eq!(bounded_levenshtein("", "abc", 2), None);
 }
+
+#[test]
+fn bounded_with_a_zero_budget_demands_equality() {
+    assert_eq!(bounded_levenshtein("rust", "rust", 0), Some(0));
+    assert_eq!(bounded_levenshtein("rust", "rusty", 0), None);
+}
