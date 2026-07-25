@@ -159,3 +159,10 @@ fn damerau_agrees_with_levenshtein_without_transpositions() {
     assert_eq!(damerau_levenshtein("cat", "bat"), 1);
     assert_eq!(damerau_levenshtein("kitten", "sitting"), 3);
 }
+
+#[test]
+fn damerau_handles_empty_inputs() {
+    assert_eq!(damerau_levenshtein("", ""), 0);
+    assert_eq!(damerau_levenshtein("", "ab"), 2);
+    assert_eq!(damerau_levenshtein("ab", ""), 2);
+}
