@@ -63,3 +63,11 @@ fn distance_is_symmetric() {
         assert_eq!(levenshtein(a, b), levenshtein(b, a), "{a} vs {b}");
     }
 }
+
+#[test]
+fn distance_never_exceeds_the_longer_length() {
+    for (a, b) in [("abc", "xyz"), ("a", "abcdef"), ("rust", "go")] {
+        let bound = a.chars().count().max(b.chars().count());
+        assert!(levenshtein(a, b) <= bound);
+    }
+}
