@@ -38,3 +38,8 @@ fn counts_a_substitution_as_one() {
 fn counts_an_insertion_as_one() {
     assert_eq!(levenshtein("cat", "cart"), 1);
 }
+
+#[test]
+fn counts_a_deletion_as_one() {
+    assert_eq!(levenshtein("cart", "cat"), 1);
+}
