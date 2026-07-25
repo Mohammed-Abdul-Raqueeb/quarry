@@ -33,3 +33,8 @@ fn distance_from_empty_is_the_other_length() {
 fn counts_a_substitution_as_one() {
     assert_eq!(levenshtein("cat", "bat"), 1);
 }
+
+#[test]
+fn counts_an_insertion_as_one() {
+    assert_eq!(levenshtein("cat", "cart"), 1);
+}
