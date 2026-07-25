@@ -88,3 +88,11 @@ fn handles_a_long_pair_without_panicking() {
 }
 
 // ---- bounded levenshtein ------------------------------------------------
+
+#[test]
+fn bounded_agrees_with_unbounded_when_within_budget() {
+    for (a, b) in [("cat", "bat"), ("kitten", "sitting"), ("rust", "rust")] {
+        let exact = levenshtein(a, b);
+        assert_eq!(bounded_levenshtein(a, b, exact), Some(exact), "{a} vs {b}");
+    }
+}
