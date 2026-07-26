@@ -264,3 +264,14 @@ fn excludes_terms_beyond_the_budget() {
 
     assert!(!found.iter().any(|m| m.term == "python"));
 }
+
+#[test]
+fn a_required_prefix_narrows_the_scan() {
+    // Typos in the first letter are rare, and requiring a shared prefix turns
+    // a full dictionary scan into a range scan.
+    let candidates = ["rust", "bust", "must"];
+    let found = find_matches("rust", &candidates, 1, 1);
+
+    assert_eq!(found.len(), 1);
+    assert_eq!(found[0].term, "rust");
+}
