@@ -200,3 +200,13 @@ fn similarity_normalises_by_the_longer_string() {
 
     assert!(long > short);
 }
+
+#[test]
+fn similarity_stays_within_zero_and_one() {
+    for (a, b) in [("rust", "go"), ("", "abc"), ("same", "same")] {
+        let value = similarity(a, b);
+        assert!((0.0..=1.0).contains(&value), "{a} vs {b} gave {value}");
+    }
+}
+
+// ---- auto_distance ------------------------------------------------------
