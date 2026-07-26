@@ -286,3 +286,9 @@ fn a_zero_prefix_scans_everything() {
 fn finds_nothing_in_an_empty_dictionary() {
     assert!(find_matches("rust", &[], 2, 0).is_empty());
 }
+
+#[test]
+fn finds_nothing_when_no_term_is_close_enough() {
+    let candidates = ["elephant", "kubernetes"];
+    assert!(find_matches("rust", &candidates, 2, 0).is_empty());
+}
