@@ -238,3 +238,12 @@ fn auto_distance_never_exceeds_the_maximum() {
 }
 
 // ---- find_matches -------------------------------------------------------
+
+#[test]
+fn finds_dictionary_terms_within_the_budget() {
+    let candidates = ["rust", "trust", "crust", "python"];
+    let found = find_matches("rust", &candidates, 1, 0);
+
+    let terms: Vec<&str> = found.iter().map(|m| m.term.as_str()).collect();
+    assert_eq!(terms, ["rust", "crust", "trust"]);
+}
