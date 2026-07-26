@@ -210,3 +210,10 @@ fn similarity_stays_within_zero_and_one() {
 }
 
 // ---- auto_distance ------------------------------------------------------
+
+#[test]
+fn auto_distance_is_zero_for_a_very_short_term() {
+    // Two edits on a three-letter word matches almost everything.
+    assert_eq!(auto_distance(0), 0);
+    assert_eq!(auto_distance(2), 0);
+}
