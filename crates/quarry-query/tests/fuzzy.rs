@@ -327,3 +327,16 @@ fn simplify_collapses_a_single_child_or() {
         Query::term("a")
     );
 }
+
+#[test]
+fn simplify_flattens_nested_ands() {
+    let nested = Query::And(vec![
+        Query::term("a"),
+        Query::And(vec![Query::term("b"), Query::term("c")]),
+    ]);
+
+    assert_eq!(
+        nested.simplify(),
+        Query::And(vec![Query::term("a"), Query::term("b"), Query::term("c")])
+    );
+}
