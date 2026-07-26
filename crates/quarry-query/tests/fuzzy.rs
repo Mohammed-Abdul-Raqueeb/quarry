@@ -256,3 +256,11 @@ fn orders_matches_by_distance_then_alphabetically() {
     assert_eq!(found[0].distance, 0);
     assert_eq!(found[0].term, "rust");
 }
+
+#[test]
+fn excludes_terms_beyond_the_budget() {
+    let candidates = ["rust", "python"];
+    let found = find_matches("rust", &candidates, 1, 0);
+
+    assert!(!found.iter().any(|m| m.term == "python"));
+}
