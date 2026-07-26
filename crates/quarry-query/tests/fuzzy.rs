@@ -292,3 +292,12 @@ fn finds_nothing_when_no_term_is_close_enough() {
     let candidates = ["elephant", "kubernetes"];
     assert!(find_matches("rust", &candidates, 2, 0).is_empty());
 }
+
+#[test]
+fn a_zero_budget_finds_only_an_exact_match() {
+    let candidates = ["rust", "rusty"];
+    let found = find_matches("rust", &candidates, 0, 0);
+
+    assert_eq!(found.len(), 1);
+    assert_eq!(found[0].distance, 0);
+}
