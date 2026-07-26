@@ -180,3 +180,8 @@ fn damerau_is_never_greater_than_levenshtein() {
 fn similarity_of_identical_strings_is_one() {
     assert_eq!(similarity("rust", "rust"), 1.0);
 }
+
+#[test]
+fn similarity_of_empty_strings_is_one() {
+    assert_eq!(similarity("", ""), 1.0);
+}
