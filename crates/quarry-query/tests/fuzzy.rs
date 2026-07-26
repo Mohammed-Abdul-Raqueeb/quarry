@@ -223,3 +223,9 @@ fn auto_distance_is_one_for_a_short_term() {
     assert_eq!(auto_distance(3), 1);
     assert_eq!(auto_distance(5), 1);
 }
+
+#[test]
+fn auto_distance_is_two_for_a_longer_term() {
+    assert_eq!(auto_distance(6), 2);
+    assert_eq!(auto_distance(20), 2);
+}
