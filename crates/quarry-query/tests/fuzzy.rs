@@ -311,3 +311,11 @@ fn matches_report_their_distance() {
 }
 
 // ---- AST simplification -------------------------------------------------
+
+#[test]
+fn simplify_collapses_a_single_child_and() {
+    assert_eq!(
+        Query::And(vec![Query::term("a")]).simplify(),
+        Query::term("a")
+    );
+}
