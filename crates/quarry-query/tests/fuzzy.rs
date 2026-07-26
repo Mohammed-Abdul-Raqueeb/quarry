@@ -319,3 +319,11 @@ fn simplify_collapses_a_single_child_and() {
         Query::term("a")
     );
 }
+
+#[test]
+fn simplify_collapses_a_single_child_or() {
+    assert_eq!(
+        Query::Or(vec![Query::term("a")]).simplify(),
+        Query::term("a")
+    );
+}
