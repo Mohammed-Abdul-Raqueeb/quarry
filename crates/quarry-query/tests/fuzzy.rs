@@ -275,3 +275,9 @@ fn a_required_prefix_narrows_the_scan() {
     assert_eq!(found.len(), 1);
     assert_eq!(found[0].term, "rust");
 }
+
+#[test]
+fn a_zero_prefix_scans_everything() {
+    let candidates = ["rust", "bust", "must"];
+    assert_eq!(find_matches("rust", &candidates, 1, 0).len(), 3);
+}
