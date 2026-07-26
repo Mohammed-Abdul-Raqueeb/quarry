@@ -185,3 +185,8 @@ fn similarity_of_identical_strings_is_one() {
 fn similarity_of_empty_strings_is_one() {
     assert_eq!(similarity("", ""), 1.0);
 }
+
+#[test]
+fn similarity_falls_as_distance_grows() {
+    assert!(similarity("rust", "rusty") > similarity("rust", "python"));
+}
