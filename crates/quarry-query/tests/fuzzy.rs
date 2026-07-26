@@ -301,3 +301,13 @@ fn a_zero_budget_finds_only_an_exact_match() {
     assert_eq!(found.len(), 1);
     assert_eq!(found[0].distance, 0);
 }
+
+#[test]
+fn matches_report_their_distance() {
+    let candidates = ["trust"];
+    let found = find_matches("rust", &candidates, 1, 0);
+
+    assert_eq!(found[0].distance, 1);
+}
+
+// ---- AST simplification -------------------------------------------------
