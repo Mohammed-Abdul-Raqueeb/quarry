@@ -229,3 +229,12 @@ fn auto_distance_is_two_for_a_longer_term() {
     assert_eq!(auto_distance(6), 2);
     assert_eq!(auto_distance(20), 2);
 }
+
+#[test]
+fn auto_distance_never_exceeds_the_maximum() {
+    for length in 0..100 {
+        assert!(auto_distance(length) <= MAX_DISTANCE);
+    }
+}
+
+// ---- find_matches -------------------------------------------------------
