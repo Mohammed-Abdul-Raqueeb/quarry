@@ -247,3 +247,12 @@ fn finds_dictionary_terms_within_the_budget() {
     let terms: Vec<&str> = found.iter().map(|m| m.term.as_str()).collect();
     assert_eq!(terms, ["rust", "crust", "trust"]);
 }
+
+#[test]
+fn orders_matches_by_distance_then_alphabetically() {
+    let candidates = ["trust", "rust", "crust"];
+    let found = find_matches("rust", &candidates, 1, 0);
+
+    assert_eq!(found[0].distance, 0);
+    assert_eq!(found[0].term, "rust");
+}
