@@ -281,3 +281,8 @@ fn a_zero_prefix_scans_everything() {
     let candidates = ["rust", "bust", "must"];
     assert_eq!(find_matches("rust", &candidates, 1, 0).len(), 3);
 }
+
+#[test]
+fn finds_nothing_in_an_empty_dictionary() {
+    assert!(find_matches("rust", &[], 2, 0).is_empty());
+}
