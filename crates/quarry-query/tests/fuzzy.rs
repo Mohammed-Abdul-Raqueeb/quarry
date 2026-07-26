@@ -190,3 +190,13 @@ fn similarity_of_empty_strings_is_one() {
 fn similarity_falls_as_distance_grows() {
     assert!(similarity("rust", "rusty") > similarity("rust", "python"));
 }
+
+#[test]
+fn similarity_normalises_by_the_longer_string() {
+    // One edit in a short word matters more than one in a long word, and the
+    // raw distance hides that.
+    let short = similarity("ab", "ac");
+    let long = similarity("abcdefghij", "abcdefghik");
+
+    assert!(long > short);
+}
