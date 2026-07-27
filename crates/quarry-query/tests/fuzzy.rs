@@ -484,3 +484,15 @@ fn renders_a_range() {
     };
     assert_eq!(range.to_string(), "year:[2000 TO 2020}");
 }
+
+#[test]
+fn renders_an_unbounded_range_end_as_a_star() {
+    let range = Query::Range {
+        field: "year".to_string(),
+        lower: None,
+        upper: Some(2020.0),
+        include_lower: true,
+        include_upper: true,
+    };
+    assert_eq!(range.to_string(), "year:[* TO 2020]");
+}
