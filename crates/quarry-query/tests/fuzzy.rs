@@ -409,3 +409,17 @@ fn a_real_boost_is_kept() {
         Query::Boost { .. }
     ));
 }
+
+#[test]
+fn simplify_is_idempotent() {
+    let query = Query::And(vec![
+        Query::term("a"),
+        Query::Or(vec![Query::term("b")]),
+        Query::MatchAll,
+    ]);
+
+    let once = query.simplify();
+    assert_eq!(once.clone().simplify(), once);
+}
+
+// ---- AST display --------------------------------------------------------
