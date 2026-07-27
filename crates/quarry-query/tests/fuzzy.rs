@@ -401,3 +401,11 @@ fn negating_match_none_gives_match_all() {
 fn a_boost_of_one_is_removed() {
     assert_eq!(Query::term("a").boost(1.0).simplify(), Query::term("a"));
 }
+
+#[test]
+fn a_real_boost_is_kept() {
+    assert!(matches!(
+        Query::term("a").boost(2.0).simplify(),
+        Query::Boost { .. }
+    ));
+}
