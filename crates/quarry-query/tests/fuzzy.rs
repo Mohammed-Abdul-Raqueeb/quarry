@@ -472,3 +472,15 @@ fn renders_a_prefix() {
     };
     assert_eq!(prefix.to_string(), "own*");
 }
+
+#[test]
+fn renders_a_range() {
+    let range = Query::Range {
+        field: "year".to_string(),
+        lower: Some(2000.0),
+        upper: Some(2020.0),
+        include_lower: true,
+        include_upper: false,
+    };
+    assert_eq!(range.to_string(), "year:[2000 TO 2020}");
+}
