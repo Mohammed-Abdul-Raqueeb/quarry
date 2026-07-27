@@ -340,3 +340,13 @@ fn simplify_flattens_nested_ands() {
         Query::And(vec![Query::term("a"), Query::term("b"), Query::term("c")])
     );
 }
+
+#[test]
+fn simplify_flattens_nested_ors() {
+    let nested = Query::Or(vec![Query::term("a"), Query::Or(vec![Query::term("b")])]);
+
+    assert_eq!(
+        nested.simplify(),
+        Query::Or(vec![Query::term("a"), Query::term("b")])
+    );
+}
