@@ -362,3 +362,9 @@ fn anything_or_everything_is_everything() {
     let query = Query::Or(vec![Query::term("a"), Query::MatchAll]);
     assert_eq!(query.simplify(), Query::MatchAll);
 }
+
+#[test]
+fn match_all_adds_no_constraint_to_an_and() {
+    let query = Query::And(vec![Query::term("a"), Query::MatchAll]);
+    assert_eq!(query.simplify(), Query::term("a"));
+}
