@@ -423,3 +423,8 @@ fn simplify_is_idempotent() {
 }
 
 // ---- AST display --------------------------------------------------------
+
+#[test]
+fn renders_a_term() {
+    assert_eq!(Query::term("rust").to_string(), "rust");
+}
