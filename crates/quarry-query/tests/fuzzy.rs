@@ -433,3 +433,13 @@ fn renders_a_term() {
 fn renders_a_field_scoped_term() {
     assert_eq!(Query::field_term("title", "rust").to_string(), "title:rust");
 }
+
+#[test]
+fn renders_a_phrase() {
+    let phrase = Query::Phrase {
+        field: None,
+        terms: vec!["zero".to_string(), "cost".to_string()],
+        slop: 0,
+    };
+    assert_eq!(phrase.to_string(), "\"zero cost\"");
+}
