@@ -463,3 +463,12 @@ fn renders_a_fuzzy_term() {
     };
     assert_eq!(fuzzy.to_string(), "rust~1");
 }
+
+#[test]
+fn renders_a_prefix() {
+    let prefix = Query::Prefix {
+        field: None,
+        text: "own".to_string(),
+    };
+    assert_eq!(prefix.to_string(), "own*");
+}
