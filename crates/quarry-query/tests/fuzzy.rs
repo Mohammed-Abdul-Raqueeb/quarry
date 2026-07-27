@@ -453,3 +453,13 @@ fn renders_a_phrase_with_slop() {
     };
     assert_eq!(phrase.to_string(), "\"a b\"~2");
 }
+
+#[test]
+fn renders_a_fuzzy_term() {
+    let fuzzy = Query::Fuzzy {
+        field: None,
+        text: "rust".to_string(),
+        distance: 1,
+    };
+    assert_eq!(fuzzy.to_string(), "rust~1");
+}
