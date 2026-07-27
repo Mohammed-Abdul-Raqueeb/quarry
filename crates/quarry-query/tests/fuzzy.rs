@@ -443,3 +443,13 @@ fn renders_a_phrase() {
     };
     assert_eq!(phrase.to_string(), "\"zero cost\"");
 }
+
+#[test]
+fn renders_a_phrase_with_slop() {
+    let phrase = Query::Phrase {
+        field: None,
+        terms: vec!["a".to_string(), "b".to_string()],
+        slop: 2,
+    };
+    assert_eq!(phrase.to_string(), "\"a b\"~2");
+}
