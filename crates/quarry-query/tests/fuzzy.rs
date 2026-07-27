@@ -396,3 +396,8 @@ fn negating_match_none_gives_match_all() {
     assert_eq!(Query::MatchNone.negate().simplify(), Query::MatchAll);
     assert_eq!(Query::MatchAll.negate().simplify(), Query::MatchNone);
 }
+
+#[test]
+fn a_boost_of_one_is_removed() {
+    assert_eq!(Query::term("a").boost(1.0).simplify(), Query::term("a"));
+}
