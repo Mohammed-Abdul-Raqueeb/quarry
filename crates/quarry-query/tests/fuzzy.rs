@@ -390,3 +390,9 @@ fn double_negation_cancels() {
     let query = Query::term("a").negate().negate();
     assert_eq!(query.simplify(), Query::term("a"));
 }
+
+#[test]
+fn negating_match_none_gives_match_all() {
+    assert_eq!(Query::MatchNone.negate().simplify(), Query::MatchAll);
+    assert_eq!(Query::MatchAll.negate().simplify(), Query::MatchNone);
+}
