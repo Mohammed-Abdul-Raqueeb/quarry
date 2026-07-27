@@ -374,3 +374,8 @@ fn match_none_contributes_nothing_to_an_or() {
     let query = Query::Or(vec![Query::term("a"), Query::MatchNone]);
     assert_eq!(query.simplify(), Query::term("a"));
 }
+
+#[test]
+fn an_empty_and_matches_everything() {
+    assert_eq!(Query::And(vec![]).simplify(), Query::MatchAll);
+}
