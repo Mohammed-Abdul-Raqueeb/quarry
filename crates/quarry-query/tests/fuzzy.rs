@@ -428,3 +428,8 @@ fn simplify_is_idempotent() {
 fn renders_a_term() {
     assert_eq!(Query::term("rust").to_string(), "rust");
 }
+
+#[test]
+fn renders_a_field_scoped_term() {
+    assert_eq!(Query::field_term("title", "rust").to_string(), "title:rust");
+}
