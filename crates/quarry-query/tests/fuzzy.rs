@@ -368,3 +368,9 @@ fn match_all_adds_no_constraint_to_an_and() {
     let query = Query::And(vec![Query::term("a"), Query::MatchAll]);
     assert_eq!(query.simplify(), Query::term("a"));
 }
+
+#[test]
+fn match_none_contributes_nothing_to_an_or() {
+    let query = Query::Or(vec![Query::term("a"), Query::MatchNone]);
+    assert_eq!(query.simplify(), Query::term("a"));
+}
