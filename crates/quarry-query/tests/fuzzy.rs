@@ -384,3 +384,9 @@ fn an_empty_and_matches_everything() {
 fn an_empty_or_matches_nothing() {
     assert_eq!(Query::Or(vec![]).simplify(), Query::MatchNone);
 }
+
+#[test]
+fn double_negation_cancels() {
+    let query = Query::term("a").negate().negate();
+    assert_eq!(query.simplify(), Query::term("a"));
+}
