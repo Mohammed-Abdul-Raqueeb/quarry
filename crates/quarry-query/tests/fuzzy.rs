@@ -379,3 +379,8 @@ fn match_none_contributes_nothing_to_an_or() {
 fn an_empty_and_matches_everything() {
     assert_eq!(Query::And(vec![]).simplify(), Query::MatchAll);
 }
+
+#[test]
+fn an_empty_or_matches_nothing() {
+    assert_eq!(Query::Or(vec![]).simplify(), Query::MatchNone);
+}
