@@ -350,3 +350,9 @@ fn simplify_flattens_nested_ors() {
         Query::Or(vec![Query::term("a"), Query::term("b")])
     );
 }
+
+#[test]
+fn anything_and_nothing_is_nothing() {
+    let query = Query::And(vec![Query::term("a"), Query::MatchNone]);
+    assert_eq!(query.simplify(), Query::MatchNone);
+}
