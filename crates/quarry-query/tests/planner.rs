@@ -12,3 +12,17 @@ use quarry_core::{Document, IndexWriter, Value};
 use quarry_query::planner::MAX_EXPANSIONS;
 use quarry_query::{parse, plan, PlanContext, QueryError};
 use std::sync::OnceLock;
+
+/// Shared schema, held in a `OnceLock` so `PlanContext` can borrow it.
+fn schema() -> &'static Schema {
+    static SCHEMA: OnceLock<Schema> = OnceLock::new();
+    SCHEMA.get_or_init(|| {
+        Schema::builder()
+            .text("title")
+            .and_then(|b| b.text("body"))
+            .and_then(|b| b.keyword("tag"))
+            .and_then(|b| b.numeric("year"))
+            .and_then(SchemaBuilder::build)
+            .expect("schema should build")
+    })
+}
