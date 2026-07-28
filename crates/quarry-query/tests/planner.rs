@@ -159,3 +159,12 @@ fn a_dropped_stopword_is_reported_as_a_note() {
 }
 
 // ---- boolean placement --------------------------------------------------
+
+#[test]
+fn an_and_makes_its_clauses_required() {
+    let segments = segments();
+    let plan = planned("title:rust AND title:ownership", &segments);
+
+    assert_eq!(plan.query.must.len(), 2);
+    assert!(plan.query.should.is_empty());
+}
