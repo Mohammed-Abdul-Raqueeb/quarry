@@ -49,3 +49,14 @@ fn segments() -> Vec<Segment> {
 
     writer.flush().map(|s| vec![s]).unwrap_or_default()
 }
+
+/// Plans `input`, panicking with the reason if it cannot be planned.
+fn planned(input: &str, segments: &[Segment]) -> quarry_query::Plan {
+    let ctx = PlanContext {
+        schema: schema(),
+        analyzer: analyzer(),
+        segments,
+    };
+    let ast = parse(input).unwrap_or_else(|err| panic!("{input:?} should parse: {err}"));
+    plan(&ast, &ctx).unwrap_or_else(|err| panic!("{input:?} should plan: {err}"))
+}
