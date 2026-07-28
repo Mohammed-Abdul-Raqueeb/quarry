@@ -496,3 +496,9 @@ fn renders_an_unbounded_range_end_as_a_star() {
     };
     assert_eq!(range.to_string(), "year:[* TO 2020]");
 }
+
+#[test]
+fn renders_boolean_structure_with_parentheses() {
+    let query = Query::And(vec![Query::term("a"), Query::term("b")]);
+    assert_eq!(query.to_string(), "(a AND b)");
+}
