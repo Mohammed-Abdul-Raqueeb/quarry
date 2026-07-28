@@ -81,3 +81,12 @@ fn a_field_scoped_term_resolves_to_that_field() {
     assert_eq!(plan.query.should.len(), 1);
     assert_eq!(plan.query.should[0].field, 0);
 }
+
+#[test]
+fn a_bare_term_expands_across_the_default_fields() {
+    let segments = segments();
+    let plan = planned("rust", &segments);
+
+    // Title and body, but not the keyword or numeric fields.
+    assert_eq!(plan.query.should.len(), 2);
+}
