@@ -60,3 +60,15 @@ fn planned(input: &str, segments: &[Segment]) -> quarry_query::Plan {
     let ast = parse(input).unwrap_or_else(|err| panic!("{input:?} should parse: {err}"));
     plan(&ast, &ctx).unwrap_or_else(|err| panic!("{input:?} should plan: {err}"))
 }
+
+fn plan_error(input: &str, segments: &[Segment]) -> QueryError {
+    let ctx = PlanContext {
+        schema: schema(),
+        analyzer: analyzer(),
+        segments,
+    };
+    let ast = parse(input).expect("should parse");
+    plan(&ast, &ctx).expect_err("should have failed to plan")
+}
+
+// ---- field resolution ---------------------------------------------------
