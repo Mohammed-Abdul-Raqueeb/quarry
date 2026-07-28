@@ -513,3 +513,28 @@ fn renders_match_all_and_match_none() {
     assert_eq!(Query::MatchAll.to_string(), "*:*");
     assert_eq!(Query::MatchNone.to_string(), "(none)");
 }
+
+#[test]
+fn rendered_queries_parse_back() {
+    // Round-tripping is what keeps the parser and the renderer honest about
+    // each other.
+    for input in [
+        "rust",
+        "title:rust",
+        "(a AND b)",
+        "(a OR b)",
+        "NOT a",
+        "\"zero cost\"",
+        "rust~1",
+        "own*",
+    ] {
+        let once = quarry_query::parse(input)
+            .expect("should parse")
+            .to_string();
+        let twice = quarry_query::parse(&once)
+            .expect("rendered form should parse")
+            .to_string();
+
+        assert_eq!(once, twice, "{input} did not round trip");
+    }
+}
