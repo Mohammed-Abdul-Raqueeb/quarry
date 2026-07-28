@@ -130,3 +130,11 @@ fn a_query_term_is_analyzed_the_way_documents_were() {
 
     assert_eq!(plan.query.should[0].term, "borrow");
 }
+
+#[test]
+fn a_keyword_field_term_is_lowercased_but_not_stemmed() {
+    let segments = segments();
+    let plan = planned("tag:RUST", &segments);
+
+    assert_eq!(plan.query.should[0].term, "rust");
+}
