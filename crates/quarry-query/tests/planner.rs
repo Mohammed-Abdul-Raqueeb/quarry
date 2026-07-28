@@ -121,3 +121,12 @@ fn an_unrelated_field_name_gets_no_suggestion() {
 }
 
 // ---- analysis -----------------------------------------------------------
+
+#[test]
+fn a_query_term_is_analyzed_the_way_documents_were() {
+    // Without this, a search for `Running` cannot find the indexed `run`.
+    let segments = segments();
+    let plan = planned("title:BORROWING", &segments);
+
+    assert_eq!(plan.query.should[0].term, "borrow");
+}
