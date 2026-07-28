@@ -138,3 +138,10 @@ fn a_keyword_field_term_is_lowercased_but_not_stemmed() {
 
     assert_eq!(plan.query.should[0].term, "rust");
 }
+
+#[test]
+fn a_stopword_only_query_is_rejected_rather_than_returning_nothing() {
+    // Returning zero results with no reason is the confusing alternative.
+    let segments = segments();
+    assert_eq!(plan_error("the", &segments), QueryError::Empty);
+}
