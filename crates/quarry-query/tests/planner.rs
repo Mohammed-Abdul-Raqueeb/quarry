@@ -109,3 +109,15 @@ fn an_unknown_field_error_suggests_the_closest_name() {
     assert!(message.contains("did you mean"), "message was: {message}");
     assert!(message.contains("title"), "message was: {message}");
 }
+
+#[test]
+fn an_unrelated_field_name_gets_no_suggestion() {
+    // Suggesting a field that merely shares a letter sends the user the wrong
+    // way, which is worse than suggesting nothing.
+    let segments = segments();
+    let message = plan_error("kubernetes:rust", &segments).to_string();
+
+    assert!(!message.contains("did you mean"), "message was: {message}");
+}
+
+// ---- analysis -----------------------------------------------------------
