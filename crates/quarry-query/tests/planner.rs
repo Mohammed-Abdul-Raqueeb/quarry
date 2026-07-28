@@ -72,3 +72,12 @@ fn plan_error(input: &str, segments: &[Segment]) -> QueryError {
 }
 
 // ---- field resolution ---------------------------------------------------
+
+#[test]
+fn a_field_scoped_term_resolves_to_that_field() {
+    let segments = segments();
+    let plan = planned("title:rust", &segments);
+
+    assert_eq!(plan.query.should.len(), 1);
+    assert_eq!(plan.query.should[0].field, 0);
+}
