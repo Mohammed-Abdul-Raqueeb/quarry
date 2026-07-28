@@ -31,3 +31,21 @@ fn analyzer() -> &'static Analyzer {
     static ANALYZER: OnceLock<Analyzer> = OnceLock::new();
     ANALYZER.get_or_init(Analyzer::english)
 }
+
+fn segments() -> Vec<Segment> {
+    let mut writer = IndexWriter::new(schema().clone());
+
+    for (title, body, tag) in [
+        ("Rust ownership", "borrowing and the borrow checker", "rust"),
+        ("Zero cost abstractions", "iterators compile away", "rust"),
+        ("Python typing", "gradual annotations", "python"),
+    ] {
+        let mut doc = Document::new();
+        doc.add(0, Value::Text(title.to_string()));
+        doc.add(1, Value::Text(body.to_string()));
+        doc.add(2, Value::Keyword(tag.to_string()));
+        writer.add(&doc).expect("should index");
+    }
+
+    writer.flush().map(|s| vec![s]).unwrap_or_default()
+}
