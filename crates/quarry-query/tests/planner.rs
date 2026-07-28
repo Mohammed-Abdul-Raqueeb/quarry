@@ -145,3 +145,17 @@ fn a_stopword_only_query_is_rejected_rather_than_returning_nothing() {
     let segments = segments();
     assert_eq!(plan_error("the", &segments), QueryError::Empty);
 }
+
+#[test]
+fn a_dropped_stopword_is_reported_as_a_note() {
+    let segments = segments();
+    let plan = planned("the AND rust", &segments);
+
+    assert!(
+        plan.notes.iter().any(|n| n.contains("analyzed to nothing")),
+        "notes were {:?}",
+        plan.notes
+    );
+}
+
+// ---- boolean placement --------------------------------------------------
