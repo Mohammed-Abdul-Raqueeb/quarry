@@ -26,3 +26,8 @@ fn schema() -> &'static Schema {
             .expect("schema should build")
     })
 }
+
+fn analyzer() -> &'static Analyzer {
+    static ANALYZER: OnceLock<Analyzer> = OnceLock::new();
+    ANALYZER.get_or_init(Analyzer::english)
+}
