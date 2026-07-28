@@ -90,3 +90,12 @@ fn a_bare_term_expands_across_the_default_fields() {
     // Title and body, but not the keyword or numeric fields.
     assert_eq!(plan.query.should.len(), 2);
 }
+
+#[test]
+fn an_unknown_field_is_an_error() {
+    let segments = segments();
+    assert!(matches!(
+        plan_error("nope:rust", &segments),
+        QueryError::UnknownField { .. }
+    ));
+}
