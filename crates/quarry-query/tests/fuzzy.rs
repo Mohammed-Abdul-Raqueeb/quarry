@@ -502,3 +502,8 @@ fn renders_boolean_structure_with_parentheses() {
     let query = Query::And(vec![Query::term("a"), Query::term("b")]);
     assert_eq!(query.to_string(), "(a AND b)");
 }
+
+#[test]
+fn renders_a_negation() {
+    assert_eq!(Query::term("a").negate().to_string(), "NOT a");
+}
