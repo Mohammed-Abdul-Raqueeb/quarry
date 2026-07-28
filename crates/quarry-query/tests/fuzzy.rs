@@ -507,3 +507,9 @@ fn renders_boolean_structure_with_parentheses() {
 fn renders_a_negation() {
     assert_eq!(Query::term("a").negate().to_string(), "NOT a");
 }
+
+#[test]
+fn renders_match_all_and_match_none() {
+    assert_eq!(Query::MatchAll.to_string(), "*:*");
+    assert_eq!(Query::MatchNone.to_string(), "(none)");
+}
