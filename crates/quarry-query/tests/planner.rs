@@ -99,3 +99,13 @@ fn an_unknown_field_is_an_error() {
         QueryError::UnknownField { .. }
     ));
 }
+
+#[test]
+fn an_unknown_field_error_suggests_the_closest_name() {
+    // A typo should be a one-step fix, not a hunt through the schema.
+    let segments = segments();
+    let message = plan_error("titel:rust", &segments).to_string();
+
+    assert!(message.contains("did you mean"), "message was: {message}");
+    assert!(message.contains("title"), "message was: {message}");
+}
