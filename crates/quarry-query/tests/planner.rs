@@ -206,3 +206,12 @@ fn a_required_single_field_term_stays_an_ordinary_must() {
 
     assert!(plan.query.must_any.is_empty());
 }
+
+#[test]
+fn an_optional_multi_field_term_spreads_across_should() {
+    let segments = segments();
+    let plan = planned("rust OR python", &segments);
+
+    assert_eq!(plan.query.should.len(), 4);
+    assert!(plan.query.must_any.is_empty());
+}
