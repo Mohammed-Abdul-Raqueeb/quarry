@@ -308,3 +308,12 @@ fn a_prefix_expands_to_real_dictionary_terms() {
     assert!(!plan.query.should.is_empty());
     assert!(plan.query.should.iter().all(|t| t.term.starts_with("own")));
 }
+
+#[test]
+fn an_unmatched_prefix_is_reported_as_a_note() {
+    let segments = segments();
+    let plan = planned("title:kuber*", &segments);
+
+    assert!(plan.query.should.is_empty());
+    assert!(plan.notes.iter().any(|n| n.contains("no terms start with")));
+}
