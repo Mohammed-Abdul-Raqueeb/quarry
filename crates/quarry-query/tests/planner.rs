@@ -177,3 +177,12 @@ fn an_or_leaves_its_clauses_optional() {
     assert_eq!(plan.query.should.len(), 2);
     assert!(plan.query.must.is_empty());
 }
+
+#[test]
+fn a_negation_becomes_a_must_not_clause() {
+    let segments = segments();
+    let plan = planned("title:rust AND NOT title:python", &segments);
+
+    assert_eq!(plan.query.must.len(), 1);
+    assert_eq!(plan.query.must_not.len(), 1);
+}
