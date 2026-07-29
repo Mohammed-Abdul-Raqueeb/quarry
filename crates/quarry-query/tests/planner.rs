@@ -215,3 +215,12 @@ fn an_optional_multi_field_term_spreads_across_should() {
     assert_eq!(plan.query.should.len(), 4);
     assert!(plan.query.must_any.is_empty());
 }
+
+#[test]
+fn a_bare_disjunction_requires_at_least_one_match() {
+    // Otherwise an implicit OR degenerates into matching every document.
+    let segments = segments();
+    let plan = planned("rust python", &segments);
+
+    assert_eq!(plan.query.minimum_should_match, 1);
+}
