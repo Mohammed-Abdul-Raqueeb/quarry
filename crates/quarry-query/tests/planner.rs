@@ -168,3 +168,12 @@ fn an_and_makes_its_clauses_required() {
     assert_eq!(plan.query.must.len(), 2);
     assert!(plan.query.should.is_empty());
 }
+
+#[test]
+fn an_or_leaves_its_clauses_optional() {
+    let segments = segments();
+    let plan = planned("title:rust OR title:python", &segments);
+
+    assert_eq!(plan.query.should.len(), 2);
+    assert!(plan.query.must.is_empty());
+}
