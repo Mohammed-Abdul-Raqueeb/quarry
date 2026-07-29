@@ -198,3 +198,11 @@ fn a_required_multi_field_term_becomes_one_disjunctive_group() {
     assert!(plan.query.must.is_empty());
     assert_eq!(plan.query.must_any[0].len(), 2);
 }
+
+#[test]
+fn a_required_single_field_term_stays_an_ordinary_must() {
+    let segments = segments();
+    let plan = planned("title:rust AND title:ownership", &segments);
+
+    assert!(plan.query.must_any.is_empty());
+}
