@@ -348,3 +348,11 @@ fn a_truncated_prefix_expansion_is_reported() {
 }
 
 // ---- fuzzy expansion ----------------------------------------------------
+
+#[test]
+fn a_fuzzy_term_expands_to_nearby_dictionary_terms() {
+    let segments = segments();
+    let plan = planned("title:rust~1", &segments);
+
+    assert!(plan.query.should.iter().any(|t| t.term == "rust"));
+}
