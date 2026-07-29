@@ -332,3 +332,19 @@ fn prefix_expansion_is_capped() {
     let plan = planned("title:prefix*", &segments);
     assert!(plan.query.should.len() <= MAX_EXPANSIONS);
 }
+
+#[test]
+fn a_truncated_prefix_expansion_is_reported() {
+    let mut writer = IndexWriter::new(schema().clone());
+    for i in 0..(MAX_EXPANSIONS * 2) {
+        let mut doc = Document::new();
+        doc.add(0, Value::Text(format!("prefix{i:04}")));
+        writer.add(&doc).expect("should index");
+    }
+    let segments = writer.flush().map(|s| vec![s]).unwrap_or_default();
+
+    let plan = planned("title:prefix*", &segments);
+    assert!(plan.notes.iter().any(|n| n.contains("truncated")));
+}
+
+// ---- fuzzy expansion ----------------------------------------------------
