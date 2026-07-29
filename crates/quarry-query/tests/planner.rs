@@ -250,3 +250,13 @@ fn a_boost_on_a_group_reaches_every_leaf() {
 
     assert!(plan.query.should.iter().all(|t| t.boost == 2.0));
 }
+
+#[test]
+fn nested_boosts_multiply() {
+    let segments = segments();
+    let plan = planned("((title:rust)^2)^3", &segments);
+
+    assert_eq!(plan.query.should[0].boost, 6.0);
+}
+
+// ---- phrases ------------------------------------------------------------
