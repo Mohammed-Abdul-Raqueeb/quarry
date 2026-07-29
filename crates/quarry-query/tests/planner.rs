@@ -299,3 +299,12 @@ fn a_phrase_whose_terms_mostly_analyze_away_falls_back_to_terms() {
 }
 
 // ---- prefix expansion ---------------------------------------------------
+
+#[test]
+fn a_prefix_expands_to_real_dictionary_terms() {
+    let segments = segments();
+    let plan = planned("title:own*", &segments);
+
+    assert!(!plan.query.should.is_empty());
+    assert!(plan.query.should.iter().all(|t| t.term.starts_with("own")));
+}
