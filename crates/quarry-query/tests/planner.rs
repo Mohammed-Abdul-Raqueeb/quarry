@@ -242,3 +242,11 @@ fn a_boost_reaches_the_term_query() {
 
     assert_eq!(plan.query.should[0].boost, 3.0);
 }
+
+#[test]
+fn a_boost_on_a_group_reaches_every_leaf() {
+    let segments = segments();
+    let plan = planned("(title:rust OR title:python)^2", &segments);
+
+    assert!(plan.query.should.iter().all(|t| t.boost == 2.0));
+}
