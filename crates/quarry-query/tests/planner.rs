@@ -277,3 +277,12 @@ fn a_phrase_keeps_its_slop() {
 
     assert_eq!(plan.query.phrases[0].slop, 3);
 }
+
+#[test]
+fn a_phrase_on_a_field_without_positions_is_an_error() {
+    let segments = segments();
+    assert!(matches!(
+        plan_error("tag:\"a b\"", &segments),
+        QueryError::NoPositions { .. }
+    ));
+}
