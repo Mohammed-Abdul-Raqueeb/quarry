@@ -234,3 +234,11 @@ fn a_query_with_required_clauses_sets_no_should_minimum() {
 }
 
 // ---- boosts -------------------------------------------------------------
+
+#[test]
+fn a_boost_reaches_the_term_query() {
+    let segments = segments();
+    let plan = planned("title:rust^3", &segments);
+
+    assert_eq!(plan.query.should[0].boost, 3.0);
+}
