@@ -224,3 +224,13 @@ fn a_bare_disjunction_requires_at_least_one_match() {
 
     assert_eq!(plan.query.minimum_should_match, 1);
 }
+
+#[test]
+fn a_query_with_required_clauses_sets_no_should_minimum() {
+    let segments = segments();
+    let plan = planned("title:rust AND title:ownership", &segments);
+
+    assert_eq!(plan.query.minimum_should_match, 0);
+}
+
+// ---- boosts -------------------------------------------------------------
