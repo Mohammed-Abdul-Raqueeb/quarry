@@ -317,3 +317,18 @@ fn an_unmatched_prefix_is_reported_as_a_note() {
     assert!(plan.query.should.is_empty());
     assert!(plan.notes.iter().any(|n| n.contains("no terms start with")));
 }
+
+#[test]
+fn prefix_expansion_is_capped() {
+    // One character of input must not become thousands of clauses.
+    let mut writer = IndexWriter::new(schema().clone());
+    for i in 0..(MAX_EXPANSIONS * 2) {
+        let mut doc = Document::new();
+        doc.add(0, Value::Text(format!("prefix{i:04}")));
+        writer.add(&doc).expect("should index");
+    }
+    let segments = writer.flush().map(|s| vec![s]).unwrap_or_default();
+
+    let plan = planned("title:prefix*", &segments);
+    assert!(plan.query.should.len() <= MAX_EXPANSIONS);
+}
