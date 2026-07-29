@@ -269,3 +269,11 @@ fn a_phrase_becomes_a_phrase_clause() {
     assert_eq!(plan.query.phrases.len(), 1);
     assert_eq!(plan.query.phrases[0].terms.len(), 2);
 }
+
+#[test]
+fn a_phrase_keeps_its_slop() {
+    let segments = segments();
+    let plan = planned("title:\"zero cost\"~3", &segments);
+
+    assert_eq!(plan.query.phrases[0].slop, 3);
+}
