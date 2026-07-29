@@ -186,3 +186,15 @@ fn a_negation_becomes_a_must_not_clause() {
     assert_eq!(plan.query.must.len(), 1);
     assert_eq!(plan.query.must_not.len(), 1);
 }
+
+#[test]
+fn a_required_multi_field_term_becomes_one_disjunctive_group() {
+    // The word must appear in one of title or body, not in both. Pushing each
+    // expansion as its own `must` is the bug this guards against.
+    let segments = segments();
+    let plan = planned("rust AND ownership", &segments);
+
+    assert_eq!(plan.query.must_any.len(), 2);
+    assert!(plan.query.must.is_empty());
+    assert_eq!(plan.query.must_any[0].len(), 2);
+}
