@@ -286,3 +286,16 @@ fn a_phrase_on_a_field_without_positions_is_an_error() {
         QueryError::NoPositions { .. }
     ));
 }
+
+#[test]
+fn a_phrase_whose_terms_mostly_analyze_away_falls_back_to_terms() {
+    // `and` is a stopword, so only one term survives; demanding a phrase of
+    // one term would need positions for no benefit.
+    let segments = segments();
+    let plan = planned("title:\"the rust\"", &segments);
+
+    assert!(plan.query.phrases.is_empty());
+    assert!(!plan.notes.is_empty());
+}
+
+// ---- prefix expansion ---------------------------------------------------
