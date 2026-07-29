@@ -356,3 +356,12 @@ fn a_fuzzy_term_expands_to_nearby_dictionary_terms() {
 
     assert!(plan.query.should.iter().any(|t| t.term == "rust"));
 }
+
+#[test]
+fn a_zero_distance_fuzzy_term_is_just_the_term() {
+    let segments = segments();
+    let plan = planned("title:rust~0", &segments);
+
+    assert_eq!(plan.query.should.len(), 1);
+    assert_eq!(plan.query.should[0].term, "rust");
+}
