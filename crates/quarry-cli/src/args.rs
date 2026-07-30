@@ -45,3 +45,5 @@ impl fmt::Display for ArgError {
         }
     }
 }
+
+impl std::error::Error for ArgError {}
