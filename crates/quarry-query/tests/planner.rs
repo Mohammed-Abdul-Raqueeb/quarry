@@ -386,3 +386,12 @@ fn a_fuzzy_term_with_no_neighbours_is_reported() {
 }
 
 // ---- ranges -------------------------------------------------------------
+
+#[test]
+fn a_range_on_a_non_numeric_field_is_an_error() {
+    let segments = segments();
+    assert!(matches!(
+        plan_error("title:[1 TO 5]", &segments),
+        QueryError::NotRangeable { .. }
+    ));
+}
