@@ -395,3 +395,20 @@ fn a_range_on_a_non_numeric_field_is_an_error() {
         QueryError::NotRangeable { .. }
     ));
 }
+
+#[test]
+fn a_range_on_a_numeric_field_is_accepted_with_a_note() {
+    // Parsed but not yet executed, and saying so beats silently ignoring it.
+    let segments = segments();
+    let ctx = PlanContext {
+        schema: schema(),
+        analyzer: analyzer(),
+        segments: &segments,
+    };
+    let ast = parse("title:rust AND year:[2000 TO 2020]").expect("should parse");
+    let plan = plan(&ast, &ctx).expect("should plan");
+
+    assert!(plan.notes.iter().any(|n| n.contains("not yet executed")));
+}
+
+// ---- whole-query behaviour ----------------------------------------------
