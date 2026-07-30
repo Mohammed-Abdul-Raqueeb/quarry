@@ -47,3 +47,16 @@ impl fmt::Display for ArgError {
 }
 
 impl std::error::Error for ArgError {}
+
+/// Parsed command line.
+#[derive(Debug, Clone, Default)]
+pub struct Args {
+    /// The subcommand, if one was given.
+    pub command: Option<String>,
+    /// Positional arguments after the subcommand.
+    pub positional: Vec<String>,
+    /// Options with values.
+    flags: HashMap<String, String>,
+    /// Flags given without a value.
+    switches: Vec<String>,
+}
