@@ -85,3 +85,30 @@ impl Args {
                 i += 1;
                 continue;
             }
+
+            if arg == "--" {
+                only_positional = true;
+                i += 1;
+                continue;
+            }
+
+            if let Some(body) = arg.strip_prefix("--") {
+                // `--key=value` carries its own value.
+                if let Some((key, value)) = body.split_once('=') {
+                    parsed.flags.insert(key.to_string(), value.to_string());
+                    i += 1;
+                    continue;
+                }
+
+                if known_value_flags.contains(&body) {
+                    let value = raw
+                        .get(i + 1)
+                        .ok_or_else(|| ArgError::MissingValue(format!("--{body}")))?;
+                    parsed.flags.insert(body.to_string(), value.clone());
+                    i += 2;
+                } else {
+                    parsed.switches.push(body.to_string());
+                    i += 1;
+                }
+                continue;
+            }
