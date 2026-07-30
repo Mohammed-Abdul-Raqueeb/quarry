@@ -30,3 +30,18 @@ pub enum ArgError {
     /// A subcommand that does not exist.
     UnknownCommand(String),
 }
+
+impl fmt::Display for ArgError {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        match self {
+            Self::Unknown(flag) => write!(f, "unknown option: {flag}"),
+            Self::MissingValue(flag) => write!(f, "{flag} needs a value"),
+            Self::MissingArgument(name) => write!(f, "missing required argument: {name}"),
+            Self::NotANumber { flag, value } => {
+                write!(f, "{flag} expects a number, got {value:?}")
+            }
+            Self::NoCommand => f.write_str("no command given"),
+            Self::UnknownCommand(name) => write!(f, "unknown command: {name}"),
+        }
+    }
+}
