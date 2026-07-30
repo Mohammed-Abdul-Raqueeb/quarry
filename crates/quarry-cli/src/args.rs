@@ -174,3 +174,26 @@ impl Args {
         self.value(long, short)
             .ok_or_else(|| ArgError::MissingArgument(format!("--{long}")))
     }
+
+    /// An option parsed as a number.
+    pub fn number(
+        &self,
+        long: &str,
+        short: Option<&str>,
+        default: usize,
+    ) -> Result<usize, ArgError> {
+        match self.value(long, short) {
+            None => Ok(default),
+            Some(raw) => raw.parse().map_err(|_| ArgError::NotANumber {
+                flag: format!("--{long}"),
+                value: raw.to_string(),
+            }),
+        }
+    }
+
+    /// Whether a switch was given.
+    #[must_use]
+    pub fn flag(&self, long: &str, short: Option<&str>) -> bool {
+        self.switches.iter().any(|s| s == long)
+            || short.is_some_and(|s| self.switches.iter().any(|given| given == s))
+    }
