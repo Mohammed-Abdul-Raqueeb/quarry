@@ -431,3 +431,10 @@ fn a_planned_query_is_not_empty() {
     let segments = segments();
     assert!(!planned("title:rust", &segments).is_empty());
 }
+
+#[test]
+fn match_all_plans_to_nothing_searchable() {
+    // It has no term to look up, so planning it alone is an empty query.
+    let segments = segments();
+    assert_eq!(plan_error("*:*", &segments), QueryError::Empty);
+}
