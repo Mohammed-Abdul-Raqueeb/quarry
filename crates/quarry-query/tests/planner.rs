@@ -365,3 +365,14 @@ fn a_zero_distance_fuzzy_term_is_just_the_term() {
     assert_eq!(plan.query.should.len(), 1);
     assert_eq!(plan.query.should[0].term, "rust");
 }
+
+#[test]
+fn a_closer_fuzzy_match_is_boosted_higher() {
+    // An exact hit should outrank a two-edit neighbour.
+    let segments = segments();
+    let plan = planned("title:rust~2", &segments);
+
+    let exact = plan.query.should.iter().find(|t| t.term == "rust");
+    assert_eq!(exact.map(|t| t.boost), Some(1.0));
+    assert!(plan.query.should.iter().all(|t| t.boost <= 1.0));
+}
