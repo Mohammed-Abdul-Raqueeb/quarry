@@ -425,3 +425,9 @@ fn a_realistic_query_plans_into_every_clause_kind() {
     assert_eq!(plan.query.phrases.len(), 1);
     assert_eq!(plan.query.must_not.len(), 1);
 }
+
+#[test]
+fn a_planned_query_is_not_empty() {
+    let segments = segments();
+    assert!(!planned("title:rust", &segments).is_empty());
+}
