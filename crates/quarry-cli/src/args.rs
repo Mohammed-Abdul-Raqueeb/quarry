@@ -112,3 +112,28 @@ impl Args {
                 }
                 continue;
             }
+
+            if let Some(body) = arg.strip_prefix('-') {
+                if body.is_empty() {
+                    // A bare `-` conventionally means stdin, so it is a value.
+                    parsed.push_positional(arg.clone());
+                    i += 1;
+                    continue;
+                }
+
+                // A single short flag may take a value; clustered ones cannot,
+                // since there would be no way to say which consumed it.
+                if body.len() == 1 && known_value_flags.contains(&body) {
+                    let value = raw
+                        .get(i + 1)
+                        .ok_or_else(|| ArgError::MissingValue(format!("-{body}")))?;
+                    parsed.flags.insert(body.to_string(), value.clone());
+                    i += 2;
+                } else {
+                    for ch in body.chars() {
+                        parsed.switches.push(ch.to_string());
+                    }
+                    i += 1;
+                }
+                continue;
+            }
