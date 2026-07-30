@@ -438,3 +438,12 @@ fn match_all_plans_to_nothing_searchable() {
     let segments = segments();
     assert_eq!(plan_error("*:*", &segments), QueryError::Empty);
 }
+
+#[test]
+fn a_plan_collects_every_term_for_highlighting() {
+    let segments = segments();
+    let plan = planned("title:rust OR title:ownership", &segments);
+
+    let terms = plan.query.all_terms();
+    assert!(terms.contains(&"rust".to_string()));
+}
