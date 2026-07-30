@@ -412,3 +412,16 @@ fn a_range_on_a_numeric_field_is_accepted_with_a_note() {
 }
 
 // ---- whole-query behaviour ----------------------------------------------
+
+#[test]
+fn a_realistic_query_plans_into_every_clause_kind() {
+    let segments = segments();
+    let plan = planned(
+        "title:rust AND title:\"zero cost\" AND NOT tag:python",
+        &segments,
+    );
+
+    assert_eq!(plan.query.must.len(), 1);
+    assert_eq!(plan.query.phrases.len(), 1);
+    assert_eq!(plan.query.must_not.len(), 1);
+}
