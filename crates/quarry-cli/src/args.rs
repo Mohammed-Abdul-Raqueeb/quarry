@@ -8,3 +8,25 @@
 
 use std::collections::HashMap;
 use std::fmt;
+
+/// Why the arguments could not be parsed.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub enum ArgError {
+    /// A flag that no command defines.
+    Unknown(String),
+    /// An option that takes a value was given none.
+    MissingValue(String),
+    /// A required positional argument was absent.
+    MissingArgument(String),
+    /// A value that should have been a number was not.
+    NotANumber {
+        /// The option's name.
+        flag: String,
+        /// What was given.
+        value: String,
+    },
+    /// No subcommand was given.
+    NoCommand,
+    /// A subcommand that does not exist.
+    UnknownCommand(String),
+}
