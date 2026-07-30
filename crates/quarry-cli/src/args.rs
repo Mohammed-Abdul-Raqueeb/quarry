@@ -153,3 +153,24 @@ impl Args {
             self.positional.push(value);
         }
     }
+
+    /// The value of an option, by long or short name.
+    #[must_use]
+    pub fn value(&self, long: &str, short: Option<&str>) -> Option<&str> {
+        self.flags
+            .get(long)
+            .or_else(|| short.and_then(|s| self.flags.get(s)))
+            .map(String::as_str)
+    }
+
+    /// The value of an option, or `default`.
+    #[must_use]
+    pub fn value_or<'a>(&'a self, long: &str, short: Option<&str>, default: &'a str) -> &'a str {
+        self.value(long, short).unwrap_or(default)
+    }
+
+    /// A required option's value.
+    pub fn require(&self, long: &str, short: Option<&str>) -> Result<&str, ArgError> {
+        self.value(long, short)
+            .ok_or_else(|| ArgError::MissingArgument(format!("--{long}")))
+    }
