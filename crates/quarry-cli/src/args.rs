@@ -60,3 +60,28 @@ pub struct Args {
     /// Flags given without a value.
     switches: Vec<String>,
 }
+
+impl Args {
+    /// Parses an argument list, excluding the program name.
+    ///
+    /// `known_value_flags` tells the parser which options consume the next
+    /// argument. Without it, `--limit 5` is ambiguous: `5` could be the value
+    /// or a positional argument, and there is no way to tell from syntax alone.
+    pub fn parse<I, S>(args: I, known_value_flags: &[&str]) -> Result<Self, ArgError>
+    where
+        I: IntoIterator<Item = S>,
+        S: Into<String>,
+    {
+        let raw: Vec<String> = args.into_iter().map(Into::into).collect();
+        let mut parsed = Self::default();
+        let mut i = 0;
+        let mut only_positional = false;
+
+        while i < raw.len() {
+            let arg = &raw[i];
+
+            if only_positional {
+                parsed.push_positional(arg.clone());
+                i += 1;
+                continue;
+            }
