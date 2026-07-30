@@ -137,3 +137,19 @@ impl Args {
                 }
                 continue;
             }
+
+            parsed.push_positional(arg.clone());
+            i += 1;
+        }
+
+        Ok(parsed)
+    }
+
+    fn push_positional(&mut self, value: String) {
+        // The first bare word is the subcommand; the rest are its arguments.
+        if self.command.is_none() {
+            self.command = Some(value);
+        } else {
+            self.positional.push(value);
+        }
+    }
