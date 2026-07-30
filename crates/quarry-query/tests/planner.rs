@@ -376,3 +376,13 @@ fn a_closer_fuzzy_match_is_boosted_higher() {
     assert_eq!(exact.map(|t| t.boost), Some(1.0));
     assert!(plan.query.should.iter().all(|t| t.boost <= 1.0));
 }
+
+#[test]
+fn a_fuzzy_term_with_no_neighbours_is_reported() {
+    let segments = segments();
+    let plan = planned("title:kubernetes~2", &segments);
+
+    assert!(plan.notes.iter().any(|n| n.contains("within")));
+}
+
+// ---- ranges -------------------------------------------------------------
