@@ -147,3 +147,22 @@ pub fn thousands(value: u64) -> String {
 
     out
 }
+
+/// Pads or truncates a string to exactly `width` characters.
+///
+/// Truncation appends an ellipsis so a clipped value is visibly clipped rather
+/// than looking like a shorter value.
+#[must_use]
+pub fn fit(text: &str, width: usize) -> String {
+    let len = text.chars().count();
+
+    if len <= width {
+        return format!("{text:<width$}");
+    }
+    if width <= 1 {
+        return ".".repeat(width);
+    }
+
+    let kept: String = text.chars().take(width - 1).collect();
+    format!("{kept}…")
+}
