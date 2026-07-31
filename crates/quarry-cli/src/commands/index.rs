@@ -65,3 +65,20 @@ pub fn run(args: &Args, style: Style) -> Result<()> {
                 );
             }
         }
+
+        // Flushing mid-run bounds memory, which is the whole reason the writer
+        // exposes a threshold rather than deciding for itself.
+        if writer.should_flush() {
+            if let Some(segment) = writer.flush() {
+                dir.append(segment)?;
+                segments += 1;
+            }
+        }
+    }
+
+    if let Some(segment) = writer.flush() {
+        dir.append(segment)?;
+        segments += 1;
+    }
+
+    let elapsed = started.elapsed();
