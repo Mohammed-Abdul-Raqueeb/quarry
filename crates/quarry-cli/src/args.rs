@@ -197,3 +197,27 @@ impl Args {
         self.switches.iter().any(|s| s == long)
             || short.is_some_and(|s| self.switches.iter().any(|given| given == s))
     }
+
+    /// A positional argument by index.
+    #[must_use]
+    pub fn positional(&self, index: usize) -> Option<&str> {
+        self.positional.get(index).map(String::as_str)
+    }
+
+    /// A required positional argument.
+    pub fn require_positional(&self, index: usize, name: &str) -> Result<&str, ArgError> {
+        self.positional(index)
+            .ok_or_else(|| ArgError::MissingArgument(name.to_string()))
+    }
+
+    /// Every positional argument joined with spaces.
+    ///
+    /// A query can be given unquoted — `quarry search my index .` — and this
+    /// reassembles it rather than making the user remember to quote.
+    #[must_use]
+    pub fn joined_positional(&self, from: usize) -> String {
+        self.positional
+            .get(from..)
+            .map(|rest| rest.join(" "))
+            .unwrap_or_default()
+    }
