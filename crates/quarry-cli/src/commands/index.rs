@@ -82,3 +82,31 @@ pub fn run(args: &Args, style: Style) -> Result<()> {
     }
 
     let elapsed = started.elapsed();
+
+    println!();
+    println!("{}", style.bold("Indexed"));
+    println!("  documents   {}", thousands(indexed));
+    if rejected > 0 {
+        println!("  rejected    {}", style.yellow(&thousands(rejected)));
+    }
+    println!("  segments    {segments}");
+    println!("  on disk     {}", human_bytes(dir.size_on_disk()?));
+    println!("  took        {}", human_duration(elapsed));
+
+    if indexed > 0 && elapsed.as_secs_f64() > 0.0 {
+        let rate = indexed as f64 / elapsed.as_secs_f64();
+        println!("  rate        {} docs/s", thousands(rate as u64));
+    }
+
+    if dir.segments().len() >= 4 {
+        println!();
+        println!(
+            "{} {} segments; `quarry merge --index {}` will speed up queries",
+            style.dim("hint:"),
+            dir.segments().len(),
+            path
+        );
+    }
+
+    Ok(())
+}
