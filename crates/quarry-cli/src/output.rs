@@ -114,3 +114,17 @@ pub fn human_bytes(bytes: u64) -> String {
         format!("{value:.0} {}", UNITS[unit])
     }
 }
+
+/// Renders a duration, choosing a unit that keeps it readable.
+#[must_use]
+pub fn human_duration(duration: std::time::Duration) -> String {
+    let micros = duration.as_micros();
+
+    if micros < 1_000 {
+        format!("{micros}µs")
+    } else if micros < 1_000_000 {
+        format!("{:.1}ms", micros as f64 / 1_000.0)
+    } else {
+        format!("{:.2}s", micros as f64 / 1_000_000.0)
+    }
+}
