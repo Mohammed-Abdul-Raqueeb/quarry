@@ -38,3 +38,30 @@ pub fn run(args: &Args, style: Style) -> Result<()> {
         max_buffered_docs: batch_size as u32,
         ..WriterConfig::default()
     });
+
+    let raw = read_input(input)?;
+    let started = Instant::now();
+
+    let mut indexed = 0u64;
+    let mut rejected = 0u64;
+    let mut segments = 0u32;
+
+    for (line_number, line) in raw.lines().enumerate() {
+        let trimmed = line.trim();
+        if trimmed.is_empty() {
+            continue;
+        }
+
+        match index_line(&mut writer, trimmed) {
+            Ok(()) => indexed += 1,
+            Err(err) => {
+                rejected += 1;
+                // One malformed line should not abandon the other ten thousand,
+                // but it must be reported with its line number to be fixable.
+                eprintln!(
+                    "{} line {}: {err}",
+                    style.yellow("skipped"),
+                    line_number + 1
+                );
+            }
+        }
