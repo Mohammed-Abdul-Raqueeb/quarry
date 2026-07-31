@@ -116,3 +116,14 @@ fn index_line(writer: &mut IndexWriter, line: &str) -> Result<()> {
     writer.add_json(&json)?;
     Ok(())
 }
+
+fn read_input(path: Option<&str>) -> Result<String> {
+    match path {
+        Some("-") | None => {
+            let mut buffer = String::new();
+            std::io::stdin().read_to_string(&mut buffer)?;
+            Ok(buffer)
+        }
+        Some(path) => Ok(std::fs::read_to_string(path)?),
+    }
+}
