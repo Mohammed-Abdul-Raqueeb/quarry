@@ -127,3 +127,18 @@ fn read_input(path: Option<&str>) -> Result<String> {
         Some(path) => Ok(std::fs::read_to_string(path)?),
     }
 }
+
+/// Parses a schema specification.
+///
+/// Either a path to a JSON schema file, or a compact inline form:
+/// `title:text,body:text,tag:keyword,year:numeric`. The inline form exists
+/// because needing a file to index one NDJSON file is friction out of
+/// proportion to the task.
+pub fn parse_schema_spec(spec: &str) -> Result<Schema> {
+    // Case-insensitive: a path typed as SCHEMA.JSON is still a schema file.
+    if spec.to_ascii_lowercase().ends_with(".json") {
+        let raw = std::fs::read_to_string(spec)?;
+        return quarry_core::dir::schema_from_json(&json::parse(&raw)?);
+    }
+
+    let mut builder: SchemaBuilder = Schema::builder();
