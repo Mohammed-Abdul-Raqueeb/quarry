@@ -128,3 +128,22 @@ pub fn human_duration(duration: std::time::Duration) -> String {
         format!("{:.2}s", micros as f64 / 1_000_000.0)
     }
 }
+
+/// Renders a count with thousands separators.
+///
+/// Worth the few lines: `1483920` and `1,483,920` are not equally readable at a
+/// glance, and index statistics are mostly large counts.
+#[must_use]
+pub fn thousands(value: u64) -> String {
+    let digits = value.to_string();
+    let mut out = String::with_capacity(digits.len() + digits.len() / 3);
+
+    for (i, ch) in digits.chars().enumerate() {
+        if i > 0 && (digits.len() - i) % 3 == 0 {
+            out.push(',');
+        }
+        out.push(ch);
+    }
+
+    out
+}
