@@ -221,3 +221,28 @@ impl Args {
             .map(|rest| rest.join(" "))
             .unwrap_or_default()
     }
+
+    /// Switches that are not in `allowed`.
+    ///
+    /// Reporting an unrecognised flag matters more than it looks: silently
+    /// ignoring `--limit10` means the user gets ten thousand results and no
+    /// explanation.
+    #[must_use]
+    pub fn unknown_switches(&self, allowed: &[&str]) -> Vec<String> {
+        self.switches
+            .iter()
+            .filter(|s| !allowed.contains(&s.as_str()))
+            .cloned()
+            .collect()
+    }
+
+    /// Option names that are not in `allowed`.
+    #[must_use]
+    pub fn unknown_flags(&self, allowed: &[&str]) -> Vec<String> {
+        self.flags
+            .keys()
+            .filter(|k| !allowed.contains(&k.as_str()))
+            .cloned()
+            .collect()
+    }
+}
