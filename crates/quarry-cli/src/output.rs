@@ -67,3 +67,28 @@ impl Style {
     pub fn dim(self, text: &str) -> String {
         self.wrap("2", text)
     }
+
+    /// Green, for success.
+    #[must_use]
+    pub fn green(self, text: &str) -> String {
+        self.wrap("32", text)
+    }
+
+    /// Yellow, for a warning or a highlighted match.
+    #[must_use]
+    pub fn yellow(self, text: &str) -> String {
+        self.wrap("33", text)
+    }
+
+    /// Red, for an error.
+    #[must_use]
+    pub fn red(self, text: &str) -> String {
+        self.wrap("31", text)
+    }
+
+    /// Cyan, for a field name or an identifier.
+    #[must_use]
+    pub fn cyan(self, text: &str) -> String {
+        self.wrap("36", text)
+    }
+}
