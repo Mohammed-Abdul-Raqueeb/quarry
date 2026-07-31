@@ -29,3 +29,21 @@ impl Style {
             enabled: std::io::stdout().is_terminal(),
         }
     }
+
+    /// Colour forced on.
+    #[must_use]
+    pub fn always() -> Self {
+        Self { enabled: true }
+    }
+
+    /// Colour forced off.
+    #[must_use]
+    pub fn never() -> Self {
+        Self { enabled: false }
+    }
+
+    /// Whether colour is on.
+    #[must_use]
+    pub fn is_enabled(self) -> bool {
+        self.enabled
+    }
