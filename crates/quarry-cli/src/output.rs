@@ -11,3 +11,21 @@ use std::io::IsTerminal;
 pub struct Style {
     enabled: bool,
 }
+
+impl Style {
+    /// Decides from the environment and whether stdout is a terminal.
+    ///
+    /// Checks `NO_COLOR` first, per the informal standard: its presence at any
+    /// value disables colour.
+    #[must_use]
+    pub fn detect() -> Self {
+        if std::env::var_os("NO_COLOR").is_some() {
+            return Self { enabled: false };
+        }
+        if std::env::var("TERM").is_ok_and(|t| t == "dumb") {
+            return Self { enabled: false };
+        }
+        Self {
+            enabled: std::io::stdout().is_terminal(),
+        }
+    }
