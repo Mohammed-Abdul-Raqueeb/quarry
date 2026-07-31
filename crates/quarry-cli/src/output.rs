@@ -5,3 +5,9 @@
 //! grepped, where escape sequences are noise.
 
 use std::io::IsTerminal;
+
+/// Whether to emit ANSI escapes.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub struct Style {
+    enabled: bool,
+}
