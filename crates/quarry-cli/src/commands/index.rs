@@ -110,3 +110,9 @@ pub fn run(args: &Args, style: Style) -> Result<()> {
 
     Ok(())
 }
+
+fn index_line(writer: &mut IndexWriter, line: &str) -> Result<()> {
+    let json = json::parse(line)?;
+    writer.add_json(&json)?;
+    Ok(())
+}
