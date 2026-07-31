@@ -47,3 +47,23 @@ impl Style {
     pub fn is_enabled(self) -> bool {
         self.enabled
     }
+
+    fn wrap(self, code: &str, text: &str) -> String {
+        if self.enabled {
+            format!("\u{1b}[{code}m{text}\u{1b}[0m")
+        } else {
+            text.to_string()
+        }
+    }
+
+    /// Bold.
+    #[must_use]
+    pub fn bold(self, text: &str) -> String {
+        self.wrap("1", text)
+    }
+
+    /// Dimmed, for secondary detail.
+    #[must_use]
+    pub fn dim(self, text: &str) -> String {
+        self.wrap("2", text)
+    }
