@@ -34,3 +34,33 @@ pub fn run(args: &Args, style: Style) -> Result<()> {
         fit("stored", 7),
         fit("positions", 9)
     );
+
+    for field in schema.fields() {
+        println!(
+            "  {} {} {} {} {}",
+            style.cyan(&fit(&field.name, 16)),
+            fit(field.ty.as_str(), 9),
+            fit(yes_no(field.options.indexed), 8),
+            fit(yes_no(field.options.stored), 7),
+            fit(yes_no(field.options.positions), 9)
+        );
+    }
+
+    // Per-field term counts come from the segments, so they are only available
+    // once something has been indexed.
+    if stats.docs > 0 {
+        println!();
+        println!("{}", style.bold("Terms per field"));
+
+        for field in schema.fields() {
+            let count: usize = dir
+                .segments()
+                .iter()
+                .map(|s| s.index.terms_in_field(field.id).len())
+                .sum();
+
+            let total_length: u64 = dir
+                .segments()
+                .iter()
+                .map(|s| s.index.field_stats(field.id).total_length)
+                .sum();
