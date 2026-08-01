@@ -76,3 +76,17 @@ pub fn run(args: &Args, style: Style) -> Result<()> {
 
     Ok(())
 }
+
+fn print_human(
+    searcher: &Searcher<'_>,
+    results: &quarry_core::Results,
+    schema: &quarry_core::Schema,
+    analyzer: &Analyzer,
+    terms: &[String],
+    style: Style,
+    no_snippets: bool,
+) {
+    if results.is_empty() {
+        println!("{}", style.dim("no matches"));
+        return;
+    }
