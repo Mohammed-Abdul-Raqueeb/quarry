@@ -164,3 +164,9 @@ pub fn parse_schema_spec(spec: &str) -> Result<Schema> {
 
     builder.build()
 }
+
+/// Renders a schema as JSON, for `--print-schema`.
+#[must_use]
+pub fn describe_schema(schema: &Schema) -> Json {
+    quarry_core::dir::schema_to_json(schema)
+}
