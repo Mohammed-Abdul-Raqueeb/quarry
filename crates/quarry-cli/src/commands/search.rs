@@ -40,3 +40,21 @@ pub fn run(args: &Args, style: Style) -> Result<()> {
     };
 
     let planned = plan(&ast, &ctx).map_err(|err| Error::schema(err.to_string()))?;
+
+    for note in &planned.notes {
+        eprintln!("{} {note}", style.yellow("note:"));
+    }
+
+    if explain {
+        println!(
+            "{} {} must, {} should, {} must-not, {} phrase",
+            style.dim("planned:"),
+            planned.query.must.len(),
+            planned.query.should.len(),
+            planned.query.must_not.len(),
+            planned.query.phrases.len()
+        );
+    }
+
+    let searcher = Searcher::new(dir.segments(), schema);
+    let results = searcher.search(&planned.query, limit)?;
