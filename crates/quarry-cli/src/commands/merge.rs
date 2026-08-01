@@ -56,3 +56,23 @@ pub fn run(args: &Args, style: Style) -> Result<()> {
         println!("{}", style.dim("nothing was changed"));
         return Ok(());
     }
+
+    let (_, report) = merge_with_report(dir.segments(), dir.schema())?;
+    dir.merge_all()?;
+
+    println!("{}", style.green("merged"));
+    println!("  segments    {before} -> {}", dir.segments().len());
+    println!("  documents   {}", thousands(u64::from(report.docs)));
+    println!(
+        "  bytes       {} -> {}",
+        human_bytes(report.bytes_before as u64),
+        human_bytes(report.bytes_after as u64)
+    );
+    println!(
+        "  terms       {} collapsed",
+        thousands(report.terms_collapsed() as u64)
+    );
+    println!("  took        {}", human_duration(started.elapsed()));
+
+    Ok(())
+}
