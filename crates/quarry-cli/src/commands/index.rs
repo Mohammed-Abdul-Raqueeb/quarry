@@ -142,3 +142,25 @@ pub fn parse_schema_spec(spec: &str) -> Result<Schema> {
     }
 
     let mut builder: SchemaBuilder = Schema::builder();
+
+    for part in spec.split(',') {
+        let part = part.trim();
+        if part.is_empty() {
+            continue;
+        }
+
+        let (name, ty) = match part.split_once(':') {
+            Some((name, ty)) => (name.trim(), ty.trim()),
+            // A bare name defaults to text, which is what it is most of the time.
+            None => (part, "text"),
+        };
+
+        builder = match FieldType::parse(ty)? {
+            FieldType::Text => builder.text(name)?,
+            FieldType::Keyword => builder.keyword(name)?,
+            FieldType::Numeric => builder.numeric(name)?,
+        };
+    }
+
+    builder.build()
+}
