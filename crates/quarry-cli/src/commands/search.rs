@@ -58,3 +58,21 @@ pub fn run(args: &Args, style: Style) -> Result<()> {
 
     let searcher = Searcher::new(dir.segments(), schema);
     let results = searcher.search(&planned.query, limit)?;
+
+    if as_json {
+        print_json(&searcher, &results, schema);
+        return Ok(());
+    }
+
+    print_human(
+        &searcher,
+        &results,
+        schema,
+        &analyzer,
+        &planned.query.all_terms(),
+        style,
+        no_snippets,
+    );
+
+    Ok(())
+}
