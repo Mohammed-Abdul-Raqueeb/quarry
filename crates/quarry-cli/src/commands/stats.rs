@@ -126,3 +126,11 @@ pub fn run(args: &Args, style: Style) -> Result<()> {
 
     Ok(())
 }
+
+fn yes_no(value: bool) -> &'static str {
+    if value {
+        "yes"
+    } else {
+        "no"
+    }
+}
