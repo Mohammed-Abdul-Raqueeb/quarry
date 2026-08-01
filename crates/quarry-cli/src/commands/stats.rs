@@ -64,3 +64,32 @@ pub fn run(args: &Args, style: Style) -> Result<()> {
                 .iter()
                 .map(|s| s.index.field_stats(field.id).total_length)
                 .sum();
+
+            println!(
+                "  {} {} distinct, {} total",
+                style.cyan(&fit(&field.name, 16)),
+                thousands(count as u64),
+                thousands(total_length)
+            );
+        }
+    }
+
+    if show_terms > 0 {
+        println!();
+        println!("{}", style.bold("Most common terms"));
+
+        for field in schema.fields() {
+            // Frequencies are summed across segments rather than concatenated:
+            // the same term lives in several segments, and listing it once per
+            // segment reports the same word three times with a third of its
+            // real count.
+            let mut totals: std::collections::BTreeMap<String, u32> =
+                std::collections::BTreeMap::new();
+
+            for segment in dir.segments() {
+                // Asking each segment for more than we will show leaves room
+                // for a term that is mid-ranked everywhere but common overall.
+                for (term, freq) in segment.index.most_frequent_terms(field.id, show_terms * 4) {
+                    *totals.entry(term.to_string()).or_default() += freq;
+                }
+            }
