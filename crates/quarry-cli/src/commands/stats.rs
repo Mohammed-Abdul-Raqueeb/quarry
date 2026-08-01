@@ -93,3 +93,36 @@ pub fn run(args: &Args, style: Style) -> Result<()> {
                     *totals.entry(term.to_string()).or_default() += freq;
                 }
             }
+
+            if totals.is_empty() {
+                continue;
+            }
+
+            let mut all: Vec<(String, u32)> = totals.into_iter().collect();
+            all.sort_by(|a, b| b.1.cmp(&a.1).then_with(|| a.0.cmp(&b.0)));
+            all.truncate(show_terms);
+
+            let rendered: Vec<String> = all
+                .iter()
+                .map(|(term, freq)| format!("{term} ({freq})"))
+                .collect();
+
+            println!(
+                "  {} {}",
+                style.cyan(&fit(&field.name, 16)),
+                rendered.join(", ")
+            );
+        }
+    }
+
+    if stats.should_merge() {
+        println!();
+        println!(
+            "{} {} segments; merging would reduce per-query overhead",
+            style.dim("hint:"),
+            stats.segments
+        );
+    }
+
+    Ok(())
+}
