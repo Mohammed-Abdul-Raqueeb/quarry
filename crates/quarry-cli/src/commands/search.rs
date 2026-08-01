@@ -143,3 +143,35 @@ fn print_human(
         println!();
     }
 }
+
+fn print_json(
+    searcher: &Searcher<'_>,
+    results: &quarry_core::Results,
+    schema: &quarry_core::Schema,
+) {
+    use quarry_core::json::{Json, JsonBuilder};
+
+    let hits: Vec<Json> = results
+        .hits
+        .iter()
+        .map(|hit| {
+            let document = searcher
+                .document(hit)
+                .map_or(Json::Null, |doc| doc.to_json(schema));
+
+            JsonBuilder::new()
+                .num("doc", f64::from(hit.doc))
+                .num("score", f64::from(hit.score))
+                .set("document", document)
+                .build()
+        })
+        .collect();
+
+    let body = JsonBuilder::new()
+        .num("total", results.total_hits as f64)
+        .num("took_us", results.elapsed.as_micros() as f64)
+        .set("hits", Json::Array(hits))
+        .build();
+
+    println!("{body}");
+}
