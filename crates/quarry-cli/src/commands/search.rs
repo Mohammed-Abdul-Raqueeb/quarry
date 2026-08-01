@@ -112,3 +112,34 @@ fn print_human(
             style.bold(&format!("{:.4}", hit.score)),
             style.dim(&format!("#{}", hit.doc))
         );
+
+        let Some(doc) = searcher.document(hit) else {
+            continue;
+        };
+
+        for field in schema.fields() {
+            let values = doc.values(field.id);
+            if values.is_empty() {
+                continue;
+            }
+
+            let text = values[0].as_text();
+
+            let rendered = if no_snippets {
+                fit(&text, 100)
+            } else {
+                searcher
+                    .snippet(hit, field.id, terms, analyzer, &snippet_options)
+                    .unwrap_or_else(|| fit(&text, 100))
+            };
+
+            println!(
+                "     {} {}",
+                style.cyan(&format!("{}:", field.name)),
+                rendered.trim()
+            );
+        }
+
+        println!();
+    }
+}
