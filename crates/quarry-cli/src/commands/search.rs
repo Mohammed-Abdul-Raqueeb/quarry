@@ -90,3 +90,25 @@ fn print_human(
         println!("{}", style.dim("no matches"));
         return;
     }
+
+    println!(
+        "{} match{} in {}",
+        thousands(results.total_hits),
+        if results.total_hits == 1 { "" } else { "es" },
+        human_duration(results.elapsed)
+    );
+    println!();
+
+    let snippet_options = if style.is_enabled() {
+        HighlightOptions::terminal()
+    } else {
+        HighlightOptions::brackets()
+    };
+
+    for (rank, hit) in results.hits.iter().enumerate() {
+        println!(
+            "{} {}  {}",
+            style.dim(&format!("{:>3}.", rank + 1)),
+            style.bold(&format!("{:.4}", hit.score)),
+            style.dim(&format!("#{}", hit.doc))
+        );
