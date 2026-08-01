@@ -37,3 +37,22 @@ pub fn run(args: &Args, style: Style) -> Result<()> {
         // Reports what a merge would achieve without touching the directory,
         // which is the only honest way to answer "is this worth doing".
         let (_, report) = merge_with_report(dir.segments(), dir.schema())?;
+
+        println!("{}", style.bold("Dry run"));
+        println!("  segments    {before} -> 1");
+        println!(
+            "  bytes       {} -> {} ({:.1}% smaller)",
+            human_bytes(report.bytes_before as u64),
+            human_bytes(report.bytes_after as u64),
+            report.bytes_saved_ratio() * 100.0
+        );
+        println!(
+            "  terms       {} -> {} ({} collapsed)",
+            thousands(report.terms_before as u64),
+            thousands(report.terms_after as u64),
+            thousands(report.terms_collapsed() as u64)
+        );
+        println!();
+        println!("{}", style.dim("nothing was changed"));
+        return Ok(());
+    }
