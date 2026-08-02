@@ -5,3 +5,4 @@
 //! rather than only through a subprocess.
 
 pub mod args;
+pub mod commands;
