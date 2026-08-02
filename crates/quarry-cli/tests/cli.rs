@@ -10,3 +10,8 @@ fn parse(args: &[&str]) -> Args {
 }
 
 // ---- subcommands and positionals ----------------------------------------
+
+#[test]
+fn the_first_bare_word_is_the_subcommand() {
+    assert_eq!(parse(&["search"]).command.as_deref(), Some("search"));
+}
