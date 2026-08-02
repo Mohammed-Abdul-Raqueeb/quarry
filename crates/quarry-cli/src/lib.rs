@@ -68,3 +68,20 @@ pub fn run(argv: Vec<String>) -> Outcome {
         eprintln!("error: no command given");
         return Outcome::Failed;
     };
+
+    let result = match command {
+        "index" => commands::index::run(&parsed, style),
+        "search" => commands::search::run(&parsed, style),
+        "stats" => commands::stats::run(&parsed, style),
+        "merge" => commands::merge::run(&parsed, style),
+        "help" => {
+            print!("{}", help_text());
+            return Outcome::Ok;
+        }
+        other => {
+            eprintln!("error: unknown command {other:?}");
+            eprintln!();
+            print!("{}", help_text());
+            return Outcome::Failed;
+        }
+    };
