@@ -156,3 +156,24 @@ GLOBAL
                          NO_COLOR in the environment also disables colour
     -h, --help           Show this help
     -V, --version        Show the version
+
+QUERY LANGUAGE
+    rust ownership            either word, ranked by how many matched
+    rust AND ownership        both words
+    \"zero cost\"               an exact phrase
+    title:rust                scoped to one field
+    rust~1                    within one edit, for typos
+    own*                      prefix match
+    rust NOT unsafe           excluding a word
+    (a OR b) AND c            grouped
+    title:rust^2 body:rust    with a boost on the title
+
+EXAMPLES
+    quarry index --index ./idx --schema title:text,body:text --input docs.ndjson
+    quarry search --index ./idx 'title:rust AND ownership' --limit 5
+    quarry stats --index ./idx --terms 10
+    quarry merge --index ./idx --dry-run
+",
+        version = quarry_core::VERSION
+    )
+}
