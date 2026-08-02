@@ -141,3 +141,18 @@ SEARCH
 
 STATS
     quarry stats --index DIR [--terms N]
+
+    -i, --index DIR      Index directory
+    -t, --terms N        Also list the N most common terms per field
+
+MERGE
+    quarry merge --index DIR [--dry-run]
+
+    -i, --index DIR      Index directory
+        --dry-run        Report what a merge would save, changing nothing
+
+GLOBAL
+        --color WHEN     always, never or auto. Default: auto
+                         NO_COLOR in the environment also disables colour
+    -h, --help           Show this help
+    -V, --version        Show the version
