@@ -18,3 +18,12 @@ pub use output::Style;
 pub const VALUE_FLAGS: &[&str] = &[
     "index", "i", "schema", "s", "input", "f", "limit", "n", "terms", "t", "batch", "color",
 ];
+
+/// What the process should exit with.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum Outcome {
+    /// The command succeeded.
+    Ok,
+    /// The command failed and a message was already printed.
+    Failed,
+}
