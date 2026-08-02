@@ -123,3 +123,21 @@ COMMANDS
 
 INDEX
     quarry index --index DIR --schema SPEC [--input FILE]
+
+    -i, --index DIR      Index directory. Created if absent
+    -s, --schema SPEC    Field definitions. Either a .json file, or an inline
+                         spec: title:text,body:text,tag:keyword,year:numeric
+    -f, --input FILE     NDJSON input, one document per line. Default: stdin
+        --batch N        Documents buffered before a segment is flushed
+
+SEARCH
+    quarry search --index DIR QUERY [options]
+
+    -i, --index DIR      Index directory
+    -n, --limit N        Results to return. Default: 10
+        --json           Emit JSON instead of formatted output
+        --explain        Show the parsed and planned query
+        --no-snippets    Show raw field values rather than highlighted snippets
+
+STATS
+    quarry stats --index DIR [--terms N]
