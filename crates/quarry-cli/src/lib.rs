@@ -6,3 +6,7 @@
 
 pub mod args;
 pub mod commands;
+pub mod output;
+
+pub use args::{ArgError, Args};
+pub use output::Style;
