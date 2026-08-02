@@ -10,3 +10,11 @@ pub mod output;
 
 pub use args::{ArgError, Args};
 pub use output::Style;
+
+/// Options that consume the next argument.
+///
+/// The parser needs this list because `--limit 5` is otherwise ambiguous: `5`
+/// could be the value or a positional argument.
+pub const VALUE_FLAGS: &[&str] = &[
+    "index", "i", "schema", "s", "input", "f", "limit", "n", "terms", "t", "batch", "color",
+];
