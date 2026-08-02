@@ -85,3 +85,22 @@ pub fn run(argv: Vec<String>) -> Outcome {
             return Outcome::Failed;
         }
     };
+
+    match result {
+        Ok(()) => Outcome::Ok,
+        Err(err) => {
+            eprintln!("{} {err}", style.red("error:"));
+
+            // An I/O failure may be worth retrying; a corrupt index never is,
+            // so the distinction is surfaced rather than left to guesswork.
+            if err.is_transient() {
+                eprintln!(
+                    "{} this looks transient; retrying may work",
+                    style.dim("note:")
+                );
+            }
+
+            Outcome::Failed
+        }
+    }
+}
