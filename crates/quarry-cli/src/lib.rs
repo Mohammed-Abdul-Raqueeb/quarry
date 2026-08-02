@@ -104,3 +104,22 @@ pub fn run(argv: Vec<String>) -> Outcome {
         }
     }
 }
+
+/// The help text, as a string so a test can assert every command appears in it.
+#[must_use]
+pub fn help_text() -> String {
+    format!(
+        "\
+quarry {version} — an embedded full-text search engine
+
+USAGE
+    quarry <command> [options]
+
+COMMANDS
+    index     Build or extend an index from newline-delimited JSON
+    search    Run a query against an index
+    stats     Report what an index contains
+    merge     Fold segments together to speed up queries
+
+INDEX
+    quarry index --index DIR --schema SPEC [--input FILE]
