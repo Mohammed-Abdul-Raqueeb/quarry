@@ -27,3 +27,11 @@ pub enum Outcome {
     /// The command failed and a message was already printed.
     Failed,
 }
+
+impl Outcome {
+    /// Whether the command succeeded.
+    #[must_use]
+    pub fn is_ok(self) -> bool {
+        matches!(self, Self::Ok)
+    }
+}
