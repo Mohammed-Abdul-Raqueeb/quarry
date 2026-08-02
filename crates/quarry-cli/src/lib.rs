@@ -35,3 +35,36 @@ impl Outcome {
         matches!(self, Self::Ok)
     }
 }
+
+/// Runs the CLI over an argument list, excluding the program name.
+#[must_use]
+pub fn run(argv: Vec<String>) -> Outcome {
+    if argv.is_empty() || argv.iter().any(|a| a == "--help" || a == "-h") {
+        print!("{}", help_text());
+        return Outcome::Ok;
+    }
+
+    if argv.iter().any(|a| a == "--version" || a == "-V") {
+        println!("quarry {}", quarry_core::VERSION);
+        return Outcome::Ok;
+    }
+
+    let parsed = match Args::parse(argv, VALUE_FLAGS) {
+        Ok(parsed) => parsed,
+        Err(err) => {
+            eprintln!("error: {err}");
+            return Outcome::Failed;
+        }
+    };
+
+    let style = match parsed.value("color", None) {
+        Some("always") => Style::always(),
+        Some("never") => Style::never(),
+        // `auto`, anything else, or absent: decide from the environment.
+        _ => Style::detect(),
+    };
+
+    let Some(command) = parsed.command.as_deref() else {
+        eprintln!("error: no command given");
+        return Outcome::Failed;
+    };
