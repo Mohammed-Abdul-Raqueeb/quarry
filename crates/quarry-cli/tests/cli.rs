@@ -137,3 +137,12 @@ fn clustered_short_switches_are_split() {
     assert!(args.flag("b", Some("b")));
     assert!(args.flag("c", Some("c")));
 }
+
+#[test]
+fn a_bare_dash_is_positional() {
+    // Conventionally stdin, so it is a value rather than a flag.
+    let args = parse(&["index", "-"]);
+    assert_eq!(args.positional(0), Some("-"));
+}
+
+// ---- value and flag lookup ----------------------------------------------
