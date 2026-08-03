@@ -102,3 +102,12 @@ fn a_long_option_without_its_value_is_an_error() {
         Err(ArgError::MissingValue(_))
     ));
 }
+
+#[test]
+fn an_unknown_long_flag_becomes_a_switch() {
+    // It is not consumed as a value flag, so it lands in the switch list where
+    // `unknown_switches` can report it.
+    assert!(parse(&["search", "--verbose"]).flag("verbose", None));
+}
+
+// ---- short options ------------------------------------------------------
