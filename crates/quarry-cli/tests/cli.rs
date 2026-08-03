@@ -124,3 +124,8 @@ fn reads_a_short_option_with_a_value() {
 fn a_short_value_option_without_its_value_is_an_error() {
     assert!(Args::parse(vec!["search", "-n"], VALUE_FLAGS).is_err());
 }
+
+#[test]
+fn a_short_switch_is_recorded() {
+    assert!(parse(&["search", "-q"]).flag("quiet", Some("q")));
+}
