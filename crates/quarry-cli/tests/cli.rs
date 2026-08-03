@@ -152,3 +152,11 @@ fn value_prefers_the_long_name() {
     let args = parse(&["search", "--index", "long", "-i", "short"]);
     assert_eq!(args.value("index", Some("i")), Some("long"));
 }
+
+#[test]
+fn value_falls_back_to_the_short_name() {
+    assert_eq!(
+        parse(&["search", "-i", "short"]).value("index", Some("i")),
+        Some("short")
+    );
+}
