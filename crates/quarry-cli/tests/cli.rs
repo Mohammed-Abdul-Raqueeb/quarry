@@ -146,3 +146,9 @@ fn a_bare_dash_is_positional() {
 }
 
 // ---- value and flag lookup ----------------------------------------------
+
+#[test]
+fn value_prefers_the_long_name() {
+    let args = parse(&["search", "--index", "long", "-i", "short"]);
+    assert_eq!(args.value("index", Some("i")), Some("long"));
+}
