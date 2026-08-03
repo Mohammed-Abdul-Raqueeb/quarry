@@ -36,3 +36,9 @@ fn positional_arguments_are_joined_for_an_unquoted_query() {
     let args = parse(&["search", "title:rust", "AND", "ownership"]);
     assert_eq!(args.joined_positional(0), "title:rust AND ownership");
 }
+
+#[test]
+fn joined_positional_from_a_later_index_skips_the_earlier_ones() {
+    let args = parse(&["search", "a", "b", "c"]);
+    assert_eq!(args.joined_positional(1), "b c");
+}
