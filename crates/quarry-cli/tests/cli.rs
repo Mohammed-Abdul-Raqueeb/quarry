@@ -54,3 +54,13 @@ fn positional_returns_one_by_index() {
     assert_eq!(args.positional(1), Some("second"));
     assert_eq!(args.positional(9), None);
 }
+
+#[test]
+fn require_positional_errors_when_absent() {
+    assert!(matches!(
+        parse(&["search"]).require_positional(0, "query"),
+        Err(ArgError::MissingArgument(_))
+    ));
+}
+
+// ---- long options -------------------------------------------------------
