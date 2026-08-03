@@ -15,3 +15,12 @@ fn parse(args: &[&str]) -> Args {
 fn the_first_bare_word_is_the_subcommand() {
     assert_eq!(parse(&["search"]).command.as_deref(), Some("search"));
 }
+
+#[test]
+fn later_bare_words_are_positional() {
+    let args = parse(&["search", "rust", "ownership"]);
+    assert_eq!(
+        args.positional,
+        vec!["rust".to_string(), "ownership".to_string()]
+    );
+}
