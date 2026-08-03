@@ -86,3 +86,11 @@ fn an_equals_value_may_contain_more_equals_signs() {
     let args = parse(&["search", "--schema=a=b"]);
     assert_eq!(args.value("schema", None), Some("a=b"));
 }
+
+#[test]
+fn an_equals_value_may_be_empty() {
+    assert_eq!(
+        parse(&["search", "--index="]).value("index", None),
+        Some("")
+    );
+}
