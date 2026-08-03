@@ -24,3 +24,8 @@ fn later_bare_words_are_positional() {
         vec!["rust".to_string(), "ownership".to_string()]
     );
 }
+
+#[test]
+fn an_empty_argument_list_has_no_command() {
+    assert!(parse(&[]).command.is_none());
+}
