@@ -72,3 +72,11 @@ fn reads_a_long_option_with_a_separate_value() {
         Some("./idx")
     );
 }
+
+#[test]
+fn reads_a_long_option_with_an_equals_sign() {
+    assert_eq!(
+        parse(&["search", "--index=./idx"]).value("index", None),
+        Some("./idx")
+    );
+}
