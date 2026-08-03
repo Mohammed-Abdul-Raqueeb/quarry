@@ -129,3 +129,11 @@ fn a_short_value_option_without_its_value_is_an_error() {
 fn a_short_switch_is_recorded() {
     assert!(parse(&["search", "-q"]).flag("quiet", Some("q")));
 }
+
+#[test]
+fn clustered_short_switches_are_split() {
+    let args = parse(&["search", "-abc"]);
+    assert!(args.flag("a", Some("a")));
+    assert!(args.flag("b", Some("b")));
+    assert!(args.flag("c", Some("c")));
+}
