@@ -94,3 +94,11 @@ fn an_equals_value_may_be_empty() {
         Some("")
     );
 }
+
+#[test]
+fn a_long_option_without_its_value_is_an_error() {
+    assert!(matches!(
+        Args::parse(vec!["search", "--index"], VALUE_FLAGS),
+        Err(ArgError::MissingValue(_))
+    ));
+}
