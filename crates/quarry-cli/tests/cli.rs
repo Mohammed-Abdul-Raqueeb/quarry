@@ -29,3 +29,10 @@ fn later_bare_words_are_positional() {
 fn an_empty_argument_list_has_no_command() {
     assert!(parse(&[]).command.is_none());
 }
+
+#[test]
+fn positional_arguments_are_joined_for_an_unquoted_query() {
+    // So `quarry search my index .` works without the user remembering quotes.
+    let args = parse(&["search", "title:rust", "AND", "ownership"]);
+    assert_eq!(args.joined_positional(0), "title:rust AND ownership");
+}
