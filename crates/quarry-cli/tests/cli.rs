@@ -42,3 +42,8 @@ fn joined_positional_from_a_later_index_skips_the_earlier_ones() {
     let args = parse(&["search", "a", "b", "c"]);
     assert_eq!(args.joined_positional(1), "b c");
 }
+
+#[test]
+fn joined_positional_past_the_end_is_empty() {
+    assert_eq!(parse(&["search"]).joined_positional(5), "");
+}
