@@ -64,3 +64,11 @@ fn require_positional_errors_when_absent() {
 }
 
 // ---- long options -------------------------------------------------------
+
+#[test]
+fn reads_a_long_option_with_a_separate_value() {
+    assert_eq!(
+        parse(&["search", "--index", "./idx"]).value("index", None),
+        Some("./idx")
+    );
+}
