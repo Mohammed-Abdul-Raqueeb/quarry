@@ -47,3 +47,10 @@ fn joined_positional_from_a_later_index_skips_the_earlier_ones() {
 fn joined_positional_past_the_end_is_empty() {
     assert_eq!(parse(&["search"]).joined_positional(5), "");
 }
+
+#[test]
+fn positional_returns_one_by_index() {
+    let args = parse(&["search", "first", "second"]);
+    assert_eq!(args.positional(1), Some("second"));
+    assert_eq!(args.positional(9), None);
+}
