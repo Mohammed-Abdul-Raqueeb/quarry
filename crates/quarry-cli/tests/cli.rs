@@ -80,3 +80,9 @@ fn reads_a_long_option_with_an_equals_sign() {
         Some("./idx")
     );
 }
+
+#[test]
+fn an_equals_value_may_contain_more_equals_signs() {
+    let args = parse(&["search", "--schema=a=b"]);
+    assert_eq!(args.value("schema", None), Some("a=b"));
+}
