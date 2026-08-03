@@ -111,3 +111,11 @@ fn an_unknown_long_flag_becomes_a_switch() {
 }
 
 // ---- short options ------------------------------------------------------
+
+#[test]
+fn reads_a_short_option_with_a_value() {
+    assert_eq!(
+        parse(&["search", "-i", "./idx"]).value("index", Some("i")),
+        Some("./idx")
+    );
+}
