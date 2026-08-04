@@ -235,3 +235,15 @@ fn a_negative_number_is_rejected_for_a_count() {
         .number("limit", None, 10)
         .is_err());
 }
+
+#[test]
+fn zero_is_an_acceptable_number() {
+    assert_eq!(
+        parse(&["stats", "--terms", "0"])
+            .number("terms", None, 5)
+            .ok(),
+        Some(0)
+    );
+}
+
+// ---- the double dash ----------------------------------------------------
