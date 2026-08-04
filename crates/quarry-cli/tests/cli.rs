@@ -187,3 +187,10 @@ fn require_names_the_missing_option() {
 fn flag_is_false_when_absent() {
     assert!(!parse(&["search"]).flag("json", None));
 }
+
+#[test]
+fn a_flag_with_a_hyphenated_name_is_recognised() {
+    assert!(parse(&["search", "--no-snippets"]).flag("no-snippets", None));
+}
+
+// ---- numbers ------------------------------------------------------------
