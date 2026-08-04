@@ -261,3 +261,10 @@ fn a_double_dash_lets_a_query_start_with_a_hyphen() {
 }
 
 // ---- unknown option reporting -------------------------------------------
+
+#[test]
+fn unknown_switches_are_reported() {
+    // Silently ignoring `--limit10` means ten thousand results and no clue why.
+    let args = parse(&["search", "--json", "--bogus"]);
+    assert_eq!(args.unknown_switches(&["json"]), vec!["bogus".to_string()]);
+}
