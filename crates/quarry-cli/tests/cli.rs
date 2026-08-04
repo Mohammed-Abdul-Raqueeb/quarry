@@ -319,3 +319,13 @@ fn parses_a_realistic_index_command() {
         Some("title:text,body:text")
     );
 }
+
+#[test]
+fn parses_a_realistic_search_command() {
+    let args = parse(&["search", "-i", "./idx", "-n", "5", "--json", "title:rust"]);
+
+    assert_eq!(args.value("index", Some("i")), Some("./idx"));
+    assert_eq!(args.number("limit", Some("n"), 10).ok(), Some(5));
+    assert!(args.flag("json", None));
+    assert_eq!(args.joined_positional(0), "title:rust");
+}
