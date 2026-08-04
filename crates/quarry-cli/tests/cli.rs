@@ -268,3 +268,10 @@ fn unknown_switches_are_reported() {
     let args = parse(&["search", "--json", "--bogus"]);
     assert_eq!(args.unknown_switches(&["json"]), vec!["bogus".to_string()]);
 }
+
+#[test]
+fn known_switches_are_not_reported() {
+    assert!(parse(&["search", "--json"])
+        .unknown_switches(&["json"])
+        .is_empty());
+}
