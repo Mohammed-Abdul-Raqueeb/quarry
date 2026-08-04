@@ -285,3 +285,18 @@ fn unknown_value_flags_are_reported() {
 
     assert!(unknown.contains(&"batch".to_string()));
 }
+
+#[test]
+fn a_misspelled_option_that_takes_no_value_shows_up_as_a_switch() {
+    // `--colour` is not in VALUE_FLAGS, so it is not consumed as a value
+    // option and its argument stays positional. The switch list is where a
+    // command finds it to complain about.
+    let args = parse(&["search", "--colour", "always"]);
+
+    assert!(args
+        .unknown_switches(&["color"])
+        .contains(&"colour".to_string()));
+    assert_eq!(args.positional(0), Some("always"));
+}
+
+// ---- realistic command lines --------------------------------------------
