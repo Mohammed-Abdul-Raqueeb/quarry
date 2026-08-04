@@ -228,3 +228,10 @@ fn a_numeric_error_names_the_option_and_the_value() {
     assert!(err.contains("--limit"), "message was: {err}");
     assert!(err.contains("lots"), "message was: {err}");
 }
+
+#[test]
+fn a_negative_number_is_rejected_for_a_count() {
+    assert!(parse(&["search", "--limit", "-5"])
+        .number("limit", None, 10)
+        .is_err());
+}
