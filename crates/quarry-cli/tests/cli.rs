@@ -247,3 +247,9 @@ fn zero_is_an_acceptable_number() {
 }
 
 // ---- the double dash ----------------------------------------------------
+
+#[test]
+fn a_double_dash_stops_option_parsing() {
+    let args = parse(&["search", "--", "--not-a-flag"]);
+    assert_eq!(args.positional(0), Some("--not-a-flag"));
+}
