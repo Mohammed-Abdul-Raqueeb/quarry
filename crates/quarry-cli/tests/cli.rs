@@ -275,3 +275,13 @@ fn known_switches_are_not_reported() {
         .unknown_switches(&["json"])
         .is_empty());
 }
+
+#[test]
+fn unknown_value_flags_are_reported() {
+    // `batch` takes a value, so it lands in the value map; a command that does
+    // not accept it can find it here.
+    let args = parse(&["search", "--index", "x", "--batch", "100"]);
+    let unknown = args.unknown_flags(&["index"]);
+
+    assert!(unknown.contains(&"batch".to_string()));
+}
