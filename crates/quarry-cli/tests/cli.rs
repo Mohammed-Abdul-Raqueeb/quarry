@@ -300,3 +300,22 @@ fn a_misspelled_option_that_takes_no_value_shows_up_as_a_switch() {
 }
 
 // ---- realistic command lines --------------------------------------------
+
+#[test]
+fn parses_a_realistic_index_command() {
+    let args = parse(&[
+        "index",
+        "--index",
+        "./idx",
+        "--schema",
+        "title:text,body:text",
+        "--input",
+        "docs.ndjson",
+    ]);
+
+    assert_eq!(args.command.as_deref(), Some("index"));
+    assert_eq!(
+        args.value("schema", Some("s")),
+        Some("title:text,body:text")
+    );
+}
