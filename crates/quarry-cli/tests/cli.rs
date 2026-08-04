@@ -160,3 +160,11 @@ fn value_falls_back_to_the_short_name() {
         Some("short")
     );
 }
+
+#[test]
+fn value_or_returns_the_default_when_absent() {
+    assert_eq!(
+        parse(&["search"]).value_or("index", None, "./default"),
+        "./default"
+    );
+}
