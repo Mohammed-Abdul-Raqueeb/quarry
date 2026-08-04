@@ -173,3 +173,12 @@ fn value_or_returns_the_default_when_absent() {
 fn require_errors_when_the_option_is_absent() {
     assert!(parse(&["search"]).require("index", Some("i")).is_err());
 }
+
+#[test]
+fn require_names_the_missing_option() {
+    let err = parse(&["search"])
+        .require("index", None)
+        .unwrap_err()
+        .to_string();
+    assert!(err.contains("--index"), "message was: {err}");
+}
