@@ -182,3 +182,8 @@ fn require_names_the_missing_option() {
         .to_string();
     assert!(err.contains("--index"), "message was: {err}");
 }
+
+#[test]
+fn flag_is_false_when_absent() {
+    assert!(!parse(&["search"]).flag("json", None));
+}
