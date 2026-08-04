@@ -204,3 +204,8 @@ fn parses_a_numeric_option() {
         Some(25)
     );
 }
+
+#[test]
+fn a_missing_numeric_option_uses_the_default() {
+    assert_eq!(parse(&["search"]).number("limit", None, 10).ok(), Some(10));
+}
