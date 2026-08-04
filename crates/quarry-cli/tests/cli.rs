@@ -168,3 +168,8 @@ fn value_or_returns_the_default_when_absent() {
         "./default"
     );
 }
+
+#[test]
+fn require_errors_when_the_option_is_absent() {
+    assert!(parse(&["search"]).require("index", Some("i")).is_err());
+}
