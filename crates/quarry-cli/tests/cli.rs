@@ -209,3 +209,11 @@ fn parses_a_numeric_option() {
 fn a_missing_numeric_option_uses_the_default() {
     assert_eq!(parse(&["search"]).number("limit", None, 10).ok(), Some(10));
 }
+
+#[test]
+fn a_non_numeric_value_is_an_error() {
+    assert!(matches!(
+        parse(&["search", "--limit", "lots"]).number("limit", None, 10),
+        Err(ArgError::NotANumber { .. })
+    ));
+}
