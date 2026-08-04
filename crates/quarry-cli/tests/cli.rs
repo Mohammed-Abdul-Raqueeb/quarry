@@ -253,3 +253,11 @@ fn a_double_dash_stops_option_parsing() {
     let args = parse(&["search", "--", "--not-a-flag"]);
     assert_eq!(args.positional(0), Some("--not-a-flag"));
 }
+
+#[test]
+fn a_double_dash_lets_a_query_start_with_a_hyphen() {
+    let args = parse(&["search", "--", "-rust"]);
+    assert_eq!(args.joined_positional(0), "-rust");
+}
+
+// ---- unknown option reporting -------------------------------------------
