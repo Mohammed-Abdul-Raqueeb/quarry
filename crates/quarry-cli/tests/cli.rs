@@ -194,3 +194,13 @@ fn a_flag_with_a_hyphenated_name_is_recognised() {
 }
 
 // ---- numbers ------------------------------------------------------------
+
+#[test]
+fn parses_a_numeric_option() {
+    assert_eq!(
+        parse(&["search", "--limit", "25"])
+            .number("limit", None, 10)
+            .ok(),
+        Some(25)
+    );
+}
