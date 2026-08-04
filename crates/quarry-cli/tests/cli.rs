@@ -217,3 +217,14 @@ fn a_non_numeric_value_is_an_error() {
         Err(ArgError::NotANumber { .. })
     ));
 }
+
+#[test]
+fn a_numeric_error_names_the_option_and_the_value() {
+    let err = parse(&["search", "--limit", "lots"])
+        .number("limit", None, 10)
+        .unwrap_err()
+        .to_string();
+
+    assert!(err.contains("--limit"), "message was: {err}");
+    assert!(err.contains("lots"), "message was: {err}");
+}
