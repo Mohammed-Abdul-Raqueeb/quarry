@@ -329,3 +329,13 @@ fn parses_a_realistic_search_command() {
     assert!(args.flag("json", None));
     assert_eq!(args.joined_positional(0), "title:rust");
 }
+
+#[test]
+fn options_may_come_after_positionals() {
+    let args = parse(&["search", "title:rust", "--limit", "3"]);
+
+    assert_eq!(args.joined_positional(0), "title:rust");
+    assert_eq!(args.number("limit", None, 10).ok(), Some(3));
+}
+
+// ---- human_bytes --------------------------------------------------------
