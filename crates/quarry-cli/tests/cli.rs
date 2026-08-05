@@ -369,3 +369,8 @@ fn switches_units_at_the_boundary() {
 }
 
 // ---- human_duration -----------------------------------------------------
+
+#[test]
+fn renders_microseconds() {
+    assert_eq!(human_duration(Duration::from_micros(250)), "250µs");
+}
