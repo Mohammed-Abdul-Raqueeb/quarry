@@ -415,3 +415,8 @@ fn separates_a_very_large_number() {
 fn pads_a_short_string_to_the_width() {
     assert_eq!(fit("ab", 5), "ab   ");
 }
+
+#[test]
+fn leaves_an_exact_fit_alone() {
+    assert_eq!(fit("abcde", 5), "abcde");
+}
