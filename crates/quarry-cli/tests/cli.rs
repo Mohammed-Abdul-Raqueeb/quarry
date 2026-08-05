@@ -431,3 +431,10 @@ fn truncates_with_an_ellipsis() {
 fn handles_a_width_of_one() {
     assert_eq!(fit("abcdef", 1), ".");
 }
+
+#[test]
+fn counts_characters_rather_than_bytes() {
+    assert_eq!(fit("éé", 4), "éé  ");
+}
+
+// ---- Style --------------------------------------------------------------
