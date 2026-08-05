@@ -379,3 +379,8 @@ fn renders_microseconds() {
 fn renders_milliseconds() {
     assert_eq!(human_duration(Duration::from_micros(2_500)), "2.5ms");
 }
+
+#[test]
+fn renders_seconds() {
+    assert_eq!(human_duration(Duration::from_millis(2_500)), "2.50s");
+}
