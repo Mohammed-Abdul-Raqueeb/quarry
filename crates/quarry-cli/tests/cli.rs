@@ -350,3 +350,8 @@ fn renders_small_byte_counts_exactly() {
 fn renders_kilobytes_with_one_decimal_when_small() {
     assert_eq!(human_bytes(1536), "1.5 KB");
 }
+
+#[test]
+fn drops_the_decimal_once_the_number_is_large() {
+    assert_eq!(human_bytes(1024 * 50), "50 KB");
+}
