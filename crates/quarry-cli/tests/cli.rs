@@ -410,3 +410,8 @@ fn separates_a_very_large_number() {
 }
 
 // ---- fit ----------------------------------------------------------------
+
+#[test]
+fn pads_a_short_string_to_the_width() {
+    assert_eq!(fit("ab", 5), "ab   ");
+}
