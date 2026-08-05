@@ -339,3 +339,9 @@ fn options_may_come_after_positionals() {
 }
 
 // ---- human_bytes --------------------------------------------------------
+
+#[test]
+fn renders_small_byte_counts_exactly() {
+    assert_eq!(human_bytes(0), "0 B");
+    assert_eq!(human_bytes(512), "512 B");
+}
