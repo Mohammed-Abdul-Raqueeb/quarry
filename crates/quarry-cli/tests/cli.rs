@@ -438,3 +438,8 @@ fn counts_characters_rather_than_bytes() {
 }
 
 // ---- Style --------------------------------------------------------------
+
+#[test]
+fn style_always_emits_escape_sequences() {
+    assert!(Style::always().bold("x").contains('\u{1b}'));
+}
