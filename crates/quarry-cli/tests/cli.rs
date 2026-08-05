@@ -374,3 +374,8 @@ fn switches_units_at_the_boundary() {
 fn renders_microseconds() {
     assert_eq!(human_duration(Duration::from_micros(250)), "250µs");
 }
+
+#[test]
+fn renders_milliseconds() {
+    assert_eq!(human_duration(Duration::from_micros(2_500)), "2.5ms");
+}
