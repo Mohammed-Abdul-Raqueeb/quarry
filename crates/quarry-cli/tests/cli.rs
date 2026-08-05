@@ -420,3 +420,9 @@ fn pads_a_short_string_to_the_width() {
 fn leaves_an_exact_fit_alone() {
     assert_eq!(fit("abcde", 5), "abcde");
 }
+
+#[test]
+fn truncates_with_an_ellipsis() {
+    // A clipped value should look clipped, not like a shorter value.
+    assert_eq!(fit("abcdefgh", 5), "abcd…");
+}
