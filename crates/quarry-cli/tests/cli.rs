@@ -355,3 +355,9 @@ fn renders_kilobytes_with_one_decimal_when_small() {
 fn drops_the_decimal_once_the_number_is_large() {
     assert_eq!(human_bytes(1024 * 50), "50 KB");
 }
+
+#[test]
+fn renders_megabytes_and_gigabytes() {
+    assert_eq!(human_bytes(1024 * 1024 * 3), "3.0 MB");
+    assert_eq!(human_bytes(1024 * 1024 * 1024 * 2), "2.0 GB");
+}
