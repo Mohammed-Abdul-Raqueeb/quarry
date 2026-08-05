@@ -361,3 +361,11 @@ fn renders_megabytes_and_gigabytes() {
     assert_eq!(human_bytes(1024 * 1024 * 3), "3.0 MB");
     assert_eq!(human_bytes(1024 * 1024 * 1024 * 2), "2.0 GB");
 }
+
+#[test]
+fn switches_units_at_the_boundary() {
+    assert_eq!(human_bytes(1023), "1023 B");
+    assert_eq!(human_bytes(1024), "1.0 KB");
+}
+
+// ---- human_duration -----------------------------------------------------
