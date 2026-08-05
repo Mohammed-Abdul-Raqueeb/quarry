@@ -345,3 +345,8 @@ fn renders_small_byte_counts_exactly() {
     assert_eq!(human_bytes(0), "0 B");
     assert_eq!(human_bytes(512), "512 B");
 }
+
+#[test]
+fn renders_kilobytes_with_one_decimal_when_small() {
+    assert_eq!(human_bytes(1536), "1.5 KB");
+}
