@@ -443,3 +443,8 @@ fn counts_characters_rather_than_bytes() {
 fn style_always_emits_escape_sequences() {
     assert!(Style::always().bold("x").contains('\u{1b}'));
 }
+
+#[test]
+fn style_never_emits_plain_text() {
+    assert_eq!(Style::never().bold("x"), "x");
+}
