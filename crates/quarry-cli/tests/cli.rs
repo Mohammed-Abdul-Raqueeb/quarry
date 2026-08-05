@@ -426,3 +426,8 @@ fn truncates_with_an_ellipsis() {
     // A clipped value should look clipped, not like a shorter value.
     assert_eq!(fit("abcdefgh", 5), "abcd…");
 }
+
+#[test]
+fn handles_a_width_of_one() {
+    assert_eq!(fit("abcdef", 1), ".");
+}
