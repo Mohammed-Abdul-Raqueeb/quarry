@@ -397,3 +397,9 @@ fn leaves_small_numbers_unseparated() {
     assert_eq!(thousands(0), "0");
     assert_eq!(thousands(999), "999");
 }
+
+#[test]
+fn separates_thousands() {
+    assert_eq!(thousands(1_000), "1,000");
+    assert_eq!(thousands(1_483_920), "1,483,920");
+}
