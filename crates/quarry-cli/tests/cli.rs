@@ -391,3 +391,9 @@ fn renders_a_zero_duration() {
 }
 
 // ---- thousands ----------------------------------------------------------
+
+#[test]
+fn leaves_small_numbers_unseparated() {
+    assert_eq!(thousands(0), "0");
+    assert_eq!(thousands(999), "999");
+}
