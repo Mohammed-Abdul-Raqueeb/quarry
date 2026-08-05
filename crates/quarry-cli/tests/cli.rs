@@ -403,3 +403,10 @@ fn separates_thousands() {
     assert_eq!(thousands(1_000), "1,000");
     assert_eq!(thousands(1_483_920), "1,483,920");
 }
+
+#[test]
+fn separates_a_very_large_number() {
+    assert_eq!(thousands(1_000_000_000), "1,000,000,000");
+}
+
+// ---- fit ----------------------------------------------------------------
