@@ -384,3 +384,10 @@ fn renders_milliseconds() {
 fn renders_seconds() {
     assert_eq!(human_duration(Duration::from_millis(2_500)), "2.50s");
 }
+
+#[test]
+fn renders_a_zero_duration() {
+    assert_eq!(human_duration(Duration::from_micros(0)), "0µs");
+}
+
+// ---- thousands ----------------------------------------------------------
