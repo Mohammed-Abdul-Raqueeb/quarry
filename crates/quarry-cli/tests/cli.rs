@@ -448,3 +448,18 @@ fn style_always_emits_escape_sequences() {
 fn style_never_emits_plain_text() {
     assert_eq!(Style::never().bold("x"), "x");
 }
+
+#[test]
+fn style_never_leaves_every_colour_plain() {
+    let style = Style::never();
+    for rendered in [
+        style.bold("x"),
+        style.dim("x"),
+        style.green("x"),
+        style.yellow("x"),
+        style.red("x"),
+        style.cyan("x"),
+    ] {
+        assert_eq!(rendered, "x");
+    }
+}
