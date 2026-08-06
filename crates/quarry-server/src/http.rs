@@ -18,3 +18,5 @@ use std::net::TcpStream;
 
 /// Longest request line accepted, in bytes.
 pub const MAX_REQUEST_LINE: usize = 8 * 1024;
+/// Most headers accepted.
+pub const MAX_HEADERS: usize = 64;
