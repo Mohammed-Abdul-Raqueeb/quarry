@@ -39,3 +39,24 @@ pub struct Request {
     /// The body, empty when there was none.
     pub body: String,
 }
+
+impl Request {
+    /// A query parameter.
+    #[must_use]
+    pub fn param(&self, name: &str) -> Option<&str> {
+        self.query.get(name).map(String::as_str)
+    }
+
+    /// A query parameter, or a default.
+    #[must_use]
+    pub fn param_or<'a>(&'a self, name: &str, default: &'a str) -> &'a str {
+        self.param(name).unwrap_or(default)
+    }
+
+    /// A query parameter parsed as a number.
+    #[must_use]
+    pub fn param_num(&self, name: &str, default: usize) -> usize {
+        self.param(name)
+            .and_then(|raw| raw.parse().ok())
+            .unwrap_or(default)
+    }
