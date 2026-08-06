@@ -89,3 +89,16 @@ impl Request {
             .is_some_and(|value| value.eq_ignore_ascii_case("close"))
     }
 }
+
+/// A response to write back.
+#[derive(Debug, Clone)]
+pub struct Response {
+    /// HTTP status code.
+    pub status: u16,
+    /// `Content-Type` value.
+    pub content_type: String,
+    /// The body.
+    pub body: String,
+    /// Extra headers.
+    pub headers: Vec<(String, String)>,
+}
