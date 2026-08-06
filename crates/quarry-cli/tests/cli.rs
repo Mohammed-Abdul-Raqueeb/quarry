@@ -463,3 +463,9 @@ fn style_never_leaves_every_colour_plain() {
         assert_eq!(rendered, "x");
     }
 }
+
+#[test]
+fn style_reports_whether_it_is_enabled() {
+    assert!(Style::always().is_enabled());
+    assert!(!Style::never().is_enabled());
+}
