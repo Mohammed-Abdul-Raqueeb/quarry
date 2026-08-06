@@ -500,3 +500,8 @@ fn the_help_text_mentions_no_color() {
     // Worth documenting, since it is the standard way to turn colour off.
     assert!(help_text().contains("NO_COLOR"));
 }
+
+#[test]
+fn the_help_text_includes_the_version() {
+    assert!(help_text().contains(quarry_core::VERSION));
+}
