@@ -1,0 +1,24 @@
+[package]
+name = "quarry-server"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+authors.workspace = true
+license.workspace = true
+repository.workspace = true
+description = "A dependency-free HTTP server exposing a Quarry index."
+
+[lib]
+name = "quarry_server"
+path = "src/lib.rs"
+
+[[bin]]
+name = "quarry-server"
+path = "src/main.rs"
+
+[lints]
+workspace = true
+
+[dependencies]
+quarry-core = { path = "../quarry-core" }
+quarry-query = { path = "../quarry-query" }
