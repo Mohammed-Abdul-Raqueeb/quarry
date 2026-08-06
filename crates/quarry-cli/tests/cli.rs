@@ -479,3 +479,11 @@ fn every_colour_wraps_and_resets() {
 }
 
 // ---- help ---------------------------------------------------------------
+
+#[test]
+fn the_help_text_lists_every_command() {
+    let help = help_text();
+    for command in ["index", "search", "stats", "merge"] {
+        assert!(help.contains(command), "help is missing {command}");
+    }
+}
