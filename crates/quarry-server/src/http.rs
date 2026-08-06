@@ -165,3 +165,16 @@ impl Response {
         bytes
     }
 }
+
+/// Why a request could not be read.
+#[derive(Debug)]
+pub enum HttpError {
+    /// The socket failed.
+    Io(std::io::Error),
+    /// The request was syntactically wrong.
+    Malformed(String),
+    /// A declared length exceeded a limit.
+    TooLarge(String),
+    /// The peer closed the connection without sending anything.
+    Closed,
+}
