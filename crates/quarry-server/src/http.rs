@@ -22,3 +22,5 @@ pub const MAX_REQUEST_LINE: usize = 8 * 1024;
 pub const MAX_HEADERS: usize = 64;
 /// Longest single header line, in bytes.
 pub const MAX_HEADER_LINE: usize = 8 * 1024;
+/// Largest request body accepted, in bytes.
+pub const MAX_BODY: usize = 16 * 1024 * 1024;
