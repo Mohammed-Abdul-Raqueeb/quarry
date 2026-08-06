@@ -494,3 +494,9 @@ fn the_help_text_documents_the_query_language() {
     assert!(help.contains("QUERY LANGUAGE"));
     assert!(help.contains('~'), "fuzzy syntax should be shown");
 }
+
+#[test]
+fn the_help_text_mentions_no_color() {
+    // Worth documenting, since it is the standard way to turn colour off.
+    assert!(help_text().contains("NO_COLOR"));
+}
