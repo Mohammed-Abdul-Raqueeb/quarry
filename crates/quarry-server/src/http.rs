@@ -15,3 +15,6 @@ use std::collections::HashMap;
 use std::fmt::Write as _;
 use std::io::{BufReader, Read, Write};
 use std::net::TcpStream;
+
+/// Longest request line accepted, in bytes.
+pub const MAX_REQUEST_LINE: usize = 8 * 1024;
