@@ -505,3 +505,17 @@ fn the_help_text_mentions_no_color() {
 fn the_help_text_includes_the_version() {
     assert!(help_text().contains(quarry_core::VERSION));
 }
+
+#[test]
+fn every_documented_value_flag_is_in_the_parser_list() {
+    // If a flag is documented as taking a value but missing from VALUE_FLAGS,
+    // its value would be silently parsed as a positional argument.
+    for flag in [
+        "index", "schema", "input", "limit", "terms", "batch", "color",
+    ] {
+        assert!(
+            VALUE_FLAGS.contains(&flag),
+            "{flag} is missing from VALUE_FLAGS"
+        );
+    }
+}
