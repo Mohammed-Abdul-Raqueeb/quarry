@@ -487,3 +487,10 @@ fn the_help_text_lists_every_command() {
         assert!(help.contains(command), "help is missing {command}");
     }
 }
+
+#[test]
+fn the_help_text_documents_the_query_language() {
+    let help = help_text();
+    assert!(help.contains("QUERY LANGUAGE"));
+    assert!(help.contains('~'), "fuzzy syntax should be shown");
+}
