@@ -469,3 +469,13 @@ fn style_reports_whether_it_is_enabled() {
     assert!(Style::always().is_enabled());
     assert!(!Style::never().is_enabled());
 }
+
+#[test]
+fn every_colour_wraps_and_resets() {
+    let style = Style::always();
+    for rendered in [style.green("x"), style.red("x"), style.cyan("x")] {
+        assert!(rendered.ends_with("\u{1b}[0m"), "not reset: {rendered:?}");
+    }
+}
+
+// ---- help ---------------------------------------------------------------
