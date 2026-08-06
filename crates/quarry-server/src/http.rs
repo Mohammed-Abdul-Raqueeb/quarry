@@ -24,3 +24,18 @@ pub const MAX_HEADERS: usize = 64;
 pub const MAX_HEADER_LINE: usize = 8 * 1024;
 /// Largest request body accepted, in bytes.
 pub const MAX_BODY: usize = 16 * 1024 * 1024;
+
+/// A parsed request.
+#[derive(Debug, Clone)]
+pub struct Request {
+    /// The method, uppercased.
+    pub method: String,
+    /// The path, with the query string removed and percent-escapes decoded.
+    pub path: String,
+    /// Decoded query parameters.
+    pub query: HashMap<String, String>,
+    /// Headers, with lowercased names.
+    pub headers: HashMap<String, String>,
+    /// The body, empty when there was none.
+    pub body: String,
+}
