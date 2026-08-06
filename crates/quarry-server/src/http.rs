@@ -60,3 +60,32 @@ impl Request {
             .and_then(|raw| raw.parse().ok())
             .unwrap_or(default)
     }
+
+    /// Whether a boolean-ish parameter is set.
+    ///
+    /// `?pretty`, `?pretty=1` and `?pretty=true` all count, which is what
+    /// someone poking at the API with curl will expect.
+    #[must_use]
+    pub fn param_flag(&self, name: &str) -> bool {
+        matches!(
+            self.query.get(name).map(String::as_str),
+            Some("" | "1" | "true" | "yes")
+        )
+    }
+
+    /// A header, by lowercase name.
+    #[must_use]
+    pub fn header(&self, name: &str) -> Option<&str> {
+        self.headers.get(name).map(String::as_str)
+    }
+
+    /// Whether the client asked to keep the connection open.
+    ///
+    /// HTTP/1.1 defaults to keep-alive, so only an explicit `close` ends it.
+    #[must_use]
+    pub fn wants_keep_alive(&self) -> bool {
+        !self
+            .header("connection")
+            .is_some_and(|value| value.eq_ignore_ascii_case("close"))
+    }
+}
