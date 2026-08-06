@@ -102,3 +102,33 @@ pub struct Response {
     /// Extra headers.
     pub headers: Vec<(String, String)>,
 }
+
+impl Response {
+    /// A JSON response.
+    #[must_use]
+    pub fn json(status: u16, body: impl Into<String>) -> Self {
+        Self {
+            status,
+            content_type: "application/json; charset=utf-8".to_string(),
+            body: body.into(),
+            headers: Vec::new(),
+        }
+    }
+
+    /// A plain-text response.
+    #[must_use]
+    pub fn text(status: u16, body: impl Into<String>) -> Self {
+        Self {
+            status,
+            content_type: "text/plain; charset=utf-8".to_string(),
+            body: body.into(),
+            headers: Vec::new(),
+        }
+    }
+
+    /// A JSON error body, in the one shape every endpoint uses.
+    #[must_use]
+    pub fn error(status: u16, message: &str) -> Self {
+        let escaped = escape_json_string(message);
+        Self::json(status, format!("{{\"error\":\"{escaped}\"}}"))
+    }
