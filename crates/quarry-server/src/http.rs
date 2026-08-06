@@ -132,3 +132,36 @@ impl Response {
         let escaped = escape_json_string(message);
         Self::json(status, format!("{{\"error\":\"{escaped}\"}}"))
     }
+
+    /// Adds a header.
+    #[must_use]
+    pub fn with_header(mut self, name: &str, value: &str) -> Self {
+        self.headers.push((name.to_string(), value.to_string()));
+        self
+    }
+
+    /// Serializes the response.
+    #[must_use]
+    pub fn render(&self, keep_alive: bool) -> Vec<u8> {
+        let reason = reason_phrase(self.status);
+        let mut out = format!(
+            "HTTP/1.1 {} {reason}\r\nContent-Type: {}\r\nContent-Length: {}\r\nConnection: {}\r\n",
+            self.status,
+            self.content_type,
+            self.body.len(),
+            if keep_alive { "keep-alive" } else { "close" }
+        );
+
+        for (name, value) in &self.headers {
+            // Written in place rather than through a temporary String, since
+            // the header block can hold a handful of entries per response.
+            let _ = write!(out, "{name}: {value}\r\n");
+        }
+
+        out.push_str("\r\n");
+
+        let mut bytes = out.into_bytes();
+        bytes.extend_from_slice(self.body.as_bytes());
+        bytes
+    }
+}
