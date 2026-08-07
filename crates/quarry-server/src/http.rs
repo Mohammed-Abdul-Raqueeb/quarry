@@ -178,3 +178,14 @@ pub enum HttpError {
     /// The peer closed the connection without sending anything.
     Closed,
 }
+
+impl std::fmt::Display for HttpError {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            Self::Io(err) => write!(f, "io error: {err}"),
+            Self::Malformed(what) => write!(f, "malformed request: {what}"),
+            Self::TooLarge(what) => write!(f, "request too large: {what}"),
+            Self::Closed => f.write_str("connection closed"),
+        }
+    }
+}
