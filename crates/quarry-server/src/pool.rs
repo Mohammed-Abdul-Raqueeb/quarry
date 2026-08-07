@@ -24,3 +24,9 @@ enum Message {
     /// lets `shutdown` send exactly one per worker and know they all got one.
     Stop,
 }
+
+/// A fixed set of worker threads pulling from a shared queue.
+pub struct ThreadPool {
+    sender: Option<Sender<Message>>,
+    workers: Vec<Worker>,
+}
