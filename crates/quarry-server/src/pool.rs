@@ -71,3 +71,23 @@ impl ThreadPool {
         // 128-core host from allocating stacks it will never use.
         Self::new(parallelism.clamp(2, 32))
     }
+
+    /// How many workers there are.
+    #[must_use]
+    pub fn size(&self) -> usize {
+        self.workers.len()
+    }
+
+    /// Queues a job.
+    ///
+    /// Returns `Err` only once the pool is shutting down, which a caller can
+    /// treat as "stop accepting connections".
+    pub fn execute<F>(&self, job: F) -> Result<(), &'static str>
+    where
+        F: FnOnce() + Send + 'static,
+    {
+        let sender = self.sender.as_ref().ok_or("thread pool is shut down")?;
+        sender
+            .send(Message::Run(Box::new(job)))
+            .map_err(|_| "thread pool workers have all stopped")
+    }
