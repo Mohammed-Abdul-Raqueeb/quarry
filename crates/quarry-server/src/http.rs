@@ -189,3 +189,9 @@ impl std::fmt::Display for HttpError {
         }
     }
 }
+
+impl From<std::io::Error> for HttpError {
+    fn from(err: std::io::Error) -> Self {
+        Self::Io(err)
+    }
+}
