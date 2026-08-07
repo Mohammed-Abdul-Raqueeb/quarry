@@ -195,3 +195,28 @@ impl From<std::io::Error> for HttpError {
         Self::Io(err)
     }
 }
+
+/// Reads one request from a connection.
+pub fn read_request(stream: &mut BufReader<&TcpStream>) -> Result<Request, HttpError> {
+    let mut line = String::new();
+    let read = read_line_limited(stream, &mut line, MAX_REQUEST_LINE)?;
+
+    if read == 0 {
+        return Err(HttpError::Closed);
+    }
+
+    let mut parts = line.split_whitespace();
+    let method = parts
+        .next()
+        .ok_or_else(|| HttpError::Malformed("empty request line".to_string()))?
+        .to_uppercase();
+    let target = parts
+        .next()
+        .ok_or_else(|| HttpError::Malformed("no request target".to_string()))?;
+
+    let (raw_path, raw_query) = target.split_once('?').unwrap_or((target, ""));
+
+    let mut headers = HashMap::new();
+    for _ in 0..MAX_HEADERS {
+        let mut header_line = String::new();
+        let read = read_line_limited(stream, &mut header_line, MAX_HEADER_LINE)?;
