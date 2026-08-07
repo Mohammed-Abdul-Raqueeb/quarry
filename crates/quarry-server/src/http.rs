@@ -287,3 +287,32 @@ fn read_body(
 
     String::from_utf8(buffer).map_err(|_| HttpError::Malformed("body is not utf-8".to_string()))
 }
+
+/// Reads a line, refusing to grow past `limit`.
+fn read_line_limited(
+    stream: &mut BufReader<&TcpStream>,
+    out: &mut String,
+    limit: usize,
+) -> Result<usize, HttpError> {
+    let mut total = 0;
+
+    loop {
+        let mut byte = [0u8; 1];
+        match stream.read(&mut byte) {
+            Ok(0) => return Ok(total),
+            Ok(_) => {}
+            Err(err) => return Err(HttpError::Io(err)),
+        }
+
+        total += 1;
+        if total > limit {
+            return Err(HttpError::TooLarge(format!("line exceeds {limit} bytes")));
+        }
+
+        let ch = byte[0] as char;
+        out.push(ch);
+        if ch == '\n' {
+            return Ok(total);
+        }
+    }
+}
