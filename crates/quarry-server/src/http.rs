@@ -220,3 +220,32 @@ pub fn read_request(stream: &mut BufReader<&TcpStream>) -> Result<Request, HttpE
     for _ in 0..MAX_HEADERS {
         let mut header_line = String::new();
         let read = read_line_limited(stream, &mut header_line, MAX_HEADER_LINE)?;
+
+        if read == 0 {
+            return Err(HttpError::Malformed(
+                "headers were not terminated".to_string(),
+            ));
+        }
+
+        let trimmed = header_line.trim_end();
+        if trimmed.is_empty() {
+            break;
+        }
+
+        if let Some((name, value)) = trimmed.split_once(':') {
+            headers.insert(name.trim().to_lowercase(), value.trim().to_string());
+        }
+        // A header line with no colon is skipped rather than fatal: it costs
+        // nothing to ignore and some clients send odd things.
+    }
+
+    let body = read_body(stream, &headers)?;
+
+    Ok(Request {
+        method,
+        path: percent_decode(raw_path),
+        query: parse_query(raw_query),
+        headers,
+        body,
+    })
+}
