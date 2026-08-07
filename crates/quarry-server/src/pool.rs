@@ -10,3 +10,6 @@
 use std::sync::mpsc::{channel, Receiver, Sender};
 use std::sync::{Arc, Mutex};
 use std::thread::{self, JoinHandle};
+
+/// A unit of work.
+type Job = Box<dyn FnOnce() + Send + 'static>;
