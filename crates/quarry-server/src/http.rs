@@ -332,3 +332,13 @@ pub fn parse_query(raw: &str) -> HashMap<String, String> {
 
     out
 }
+
+/// Decodes `%XX` escapes and `+` as space.
+///
+/// A malformed escape is left as literal text rather than rejected: a query
+/// containing a bare `%` is a user typo, and searching for it beats a 400.
+#[must_use]
+pub fn percent_decode(input: &str) -> String {
+    let bytes = input.as_bytes();
+    let mut out: Vec<u8> = Vec::with_capacity(bytes.len());
+    let mut i = 0;
