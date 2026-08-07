@@ -269,3 +269,21 @@ fn read_body(
     let Some(raw_length) = headers.get("content-length") else {
         return Ok(String::new());
     };
+
+    let length: usize = raw_length
+        .parse()
+        .map_err(|_| HttpError::Malformed(format!("bad content-length: {raw_length}")))?;
+
+    // Checked before allocating, so a header claiming four gigabytes costs
+    // nothing.
+    if length > MAX_BODY {
+        return Err(HttpError::TooLarge(format!(
+            "body of {length} bytes exceeds the {MAX_BODY} byte limit"
+        )));
+    }
+
+    let mut buffer = vec![0u8; length];
+    stream.read_exact(&mut buffer)?;
+
+    String::from_utf8(buffer).map_err(|_| HttpError::Malformed("body is not utf-8".to_string()))
+}
