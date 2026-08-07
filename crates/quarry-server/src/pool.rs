@@ -13,3 +13,14 @@ use std::thread::{self, JoinHandle};
 
 /// A unit of work.
 type Job = Box<dyn FnOnce() + Send + 'static>;
+
+/// What the workers receive.
+enum Message {
+    /// Run this.
+    Run(Job),
+    /// Stop, so the thread can be joined.
+    ///
+    /// Dropping the sender would also end the loop, but an explicit message
+    /// lets `shutdown` send exactly one per worker and know they all got one.
+    Stop,
+}
