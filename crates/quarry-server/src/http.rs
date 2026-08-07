@@ -316,3 +316,19 @@ fn read_line_limited(
         }
     }
 }
+
+/// Parses a query string into decoded pairs.
+#[must_use]
+pub fn parse_query(raw: &str) -> HashMap<String, String> {
+    let mut out = HashMap::new();
+
+    for pair in raw.split('&') {
+        if pair.is_empty() {
+            continue;
+        }
+        let (key, value) = pair.split_once('=').unwrap_or((pair, ""));
+        out.insert(percent_decode(key), percent_decode(value));
+    }
+
+    out
+}
