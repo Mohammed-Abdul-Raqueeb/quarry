@@ -369,3 +369,26 @@ pub fn percent_decode(input: &str) -> String {
     // Decoded bytes may not be valid UTF-8 if the client escaped something odd.
     String::from_utf8_lossy(&out).into_owned()
 }
+
+/// Escapes a string for embedding in a JSON string literal.
+#[must_use]
+pub fn escape_json_string(input: &str) -> String {
+    let mut out = String::with_capacity(input.len());
+
+    for ch in input.chars() {
+        match ch {
+            '"' => out.push_str("\\\""),
+            '\\' => out.push_str("\\\\"),
+            '\n' => out.push_str("\\n"),
+            '\r' => out.push_str("\\r"),
+            '\t' => out.push_str("\\t"),
+            c if (c as u32) < 0x20 => {
+                use std::fmt::Write as _;
+                let _ = write!(out, "\\u{:04x}", c as u32);
+            }
+            c => out.push(c),
+        }
+    }
+
+    out
+}
