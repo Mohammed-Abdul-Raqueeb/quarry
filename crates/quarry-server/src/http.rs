@@ -249,3 +249,23 @@ pub fn read_request(stream: &mut BufReader<&TcpStream>) -> Result<Request, HttpE
         body,
     })
 }
+
+/// Reads a body according to `Content-Length`.
+fn read_body(
+    stream: &mut BufReader<&TcpStream>,
+    headers: &HashMap<String, String>,
+) -> Result<String, HttpError> {
+    // Chunked encoding is not supported; saying so beats hanging while waiting
+    // for a body that will never arrive in the expected form.
+    if headers
+        .get("transfer-encoding")
+        .is_some_and(|value| value.to_lowercase().contains("chunked"))
+    {
+        return Err(HttpError::Malformed(
+            "chunked request bodies are not supported".to_string(),
+        ));
+    }
+
+    let Some(raw_length) = headers.get("content-length") else {
+        return Ok(String::new());
+    };
