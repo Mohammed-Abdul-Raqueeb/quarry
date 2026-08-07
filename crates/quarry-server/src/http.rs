@@ -402,3 +402,21 @@ pub fn write_response(
     stream.write_all(&response.render(keep_alive))?;
     stream.flush()
 }
+
+/// The reason phrase for a status code.
+#[must_use]
+pub fn reason_phrase(status: u16) -> &'static str {
+    match status {
+        200 => "OK",
+        201 => "Created",
+        204 => "No Content",
+        400 => "Bad Request",
+        404 => "Not Found",
+        405 => "Method Not Allowed",
+        413 => "Payload Too Large",
+        422 => "Unprocessable Entity",
+        500 => "Internal Server Error",
+        503 => "Service Unavailable",
+        _ => "Unknown",
+    }
+}
