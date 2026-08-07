@@ -30,3 +30,8 @@ pub struct ThreadPool {
     sender: Option<Sender<Message>>,
     workers: Vec<Worker>,
 }
+
+struct Worker {
+    id: usize,
+    handle: Option<JoinHandle<()>>,
+}
