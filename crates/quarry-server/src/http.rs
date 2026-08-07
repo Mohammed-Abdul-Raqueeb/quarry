@@ -392,3 +392,13 @@ pub fn escape_json_string(input: &str) -> String {
 
     out
 }
+
+/// Writes a response and flushes it.
+pub fn write_response(
+    stream: &mut TcpStream,
+    response: &Response,
+    keep_alive: bool,
+) -> std::io::Result<()> {
+    stream.write_all(&response.render(keep_alive))?;
+    stream.flush()
+}
