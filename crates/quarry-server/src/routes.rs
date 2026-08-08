@@ -20,3 +20,9 @@ use quarry_core::tokenize::Analyzer;
 use quarry_core::{IndexDir, IndexStats, Searcher};
 use quarry_query::{parse, plan, PlanContext};
 use std::time::Instant;
+
+/// Largest `limit` a client may ask for.
+///
+/// Without a cap, `?limit=100000000` asks the collector for a heap of that
+/// size before a single document is scored.
+pub const MAX_LIMIT: usize = 200;
