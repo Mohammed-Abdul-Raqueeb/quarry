@@ -114,3 +114,9 @@ impl ThreadPool {
         }
     }
 }
+
+impl Drop for ThreadPool {
+    fn drop(&mut self) {
+        self.shutdown();
+    }
+}
