@@ -120,3 +120,12 @@ impl Drop for ThreadPool {
         self.shutdown();
     }
 }
+
+impl std::fmt::Debug for ThreadPool {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.debug_struct("ThreadPool")
+            .field("workers", &self.workers.len())
+            .field("accepting", &self.sender.is_some())
+            .finish()
+    }
+}
