@@ -82,3 +82,19 @@ fn health(state: &AppState) -> Response {
 
     Response::json(200, body.to_string())
 }
+
+fn stats(state: &AppState) -> Response {
+    let stats = IndexStats::collect(state.index.segments(), state.index.schema());
+
+    let body = JsonBuilder::new()
+        .num("documents", f64::from(stats.docs))
+        .num("segments", stats.segments as f64)
+        .num("terms", stats.terms as f64)
+        .num("bytes", stats.bytes as f64)
+        .num("fields", stats.fields as f64)
+        .num("bytes_per_doc", stats.bytes_per_doc())
+        .bool("should_merge", stats.should_merge())
+        .build();
+
+    Response::json(200, body.to_string())
+}
