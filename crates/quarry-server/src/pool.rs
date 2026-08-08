@@ -91,3 +91,26 @@ impl ThreadPool {
             .send(Message::Run(Box::new(job)))
             .map_err(|_| "thread pool workers have all stopped")
     }
+
+    /// Stops the workers and waits for them.
+    pub fn shutdown(&mut self) {
+        if let Some(sender) = &self.sender {
+            for _ in &self.workers {
+                // Ignore the error: a worker that already died cannot be told
+                // to stop, and there is nothing useful to do about it here.
+                let _ = sender.send(Message::Stop);
+            }
+        }
+
+        // Dropped so the channel closes, in case a worker is between jobs.
+        self.sender = None;
+
+        for worker in &mut self.workers {
+            if let Some(handle) = worker.handle.take() {
+                if handle.join().is_err() {
+                    eprintln!("worker {} panicked", worker.id);
+                }
+            }
+        }
+    }
+}
