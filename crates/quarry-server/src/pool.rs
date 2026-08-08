@@ -129,3 +129,32 @@ impl std::fmt::Debug for ThreadPool {
             .finish()
     }
 }
+
+impl Worker {
+    fn spawn(id: usize, receiver: Arc<Mutex<Receiver<Message>>>) -> Self {
+        let handle = thread::Builder::new()
+            .name(format!("quarry-worker-{id}"))
+            .spawn(move || loop {
+                // The lock is released before the job runs, so one slow request
+                // does not block the other workers from taking theirs.
+                let message = {
+                    let Ok(guard) = receiver.lock() else {
+                        // A poisoned mutex means another worker panicked while
+                        // holding it. The queue is no longer trustworthy, so
+                        // this worker exits rather than carrying on.
+                        break;
+                    };
+                    guard.recv()
+                };
+
+                match message {
+                    Ok(Message::Run(job)) => job(),
+                    // Told to stop, or the sender was dropped.
+                    Ok(Message::Stop) | Err(_) => break,
+                }
+            })
+            .ok();
+
+        Self { id, handle }
+    }
+}
