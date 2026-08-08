@@ -48,3 +48,27 @@ impl std::fmt::Debug for AppState {
             .finish()
     }
 }
+
+/// Dispatches a request.
+#[must_use]
+pub fn route(request: &Request, state: &AppState) -> Response {
+    match (request.method.as_str(), request.path.as_str()) {
+        ("GET", "/health") => health(state),
+        ("GET", "/stats") => stats(state),
+        ("GET", "/schema") => schema(state),
+        ("GET", "/search") => {
+            let query = request.param("q").unwrap_or("").to_string();
+            search(&query, request.param_num("limit", 10), request, state)
+        }
+        ("POST", "/search") => post_search(request, state),
+
+        // A known path with the wrong method deserves a 405, not a 404: the
+        // distinction tells a client whether to fix the URL or the verb.
+        (_, "/health" | "/stats" | "/schema") => {
+            Response::error(405, "this endpoint only accepts GET")
+        }
+        (_, "/search") => Response::error(405, "/search accepts GET or POST"),
+
+        _ => Response::error(404, "no such endpoint; try /health, /stats or /search"),
+    }
+}
