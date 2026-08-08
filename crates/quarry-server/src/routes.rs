@@ -222,3 +222,16 @@ fn search(query_text: &str, limit: usize, request: &Request, state: &AppState) -
 
     Response::json(200, body.build().to_string())
 }
+
+/// A one-line access log entry.
+#[must_use]
+pub fn access_log(request: &Request, response: &Response, elapsed: std::time::Duration) -> String {
+    format!(
+        "{} {} {} {}us {}b",
+        request.method,
+        escape_json_string(&request.path),
+        response.status,
+        elapsed.as_micros(),
+        response.body.len()
+    )
+}
