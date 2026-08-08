@@ -72,3 +72,13 @@ pub fn route(request: &Request, state: &AppState) -> Response {
         _ => Response::error(404, "no such endpoint; try /health, /stats or /search"),
     }
 }
+
+fn health(state: &AppState) -> Response {
+    let body = JsonBuilder::new()
+        .str("status", "ok")
+        .str("version", quarry_core::VERSION)
+        .num("uptime_seconds", state.started.elapsed().as_secs() as f64)
+        .build();
+
+    Response::json(200, body.to_string())
+}
