@@ -98,3 +98,10 @@ fn stats(state: &AppState) -> Response {
 
     Response::json(200, body.to_string())
 }
+
+fn schema(state: &AppState) -> Response {
+    Response::json(
+        200,
+        quarry_core::dir::schema_to_json(state.index.schema()).to_string(),
+    )
+}
