@@ -173,3 +173,28 @@ fn search(query_text: &str, limit: usize, request: &Request, state: &AppState) -
                 .num("doc", f64::from(hit.doc))
                 .num("score", f64::from(hit.score))
                 .set("document", document);
+
+            if highlight {
+                let snippets: Vec<Json> = state
+                    .index
+                    .schema()
+                    .fields()
+                    .iter()
+                    .filter_map(|field| {
+                        searcher
+                            .snippet(hit, field.id, &terms, &state.analyzer, &options)
+                            .map(|text| {
+                                JsonBuilder::new()
+                                    .str("field", field.name.clone())
+                                    .str("snippet", text)
+                                    .build()
+                            })
+                    })
+                    .collect();
+
+                builder = builder.set("highlights", Json::Array(snippets));
+            }
+
+            builder.build()
+        })
+        .collect();
