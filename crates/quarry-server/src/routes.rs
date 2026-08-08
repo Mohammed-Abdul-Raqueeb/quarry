@@ -105,3 +105,22 @@ fn schema(state: &AppState) -> Response {
         quarry_core::dir::schema_to_json(state.index.schema()).to_string(),
     )
 }
+
+/// Reads `q` and `limit` from a JSON body.
+fn post_search(request: &Request, state: &AppState) -> Response {
+    let parsed = match json::parse(&request.body) {
+        Ok(parsed) => parsed,
+        Err(err) => return Response::error(400, &format!("body is not valid JSON: {err}")),
+    };
+
+    let Some(query) = parsed.get("q").and_then(Json::as_str) else {
+        return Response::error(422, "the body needs a string \"q\" field");
+    };
+
+    let limit = parsed
+        .get("limit")
+        .and_then(Json::as_f64)
+        .map_or(10, |n| n.max(0.0) as usize);
+
+    search(query, limit, request, state)
+}
