@@ -198,3 +198,27 @@ fn search(query_text: &str, limit: usize, request: &Request, state: &AppState) -
             builder.build()
         })
         .collect();
+
+    let mut body = JsonBuilder::new()
+        .str("query", query_text)
+        .num("total", results.total_hits as f64)
+        .num("took_us", results.elapsed.as_micros() as f64)
+        .set("hits", Json::Array(hits));
+
+    if !planned.notes.is_empty() {
+        // Notes are how a caller learns a stopword was dropped or an expansion
+        // truncated; without them the result set looks arbitrary.
+        body = body.set(
+            "notes",
+            Json::Array(
+                planned
+                    .notes
+                    .iter()
+                    .map(|note| Json::String(note.clone()))
+                    .collect(),
+            ),
+        );
+    }
+
+    Response::json(200, body.build().to_string())
+}
