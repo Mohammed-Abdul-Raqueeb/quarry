@@ -36,3 +36,15 @@ pub struct AppState {
     /// When the process started, for the uptime field.
     pub started: Instant,
 }
+
+// The analyzer and start time are deliberately omitted: a debug dump of an
+// analyzer is pages of filter structs and tells you nothing about the state.
+#[allow(clippy::missing_fields_in_debug)]
+impl std::fmt::Debug for AppState {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.debug_struct("AppState")
+            .field("docs", &self.index.doc_count())
+            .field("segments", &self.index.segments().len())
+            .finish()
+    }
+}
