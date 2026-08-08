@@ -124,3 +124,28 @@ fn post_search(request: &Request, state: &AppState) -> Response {
 
     search(query, limit, request, state)
 }
+
+fn search(query_text: &str, limit: usize, request: &Request, state: &AppState) -> Response {
+    if query_text.trim().is_empty() {
+        return Response::error(422, "a query is required; pass ?q=…");
+    }
+
+    let limit = limit.clamp(1, MAX_LIMIT);
+
+    let ast = match parse(query_text) {
+        Ok(ast) => ast,
+        // A malformed query is the client's mistake, so it gets a 400 and the
+        // parser's message, which names the position.
+        Err(err) => return Response::error(400, &err.to_string()),
+    };
+
+    let ctx = PlanContext {
+        schema: state.index.schema(),
+        analyzer: &state.analyzer,
+        segments: state.index.segments(),
+    };
+
+    let planned = match plan(&ast, &ctx) {
+        Ok(planned) => planned,
+        Err(err) => return Response::error(422, &err.to_string()),
+    };
