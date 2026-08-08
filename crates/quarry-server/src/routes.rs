@@ -26,3 +26,13 @@ use std::time::Instant;
 /// Without a cap, `?limit=100000000` asks the collector for a heap of that
 /// size before a single document is scored.
 pub const MAX_LIMIT: usize = 200;
+
+/// Everything a handler needs.
+pub struct AppState {
+    /// The index being served.
+    pub index: IndexDir,
+    /// The analyzer the index was built with.
+    pub analyzer: Analyzer,
+    /// When the process started, for the uptime field.
+    pub started: Instant,
+}
