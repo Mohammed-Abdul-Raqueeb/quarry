@@ -6,3 +6,5 @@
 //! cores is the right shape and an executor would only add a dependency.
 //!
 //! Read-only by design. See [`routes`] for why indexing stays in the CLI.
+
+pub mod http;
