@@ -149,3 +149,27 @@ fn search(query_text: &str, limit: usize, request: &Request, state: &AppState) -
         Ok(planned) => planned,
         Err(err) => return Response::error(422, &err.to_string()),
     };
+
+    let searcher = Searcher::new(state.index.segments(), state.index.schema());
+
+    let results = match searcher.search(&planned.query, limit) {
+        Ok(results) => results,
+        Err(err) => return Response::error(500, &err.to_string()),
+    };
+
+    let terms = planned.query.all_terms();
+    let highlight = request.param_flag("highlight");
+    let options = HighlightOptions::default();
+
+    let hits: Vec<Json> = results
+        .hits
+        .iter()
+        .map(|hit| {
+            let document = searcher
+                .document(hit)
+                .map_or(Json::Null, |doc| doc.to_json(state.index.schema()));
+
+            let mut builder = JsonBuilder::new()
+                .num("doc", f64::from(hit.doc))
+                .num("score", f64::from(hit.score))
+                .set("document", document);
