@@ -37,3 +37,12 @@ impl Drop for TempDir {
         let _ = std::fs::remove_dir_all(&self.path);
     }
 }
+
+fn schema() -> Schema {
+    Schema::builder()
+        .text("title")
+        .and_then(|b| b.text("body"))
+        .and_then(|b| b.keyword("tag"))
+        .and_then(SchemaBuilder::build)
+        .expect("schema should build")
+}
