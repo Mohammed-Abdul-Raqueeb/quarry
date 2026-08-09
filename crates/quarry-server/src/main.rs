@@ -20,3 +20,6 @@ use std::time::{Duration, Instant};
 /// Without this, an idle client holds a pool worker indefinitely, and enough of
 /// them starve the server without sending a single request.
 const IDLE_TIMEOUT: Duration = Duration::from_secs(30);
+
+/// Most requests served on one kept-alive connection before it is closed.
+const MAX_REQUESTS_PER_CONNECTION: usize = 100;
