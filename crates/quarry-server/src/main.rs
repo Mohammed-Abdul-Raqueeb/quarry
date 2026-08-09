@@ -55,3 +55,25 @@ fn main() -> ExitCode {
         }
     }
 }
+
+fn serve(
+    index_path: &str,
+    addr: &str,
+    threads: Option<usize>,
+    quiet: bool,
+) -> Result<(), Box<dyn std::error::Error>> {
+    let index = IndexDir::open(index_path)?;
+
+    let state = Arc::new(AppState {
+        analyzer: Analyzer::english(),
+        started: Instant::now(),
+        index,
+    });
+
+    let listener = TcpListener::bind(addr)?;
+    let local = listener.local_addr()?;
+
+    let pool = match threads {
+        Some(n) => ThreadPool::new(n),
+        None => ThreadPool::sized_for_machine(),
+    };
