@@ -14,3 +14,6 @@ pub mod routes;
 pub use http::{Request, Response};
 pub use pool::ThreadPool;
 pub use routes::{route, AppState};
+
+/// The version of this crate, from Cargo.
+pub const VERSION: &str = env!("CARGO_PKG_VERSION");
