@@ -23,3 +23,35 @@ const IDLE_TIMEOUT: Duration = Duration::from_secs(30);
 
 /// Most requests served on one kept-alive connection before it is closed.
 const MAX_REQUESTS_PER_CONNECTION: usize = 100;
+
+fn main() -> ExitCode {
+    let args: Vec<String> = std::env::args().skip(1).collect();
+
+    if args.iter().any(|a| a == "--help" || a == "-h") {
+        print_help();
+        return ExitCode::SUCCESS;
+    }
+
+    if args.iter().any(|a| a == "--version" || a == "-V") {
+        println!("quarry-server {}", quarry_server::VERSION);
+        return ExitCode::SUCCESS;
+    }
+
+    let Some(index_path) = flag_value(&args, "--index", "-i") else {
+        eprintln!("error: --index is required");
+        print_help();
+        return ExitCode::FAILURE;
+    };
+
+    let addr = flag_value(&args, "--addr", "-a").unwrap_or_else(|| "127.0.0.1:7700".to_string());
+    let threads = flag_value(&args, "--threads", "-t").and_then(|raw| raw.parse::<usize>().ok());
+    let quiet = args.iter().any(|a| a == "--quiet" || a == "-q");
+
+    match serve(&index_path, &addr, threads, quiet) {
+        Ok(()) => ExitCode::SUCCESS,
+        Err(err) => {
+            eprintln!("error: {err}");
+            ExitCode::FAILURE
+        }
+    }
+}
