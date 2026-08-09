@@ -149,3 +149,20 @@ fn handle_connection(mut stream: TcpStream, state: &AppState, quiet: bool) {
         }
     }
 }
+
+fn flag_value(args: &[String], long: &str, short: &str) -> Option<String> {
+    let mut i = 0;
+    while i < args.len() {
+        let arg = &args[i];
+
+        if let Some(value) = arg.strip_prefix(&format!("{long}=")) {
+            return Some(value.to_string());
+        }
+        if arg == long || arg == short {
+            return args.get(i + 1).cloned();
+        }
+
+        i += 1;
+    }
+    None
+}
