@@ -107,3 +107,29 @@ fn serve(
 
     Ok(())
 }
+
+fn handle_connection(mut stream: TcpStream, state: &AppState, quiet: bool) {
+    if stream.set_read_timeout(Some(IDLE_TIMEOUT)).is_err() {
+        return;
+    }
+    // Nagle's algorithm delays a small response waiting for more to send, which
+    // is exactly wrong for a request/response API.
+    let _ = stream.set_nodelay(true);
+
+    for _ in 0..MAX_REQUESTS_PER_CONNECTION {
+        let mut reader = BufReader::new(&stream);
+
+        let request = match read_request(&mut reader) {
+            Ok(request) => request,
+            // A closed connection is the normal way a keep-alive loop ends.
+            Err(HttpError::Closed) => return,
+            Err(err) => {
+                let status = match err {
+                    HttpError::TooLarge(_) => 413,
+                    _ => 400,
+                };
+                let response = Response::error(status, &err.to_string());
+                let _ = write_response(&mut stream, &response, false);
+                return;
+            }
+        };
