@@ -13,3 +13,5 @@ use std::path::PathBuf;
 use std::sync::atomic::{AtomicU32, Ordering};
 use std::sync::{Arc, Mutex};
 use std::time::Instant;
+
+static COUNTER: AtomicU32 = AtomicU32::new(0);
