@@ -15,3 +15,7 @@ use std::sync::{Arc, Mutex};
 use std::time::Instant;
 
 static COUNTER: AtomicU32 = AtomicU32::new(0);
+
+struct TempDir {
+    path: PathBuf,
+}
