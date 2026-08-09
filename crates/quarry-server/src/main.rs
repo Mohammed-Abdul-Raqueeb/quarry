@@ -166,3 +166,19 @@ fn flag_value(args: &[String], long: &str, short: &str) -> Option<String> {
     }
     None
 }
+
+fn print_help() {
+    println!(
+        "\
+quarry-server {version} — serve a Quarry index over HTTP
+
+USAGE
+    quarry-server --index DIR [options]
+
+OPTIONS
+    -i, --index DIR      Index directory to serve. Required
+    -a, --addr ADDR      Listen address. Default: 127.0.0.1:7700
+    -t, --threads N      Worker threads. Default: one per core, 2 to 32
+    -q, --quiet          Do not write an access log
+    -h, --help           Show this help
+    -V, --version        Show the version
