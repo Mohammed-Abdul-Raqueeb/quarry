@@ -133,3 +133,19 @@ fn handle_connection(mut stream: TcpStream, state: &AppState, quiet: bool) {
                 return;
             }
         };
+
+        let started = Instant::now();
+        let response = route(&request, state);
+        let elapsed = started.elapsed();
+
+        if !quiet {
+            eprintln!("{}", access_log(&request, &response, elapsed));
+        }
+
+        let keep_alive = request.wants_keep_alive();
+
+        if write_response(&mut stream, &response, keep_alive).is_err() || !keep_alive {
+            return;
+        }
+    }
+}
