@@ -8,3 +8,4 @@
 //! Read-only by design. See [`routes`] for why indexing stays in the CLI.
 
 pub mod http;
+pub mod pool;
