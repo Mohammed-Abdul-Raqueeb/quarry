@@ -77,3 +77,33 @@ fn serve(
         Some(n) => ThreadPool::new(n),
         None => ThreadPool::sized_for_machine(),
     };
+
+    eprintln!(
+        "quarry-server {} serving {} documents from {} on http://{} ({} threads)",
+        quarry_server::VERSION,
+        state.index.doc_count(),
+        index_path,
+        local,
+        pool.size()
+    );
+
+    for incoming in listener.incoming() {
+        let stream = match incoming {
+            Ok(stream) => stream,
+            Err(err) => {
+                // One failed accept is not a reason to stop serving.
+                eprintln!("accept failed: {err}");
+                continue;
+            }
+        };
+
+        let state = Arc::clone(&state);
+
+        if let Err(reason) = pool.execute(move || handle_connection(stream, &state, quiet)) {
+            eprintln!("rejecting connection: {reason}");
+            break;
+        }
+    }
+
+    Ok(())
+}
