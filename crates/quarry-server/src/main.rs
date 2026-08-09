@@ -182,3 +182,24 @@ OPTIONS
     -q, --quiet          Do not write an access log
     -h, --help           Show this help
     -V, --version        Show the version
+
+ENDPOINTS
+    GET  /health                     liveness; never touches the index
+    GET  /stats                      documents, segments, terms, bytes
+    GET  /schema                     the field definitions
+    GET  /search?q=QUERY&limit=N     run a query
+                 &highlight          also return highlighted snippets
+    POST /search                     {{\"q\": \"...\", \"limit\": 10}}
+
+NOTES
+    Read-only. Build an index with `quarry index` first.
+    No TLS: run it behind a reverse proxy if it faces the internet.
+
+EXAMPLES
+    quarry-server --index ./idx
+    curl 'http://127.0.0.1:7700/search?q=rust+ownership&limit=5&highlight'
+    curl -X POST http://127.0.0.1:7700/search -d '{{\"q\":\"title:rust\"}}'
+",
+        version = quarry_server::VERSION
+    );
+}
