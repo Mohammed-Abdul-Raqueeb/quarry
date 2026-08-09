@@ -9,3 +9,8 @@
 
 pub mod http;
 pub mod pool;
+pub mod routes;
+
+pub use http::{Request, Response};
+pub use pool::ThreadPool;
+pub use routes::{route, AppState};
