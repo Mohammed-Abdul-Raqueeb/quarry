@@ -14,3 +14,9 @@ use std::net::{TcpListener, TcpStream};
 use std::process::ExitCode;
 use std::sync::Arc;
 use std::time::{Duration, Instant};
+
+/// How long a kept-alive connection may sit idle before it is closed.
+///
+/// Without this, an idle client holds a pool worker indefinitely, and enough of
+/// them starve the server without sending a single request.
+const IDLE_TIMEOUT: Duration = Duration::from_secs(30);
