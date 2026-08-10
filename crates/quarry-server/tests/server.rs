@@ -96,3 +96,8 @@ fn json(response: &Response) -> quarry_core::Json {
 fn decodes_a_percent_escape() {
     assert_eq!(percent_decode("a%20b"), "a b");
 }
+
+#[test]
+fn decodes_a_plus_as_a_space() {
+    assert_eq!(percent_decode("a+b"), "a b");
+}
