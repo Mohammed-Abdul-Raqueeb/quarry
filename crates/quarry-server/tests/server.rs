@@ -175,3 +175,9 @@ fn reads_a_parameter() {
     let req = request("GET", "/search", "q=rust", "");
     assert_eq!(req.param("q"), Some("rust"));
 }
+
+#[test]
+fn falls_back_to_a_default_parameter() {
+    let req = request("GET", "/search", "", "");
+    assert_eq!(req.param_or("q", "fallback"), "fallback");
+}
