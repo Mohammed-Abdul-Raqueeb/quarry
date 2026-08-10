@@ -142,3 +142,9 @@ fn parses_several_parameters() {
     let parsed = parse_query("q=rust&limit=5");
     assert_eq!(parsed.len(), 2);
 }
+
+#[test]
+fn parses_a_parameter_without_a_value() {
+    let parsed = parse_query("highlight");
+    assert_eq!(parsed.get("highlight").map(String::as_str), Some(""));
+}
