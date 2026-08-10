@@ -101,3 +101,8 @@ fn decodes_a_percent_escape() {
 fn decodes_a_plus_as_a_space() {
     assert_eq!(percent_decode("a+b"), "a b");
 }
+
+#[test]
+fn decodes_several_escapes() {
+    assert_eq!(percent_decode("title%3Arust"), "title:rust");
+}
