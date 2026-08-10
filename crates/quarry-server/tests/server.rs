@@ -106,3 +106,8 @@ fn decodes_a_plus_as_a_space() {
 fn decodes_several_escapes() {
     assert_eq!(percent_decode("title%3Arust"), "title:rust");
 }
+
+#[test]
+fn decodes_a_multibyte_escape() {
+    assert_eq!(percent_decode("caf%C3%A9"), "café");
+}
