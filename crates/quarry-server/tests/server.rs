@@ -123,3 +123,10 @@ fn leaves_a_malformed_escape_as_literal_text() {
     assert_eq!(percent_decode("100%"), "100%");
     assert_eq!(percent_decode("%zz"), "%zz");
 }
+
+#[test]
+fn handles_an_empty_string() {
+    assert_eq!(percent_decode(""), "");
+}
+
+// ---- query strings ------------------------------------------------------
