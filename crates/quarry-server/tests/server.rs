@@ -130,3 +130,9 @@ fn handles_an_empty_string() {
 }
 
 // ---- query strings ------------------------------------------------------
+
+#[test]
+fn parses_a_single_parameter() {
+    let parsed = parse_query("q=rust");
+    assert_eq!(parsed.get("q").map(String::as_str), Some("rust"));
+}
