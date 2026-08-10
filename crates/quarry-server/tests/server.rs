@@ -187,3 +187,9 @@ fn parses_a_numeric_parameter() {
     let req = request("GET", "/search", "limit=25", "");
     assert_eq!(req.param_num("limit", 10), 25);
 }
+
+#[test]
+fn a_non_numeric_parameter_uses_the_default() {
+    let req = request("GET", "/search", "limit=lots", "");
+    assert_eq!(req.param_num("limit", 10), 10);
+}
