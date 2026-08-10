@@ -136,3 +136,9 @@ fn parses_a_single_parameter() {
     let parsed = parse_query("q=rust");
     assert_eq!(parsed.get("q").map(String::as_str), Some("rust"));
 }
+
+#[test]
+fn parses_several_parameters() {
+    let parsed = parse_query("q=rust&limit=5");
+    assert_eq!(parsed.len(), 2);
+}
