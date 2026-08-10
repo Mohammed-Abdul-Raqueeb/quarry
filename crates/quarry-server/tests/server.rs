@@ -162,3 +162,10 @@ fn decodes_parameter_values() {
 fn parses_an_empty_query_string() {
     assert!(parse_query("").is_empty());
 }
+
+#[test]
+fn ignores_an_empty_pair() {
+    assert_eq!(parse_query("a=1&&b=2").len(), 2);
+}
+
+// ---- request accessors --------------------------------------------------
