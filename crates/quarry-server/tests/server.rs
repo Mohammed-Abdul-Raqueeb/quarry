@@ -111,3 +111,8 @@ fn decodes_several_escapes() {
 fn decodes_a_multibyte_escape() {
     assert_eq!(percent_decode("caf%C3%A9"), "café");
 }
+
+#[test]
+fn leaves_plain_text_alone() {
+    assert_eq!(percent_decode("plain"), "plain");
+}
