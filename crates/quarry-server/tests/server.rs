@@ -46,3 +46,29 @@ fn schema() -> Schema {
         .and_then(SchemaBuilder::build)
         .expect("schema should build")
 }
+
+/// An app state over a small throwaway index.
+fn state(temp: &TempDir) -> AppState {
+    let mut dir = IndexDir::create(&temp.path, &schema()).expect("should create");
+    let mut writer = IndexWriter::new(schema());
+
+    for (title, body, tag) in [
+        ("Rust ownership", "the borrow checker enforces it", "rust"),
+        ("Python typing", "gradual annotations", "python"),
+    ] {
+        let mut doc = Document::new();
+        doc.add(0, Value::Text(title.to_string()));
+        doc.add(1, Value::Text(body.to_string()));
+        doc.add(2, Value::Keyword(tag.to_string()));
+        writer.add(&doc).expect("should index");
+    }
+
+    dir.append(writer.flush().expect("flushed"))
+        .expect("should append");
+
+    AppState {
+        index: dir,
+        analyzer: Analyzer::english(),
+        started: Instant::now(),
+    }
+}
