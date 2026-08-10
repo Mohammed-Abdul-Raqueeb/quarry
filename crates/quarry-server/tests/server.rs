@@ -83,3 +83,11 @@ fn request(method: &str, path: &str, query: &str, body: &str) -> Request {
         body: body.to_string(),
     }
 }
+
+/// Parses a response body, failing loudly if it is not JSON.
+fn json(response: &Response) -> quarry_core::Json {
+    quarry_core::json::parse(&response.body)
+        .unwrap_or_else(|err| panic!("body should be json: {err}\n{}", response.body))
+}
+
+// ---- percent decoding ---------------------------------------------------
