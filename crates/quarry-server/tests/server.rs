@@ -148,3 +148,12 @@ fn parses_a_parameter_without_a_value() {
     let parsed = parse_query("highlight");
     assert_eq!(parsed.get("highlight").map(String::as_str), Some(""));
 }
+
+#[test]
+fn decodes_parameter_values() {
+    let parsed = parse_query("q=title%3Arust+ownership");
+    assert_eq!(
+        parsed.get("q").map(String::as_str),
+        Some("title:rust ownership")
+    );
+}
