@@ -157,3 +157,8 @@ fn decodes_parameter_values() {
         Some("title:rust ownership")
     );
 }
+
+#[test]
+fn parses_an_empty_query_string() {
+    assert!(parse_query("").is_empty());
+}
