@@ -169,3 +169,9 @@ fn ignores_an_empty_pair() {
 }
 
 // ---- request accessors --------------------------------------------------
+
+#[test]
+fn reads_a_parameter() {
+    let req = request("GET", "/search", "q=rust", "");
+    assert_eq!(req.param("q"), Some("rust"));
+}
