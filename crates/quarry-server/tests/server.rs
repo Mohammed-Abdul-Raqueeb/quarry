@@ -116,3 +116,10 @@ fn decodes_a_multibyte_escape() {
 fn leaves_plain_text_alone() {
     assert_eq!(percent_decode("plain"), "plain");
 }
+
+#[test]
+fn leaves_a_malformed_escape_as_literal_text() {
+    // A bare `%` is a user typo; searching for it beats returning a 400.
+    assert_eq!(percent_decode("100%"), "100%");
+    assert_eq!(percent_decode("%zz"), "%zz");
+}
