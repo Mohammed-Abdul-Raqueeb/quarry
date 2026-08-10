@@ -181,3 +181,9 @@ fn falls_back_to_a_default_parameter() {
     let req = request("GET", "/search", "", "");
     assert_eq!(req.param_or("q", "fallback"), "fallback");
 }
+
+#[test]
+fn parses_a_numeric_parameter() {
+    let req = request("GET", "/search", "limit=25", "");
+    assert_eq!(req.param_num("limit", 10), 25);
+}
