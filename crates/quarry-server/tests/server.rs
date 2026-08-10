@@ -72,3 +72,14 @@ fn state(temp: &TempDir) -> AppState {
         started: Instant::now(),
     }
 }
+
+/// Builds a request without going through a socket.
+fn request(method: &str, path: &str, query: &str, body: &str) -> Request {
+    Request {
+        method: method.to_string(),
+        path: path.to_string(),
+        query: parse_query(query),
+        headers: HashMap::new(),
+        body: body.to_string(),
+    }
+}
