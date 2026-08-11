@@ -219,3 +219,12 @@ fn a_boolean_parameter_is_false_when_absent_or_denied() {
 fn keep_alive_is_the_http_11_default() {
     assert!(request("GET", "/health", "", "").wants_keep_alive());
 }
+
+#[test]
+fn an_explicit_close_header_ends_the_connection() {
+    let mut req = request("GET", "/health", "", "");
+    req.headers
+        .insert("connection".to_string(), "close".to_string());
+
+    assert!(!req.wants_keep_alive());
+}
