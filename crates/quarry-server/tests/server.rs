@@ -318,3 +318,9 @@ fn an_unmapped_status_gets_a_placeholder() {
 fn escapes_quotes_and_backslashes() {
     assert_eq!(escape_json_string(r#"a"b\c"#), r#"a\"b\\c"#);
 }
+
+#[test]
+fn escapes_control_characters() {
+    assert_eq!(escape_json_string("a\nb"), "a\\nb");
+    assert_eq!(escape_json_string("\u{01}"), "\\u0001");
+}
