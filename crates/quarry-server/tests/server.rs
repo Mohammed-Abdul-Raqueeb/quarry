@@ -268,3 +268,10 @@ fn an_extra_header_is_rendered() {
     let response = Response::text(200, "x").with_header("X-Thing", "value");
     assert!(String::from_utf8_lossy(&response.render(true)).contains("X-Thing: value\r\n"));
 }
+
+#[test]
+fn a_json_response_sets_its_content_type() {
+    assert!(Response::json(200, "{}")
+        .content_type
+        .contains("application/json"));
+}
