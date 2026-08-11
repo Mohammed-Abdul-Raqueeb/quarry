@@ -255,3 +255,10 @@ fn renders_connection_close_when_asked() {
     let rendered = Response::text(200, "x").render(false);
     assert!(String::from_utf8_lossy(&rendered).contains("Connection: close"));
 }
+
+#[test]
+fn content_length_counts_bytes_not_characters() {
+    // A multibyte body with a character count would truncate on the wire.
+    let rendered = Response::text(200, "café").render(true);
+    assert!(String::from_utf8_lossy(&rendered).contains("Content-Length: 5\r\n"));
+}
