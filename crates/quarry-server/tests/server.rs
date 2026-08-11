@@ -281,3 +281,9 @@ fn an_error_response_is_a_json_object() {
     let response = Response::error(404, "missing");
     assert_eq!(response.body, r#"{"error":"missing"}"#);
 }
+
+#[test]
+fn an_error_message_with_quotes_is_escaped() {
+    let response = Response::error(400, r#"bad "input""#);
+    assert!(quarry_core::json::parse(&response.body).is_ok());
+}
