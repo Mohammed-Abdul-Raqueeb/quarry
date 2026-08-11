@@ -249,3 +249,9 @@ fn renders_a_status_line_and_headers() {
     assert!(text.contains("Content-Length: 5\r\n"));
     assert!(text.contains("Connection: keep-alive\r\n"));
 }
+
+#[test]
+fn renders_connection_close_when_asked() {
+    let rendered = Response::text(200, "x").render(false);
+    assert!(String::from_utf8_lossy(&rendered).contains("Connection: close"));
+}
