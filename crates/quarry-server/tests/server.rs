@@ -207,3 +207,10 @@ fn a_boolean_parameter_accepts_several_spellings() {
         assert!(req.param_flag("highlight"), "{spelling} should be truthy");
     }
 }
+
+#[test]
+fn a_boolean_parameter_is_false_when_absent_or_denied() {
+    assert!(!request("GET", "/search", "", "").param_flag("highlight"));
+    assert!(!request("GET", "/search", "highlight=0", "").param_flag("highlight"));
+    assert!(!request("GET", "/search", "highlight=false", "").param_flag("highlight"));
+}
