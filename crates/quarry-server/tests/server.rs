@@ -313,3 +313,8 @@ fn an_unmapped_status_gets_a_placeholder() {
 }
 
 // ---- json escaping ------------------------------------------------------
+
+#[test]
+fn escapes_quotes_and_backslashes() {
+    assert_eq!(escape_json_string(r#"a"b\c"#), r#"a\"b\\c"#);
+}
