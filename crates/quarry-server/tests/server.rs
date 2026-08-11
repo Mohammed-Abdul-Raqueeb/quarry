@@ -239,3 +239,13 @@ fn the_close_header_is_matched_case_insensitively() {
 }
 
 // ---- responses ----------------------------------------------------------
+
+#[test]
+fn renders_a_status_line_and_headers() {
+    let rendered = Response::text(200, "hello").render(true);
+    let text = String::from_utf8_lossy(&rendered);
+
+    assert!(text.starts_with("HTTP/1.1 200 OK\r\n"));
+    assert!(text.contains("Content-Length: 5\r\n"));
+    assert!(text.contains("Connection: keep-alive\r\n"));
+}
