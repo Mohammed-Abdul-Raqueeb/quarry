@@ -275,3 +275,9 @@ fn a_json_response_sets_its_content_type() {
         .content_type
         .contains("application/json"));
 }
+
+#[test]
+fn an_error_response_is_a_json_object() {
+    let response = Response::error(404, "missing");
+    assert_eq!(response.body, r#"{"error":"missing"}"#);
+}
