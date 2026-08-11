@@ -295,3 +295,14 @@ fn the_headers_and_body_are_separated_by_a_blank_line() {
 
     assert!(text.contains("\r\n\r\nbody"));
 }
+
+#[test]
+fn reason_phrases_cover_the_statuses_in_use() {
+    assert_eq!(reason_phrase(200), "OK");
+    assert_eq!(reason_phrase(400), "Bad Request");
+    assert_eq!(reason_phrase(404), "Not Found");
+    assert_eq!(reason_phrase(405), "Method Not Allowed");
+    assert_eq!(reason_phrase(413), "Payload Too Large");
+    assert_eq!(reason_phrase(422), "Unprocessable Entity");
+    assert_eq!(reason_phrase(500), "Internal Server Error");
+}
