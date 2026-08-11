@@ -214,3 +214,8 @@ fn a_boolean_parameter_is_false_when_absent_or_denied() {
     assert!(!request("GET", "/search", "highlight=0", "").param_flag("highlight"));
     assert!(!request("GET", "/search", "highlight=false", "").param_flag("highlight"));
 }
+
+#[test]
+fn keep_alive_is_the_http_11_default() {
+    assert!(request("GET", "/health", "", "").wants_keep_alive());
+}
