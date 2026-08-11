@@ -193,3 +193,17 @@ fn a_non_numeric_parameter_uses_the_default() {
     let req = request("GET", "/search", "limit=lots", "");
     assert_eq!(req.param_num("limit", 10), 10);
 }
+
+#[test]
+fn a_boolean_parameter_accepts_several_spellings() {
+    // What someone poking at the API with curl will expect.
+    for spelling in [
+        "highlight",
+        "highlight=1",
+        "highlight=true",
+        "highlight=yes",
+    ] {
+        let req = request("GET", "/search", spelling, "");
+        assert!(req.param_flag("highlight"), "{spelling} should be truthy");
+    }
+}
