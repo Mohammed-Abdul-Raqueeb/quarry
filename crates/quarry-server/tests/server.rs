@@ -329,3 +329,21 @@ fn escapes_control_characters() {
 fn leaves_ordinary_text_alone() {
     assert_eq!(escape_json_string("plain text"), "plain text");
 }
+
+// The assertions are constant by design: this is a guard rail on a tuning
+// constant, so it fails the build if someone changes it past a sane range.
+#[allow(clippy::assertions_on_constants)]
+#[test]
+fn the_body_limit_is_large_enough_to_be_useful_and_small_enough_to_bound_memory() {
+    // The body is read into a single allocation sized from Content-Length, so
+    // this number is the per-request memory ceiling. It has to clear a
+    // realistic batch of documents without letting one header claim a
+    // gigabyte.
+    assert!(MAX_BODY >= 1024 * 1024, "too small for a real batch");
+    assert!(
+        MAX_BODY <= 64 * 1024 * 1024,
+        "too large to allocate per request"
+    );
+}
+
+// ---- routing ------------------------------------------------------------
