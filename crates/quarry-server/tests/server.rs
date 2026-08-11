@@ -287,3 +287,11 @@ fn an_error_message_with_quotes_is_escaped() {
     let response = Response::error(400, r#"bad "input""#);
     assert!(quarry_core::json::parse(&response.body).is_ok());
 }
+
+#[test]
+fn the_headers_and_body_are_separated_by_a_blank_line() {
+    let rendered = Response::text(200, "body").render(true);
+    let text = String::from_utf8_lossy(&rendered);
+
+    assert!(text.contains("\r\n\r\nbody"));
+}
