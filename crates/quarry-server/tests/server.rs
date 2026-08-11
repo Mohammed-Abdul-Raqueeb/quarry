@@ -262,3 +262,9 @@ fn content_length_counts_bytes_not_characters() {
     let rendered = Response::text(200, "café").render(true);
     assert!(String::from_utf8_lossy(&rendered).contains("Content-Length: 5\r\n"));
 }
+
+#[test]
+fn an_extra_header_is_rendered() {
+    let response = Response::text(200, "x").with_header("X-Thing", "value");
+    assert!(String::from_utf8_lossy(&response.render(true)).contains("X-Thing: value\r\n"));
+}
