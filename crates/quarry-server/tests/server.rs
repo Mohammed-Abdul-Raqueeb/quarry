@@ -306,3 +306,10 @@ fn reason_phrases_cover_the_statuses_in_use() {
     assert_eq!(reason_phrase(422), "Unprocessable Entity");
     assert_eq!(reason_phrase(500), "Internal Server Error");
 }
+
+#[test]
+fn an_unmapped_status_gets_a_placeholder() {
+    assert_eq!(reason_phrase(599), "Unknown");
+}
+
+// ---- json escaping ------------------------------------------------------
