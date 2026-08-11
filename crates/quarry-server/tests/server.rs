@@ -324,3 +324,8 @@ fn escapes_control_characters() {
     assert_eq!(escape_json_string("a\nb"), "a\\nb");
     assert_eq!(escape_json_string("\u{01}"), "\\u0001");
 }
+
+#[test]
+fn leaves_ordinary_text_alone() {
+    assert_eq!(escape_json_string("plain text"), "plain text");
+}
