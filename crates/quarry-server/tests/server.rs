@@ -228,3 +228,14 @@ fn an_explicit_close_header_ends_the_connection() {
 
     assert!(!req.wants_keep_alive());
 }
+
+#[test]
+fn the_close_header_is_matched_case_insensitively() {
+    let mut req = request("GET", "/health", "", "");
+    req.headers
+        .insert("connection".to_string(), "Close".to_string());
+
+    assert!(!req.wants_keep_alive());
+}
+
+// ---- responses ----------------------------------------------------------
