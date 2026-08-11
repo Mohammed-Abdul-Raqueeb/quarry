@@ -347,3 +347,17 @@ fn the_body_limit_is_large_enough_to_be_useful_and_small_enough_to_bound_memory(
 }
 
 // ---- routing ------------------------------------------------------------
+
+#[test]
+fn health_reports_ok() {
+    let temp = TempDir::new("health");
+    let response = route(&request("GET", "/health", "", ""), &state(&temp));
+
+    assert_eq!(response.status, 200);
+    assert_eq!(
+        json(&response)
+            .get("status")
+            .and_then(quarry_core::Json::as_str),
+        Some("ok")
+    );
+}
