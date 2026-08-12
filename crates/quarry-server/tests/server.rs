@@ -361,3 +361,16 @@ fn health_reports_ok() {
         Some("ok")
     );
 }
+
+#[test]
+fn health_reports_the_version() {
+    let temp = TempDir::new("health-version");
+    let response = route(&request("GET", "/health", "", ""), &state(&temp));
+
+    assert_eq!(
+        json(&response)
+            .get("version")
+            .and_then(quarry_core::Json::as_str),
+        Some(quarry_core::VERSION)
+    );
+}
