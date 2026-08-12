@@ -601,3 +601,11 @@ fn post_search_without_a_q_field_is_a_422() {
 
     assert_eq!(response.status, 422);
 }
+
+#[test]
+fn an_unknown_path_is_a_404() {
+    let temp = TempDir::new("404");
+    let response = route(&request("GET", "/nope", "", ""), &state(&temp));
+
+    assert_eq!(response.status, 404);
+}
