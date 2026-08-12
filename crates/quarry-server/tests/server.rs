@@ -582,3 +582,11 @@ fn post_search_honours_a_limit_in_the_body() {
 
     assert_eq!(hits, Some(1));
 }
+
+#[test]
+fn post_search_with_a_malformed_body_is_a_400() {
+    let temp = TempDir::new("post-bad");
+    let response = route(&request("POST", "/search", "", "{oops"), &state(&temp));
+
+    assert_eq!(response.status, 400);
+}
