@@ -432,3 +432,11 @@ fn search_echoes_the_query_back() {
         Some("ownership")
     );
 }
+
+#[test]
+fn search_reports_how_long_it_took() {
+    let temp = TempDir::new("search-timing");
+    let response = route(&request("GET", "/search", "q=ownership", ""), &state(&temp));
+
+    assert!(json(&response).get("took_us").is_some());
+}
