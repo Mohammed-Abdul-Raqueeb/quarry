@@ -476,3 +476,19 @@ fn an_unknown_field_is_a_422_with_a_suggestion() {
         response.body
     );
 }
+
+#[test]
+fn the_limit_is_honoured() {
+    let temp = TempDir::new("search-limit");
+    let response = route(
+        &request("GET", "/search", "q=rust+OR+python&limit=1", ""),
+        &state(&temp),
+    );
+
+    let hits = json(&response)
+        .get("hits")
+        .and_then(quarry_core::Json::as_array)
+        .map(<[quarry_core::Json]>::len);
+
+    assert_eq!(hits, Some(1));
+}
