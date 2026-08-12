@@ -590,3 +590,14 @@ fn post_search_with_a_malformed_body_is_a_400() {
 
     assert_eq!(response.status, 400);
 }
+
+#[test]
+fn post_search_without_a_q_field_is_a_422() {
+    let temp = TempDir::new("post-noq");
+    let response = route(
+        &request("POST", "/search", "", r#"{"limit":5}"#),
+        &state(&temp),
+    );
+
+    assert_eq!(response.status, 422);
+}
