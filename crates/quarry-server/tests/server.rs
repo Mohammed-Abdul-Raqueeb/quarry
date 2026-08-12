@@ -566,3 +566,19 @@ fn post_search_reads_the_query_from_the_body() {
         Some(1.0)
     );
 }
+
+#[test]
+fn post_search_honours_a_limit_in_the_body() {
+    let temp = TempDir::new("post-limit");
+    let response = route(
+        &request("POST", "/search", "", r#"{"q":"rust OR python","limit":1}"#),
+        &state(&temp),
+    );
+
+    let hits = json(&response)
+        .get("hits")
+        .and_then(quarry_core::Json::as_array)
+        .map(<[quarry_core::Json]>::len);
+
+    assert_eq!(hits, Some(1));
+}
