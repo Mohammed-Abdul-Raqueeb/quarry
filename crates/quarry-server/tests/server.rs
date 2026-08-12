@@ -397,3 +397,17 @@ fn schema_returns_the_field_definitions() {
     assert_eq!(response.status, 200);
     assert!(response.body.contains("title"));
 }
+
+#[test]
+fn search_finds_a_document() {
+    let temp = TempDir::new("search");
+    let response = route(&request("GET", "/search", "q=ownership", ""), &state(&temp));
+
+    assert_eq!(response.status, 200);
+    assert_eq!(
+        json(&response)
+            .get("total")
+            .and_then(quarry_core::Json::as_f64),
+        Some(1.0)
+    );
+}
