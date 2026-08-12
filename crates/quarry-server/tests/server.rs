@@ -460,3 +460,19 @@ fn a_malformed_query_is_a_400() {
 
     assert_eq!(response.status, 400);
 }
+
+#[test]
+fn an_unknown_field_is_a_422_with_a_suggestion() {
+    let temp = TempDir::new("search-field");
+    let response = route(
+        &request("GET", "/search", "q=titel%3Arust", ""),
+        &state(&temp),
+    );
+
+    assert_eq!(response.status, 422);
+    assert!(
+        response.body.contains("did you mean"),
+        "body was {}",
+        response.body
+    );
+}
