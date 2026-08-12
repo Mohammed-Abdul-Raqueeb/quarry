@@ -525,3 +525,11 @@ fn highlights_are_returned_when_asked() {
         response.body
     );
 }
+
+#[test]
+fn highlights_are_omitted_by_default() {
+    let temp = TempDir::new("search-nohighlight");
+    let response = route(&request("GET", "/search", "q=ownership", ""), &state(&temp));
+
+    assert!(!response.body.contains("highlights"));
+}
