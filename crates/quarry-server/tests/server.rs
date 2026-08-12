@@ -448,3 +448,15 @@ fn search_without_a_query_is_a_422() {
 
     assert_eq!(response.status, 422);
 }
+
+#[test]
+fn a_malformed_query_is_a_400() {
+    // The client's mistake, with the parser's message naming the position.
+    let temp = TempDir::new("search-bad");
+    let response = route(
+        &request("GET", "/search", "q=title%3A%28unclosed", ""),
+        &state(&temp),
+    );
+
+    assert_eq!(response.status, 400);
+}
