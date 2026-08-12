@@ -549,3 +549,20 @@ fn planner_notes_are_surfaced_to_the_caller() {
         response.body
     );
 }
+
+#[test]
+fn post_search_reads_the_query_from_the_body() {
+    let temp = TempDir::new("post");
+    let response = route(
+        &request("POST", "/search", "", r#"{"q":"ownership"}"#),
+        &state(&temp),
+    );
+
+    assert_eq!(response.status, 200);
+    assert_eq!(
+        json(&response)
+            .get("total")
+            .and_then(quarry_core::Json::as_f64),
+        Some(1.0)
+    );
+}
