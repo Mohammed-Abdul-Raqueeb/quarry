@@ -388,3 +388,12 @@ fn stats_reports_the_document_count() {
         Some(2.0)
     );
 }
+
+#[test]
+fn schema_returns_the_field_definitions() {
+    let temp = TempDir::new("schema");
+    let response = route(&request("GET", "/schema", "", ""), &state(&temp));
+
+    assert_eq!(response.status, 200);
+    assert!(response.body.contains("title"));
+}
