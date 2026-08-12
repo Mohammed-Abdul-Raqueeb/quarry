@@ -510,3 +510,18 @@ fn the_limit_is_clamped_to_a_maximum() {
 
     assert!(hits <= MAX_LIMIT);
 }
+
+#[test]
+fn highlights_are_returned_when_asked() {
+    let temp = TempDir::new("search-highlight");
+    let response = route(
+        &request("GET", "/search", "q=ownership&highlight", ""),
+        &state(&temp),
+    );
+
+    assert!(
+        response.body.contains("<mark>"),
+        "body was {}",
+        response.body
+    );
+}
