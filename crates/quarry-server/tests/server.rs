@@ -411,3 +411,11 @@ fn search_finds_a_document() {
         Some(1.0)
     );
 }
+
+#[test]
+fn search_returns_the_stored_document() {
+    let temp = TempDir::new("search-doc");
+    let response = route(&request("GET", "/search", "q=ownership", ""), &state(&temp));
+
+    assert!(response.body.contains("Rust ownership"));
+}
