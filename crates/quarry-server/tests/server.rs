@@ -492,3 +492,21 @@ fn the_limit_is_honoured() {
 
     assert_eq!(hits, Some(1));
 }
+
+#[test]
+fn the_limit_is_clamped_to_a_maximum() {
+    // `?limit=100000000` would otherwise ask the collector for a heap that
+    // size before a single document is scored.
+    let temp = TempDir::new("search-clamp");
+    let response = route(
+        &request("GET", "/search", "q=rust&limit=999999999", ""),
+        &state(&temp),
+    );
+
+    let hits = json(&response)
+        .get("hits")
+        .and_then(quarry_core::Json::as_array)
+        .map_or(0, <[quarry_core::Json]>::len);
+
+    assert!(hits <= MAX_LIMIT);
+}
