@@ -533,3 +533,19 @@ fn highlights_are_omitted_by_default() {
 
     assert!(!response.body.contains("highlights"));
 }
+
+#[test]
+fn planner_notes_are_surfaced_to_the_caller() {
+    // Without them a dropped stopword makes the result set look arbitrary.
+    let temp = TempDir::new("search-notes");
+    let response = route(
+        &request("GET", "/search", "q=the+AND+ownership", ""),
+        &state(&temp),
+    );
+
+    assert!(
+        response.body.contains("notes"),
+        "body was {}",
+        response.body
+    );
+}
