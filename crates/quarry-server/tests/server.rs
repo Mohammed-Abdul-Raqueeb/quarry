@@ -374,3 +374,17 @@ fn health_reports_the_version() {
         Some(quarry_core::VERSION)
     );
 }
+
+#[test]
+fn stats_reports_the_document_count() {
+    let temp = TempDir::new("stats");
+    let response = route(&request("GET", "/stats", "", ""), &state(&temp));
+
+    assert_eq!(response.status, 200);
+    assert_eq!(
+        json(&response)
+            .get("documents")
+            .and_then(quarry_core::Json::as_f64),
+        Some(2.0)
+    );
+}
