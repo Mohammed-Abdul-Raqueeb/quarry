@@ -440,3 +440,11 @@ fn search_reports_how_long_it_took() {
 
     assert!(json(&response).get("took_us").is_some());
 }
+
+#[test]
+fn search_without_a_query_is_a_422() {
+    let temp = TempDir::new("search-empty");
+    let response = route(&request("GET", "/search", "", ""), &state(&temp));
+
+    assert_eq!(response.status, 422);
+}
