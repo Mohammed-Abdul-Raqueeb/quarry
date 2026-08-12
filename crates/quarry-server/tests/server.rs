@@ -419,3 +419,16 @@ fn search_returns_the_stored_document() {
 
     assert!(response.body.contains("Rust ownership"));
 }
+
+#[test]
+fn search_echoes_the_query_back() {
+    let temp = TempDir::new("search-echo");
+    let response = route(&request("GET", "/search", "q=ownership", ""), &state(&temp));
+
+    assert_eq!(
+        json(&response)
+            .get("query")
+            .and_then(quarry_core::Json::as_str),
+        Some("ownership")
+    );
+}
