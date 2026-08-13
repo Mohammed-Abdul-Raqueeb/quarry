@@ -609,3 +609,12 @@ fn an_unknown_path_is_a_404() {
 
     assert_eq!(response.status, 404);
 }
+
+#[test]
+fn a_wrong_method_on_a_known_path_is_a_405() {
+    // The distinction tells a client whether to fix the URL or the verb.
+    let temp = TempDir::new("405");
+    let response = route(&request("POST", "/health", "", ""), &state(&temp));
+
+    assert_eq!(response.status, 405);
+}
