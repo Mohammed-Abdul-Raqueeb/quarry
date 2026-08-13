@@ -700,3 +700,32 @@ fn a_pool_runs_every_queued_job() {
     drop(pool);
     assert_eq!(*count.lock().expect("lock"), 50);
 }
+
+#[test]
+fn a_pool_spreads_work_across_its_workers() {
+    let pool = ThreadPool::new(4);
+    let names = Arc::new(Mutex::new(Vec::new()));
+
+    for _ in 0..40 {
+        let seen = Arc::clone(&names);
+        pool.execute(move || {
+            // Each worker thread is named, so the set of names shows how many
+            // actually took work.
+            let name = std::thread::current()
+                .name()
+                .unwrap_or("unnamed")
+                .to_string();
+            seen.lock().expect("lock").push(name);
+            std::thread::sleep(std::time::Duration::from_millis(1));
+        })
+        .expect("should queue");
+    }
+
+    drop(pool);
+
+    let mut distinct = names.lock().expect("lock").clone();
+    distinct.sort();
+    distinct.dedup();
+
+    assert!(distinct.len() > 1, "only {distinct:?} did any work");
+}
