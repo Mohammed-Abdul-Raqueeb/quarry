@@ -73,3 +73,12 @@ const VOCABULARY: &[&str] = &[
     "highlight",
     "merge",
 ];
+
+fn schema() -> Schema {
+    Schema::builder()
+        .text("title")
+        .and_then(|b| b.text("body"))
+        .and_then(|b| b.keyword("tag"))
+        .and_then(SchemaBuilder::build)
+        .expect("schema should build")
+}
