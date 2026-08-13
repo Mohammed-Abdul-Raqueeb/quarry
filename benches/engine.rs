@@ -115,3 +115,27 @@ impl Rng {
     /// realistically skewed frequencies.
     fn word(&mut self) -> String {
         const TAIL_SIZE: usize = 20_000;
+
+        let roll = self.below(1000);
+
+        if roll < 400 {
+            // The 400-per-mille head: a handful of words, very frequent.
+            VOCABULARY[self.below(8)].to_string()
+        } else if roll < 700 {
+            VOCABULARY[self.below(VOCABULARY.len())].to_string()
+        } else if roll < 950 {
+            // Mid-frequency band.
+            format!("term{:04}", self.below(TAIL_SIZE / 20))
+        } else {
+            // The long tail, where most of the dictionary lives.
+            format!("term{:04}", self.below(TAIL_SIZE))
+        }
+    }
+
+    fn sentence(&mut self, words: usize) -> String {
+        (0..words)
+            .map(|_| self.word())
+            .collect::<Vec<_>>()
+            .join(" ")
+    }
+}
