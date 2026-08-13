@@ -668,3 +668,18 @@ fn a_machine_sized_pool_is_within_bounds() {
     let size = ThreadPool::sized_for_machine().size();
     assert!((2..=32).contains(&size), "size was {size}");
 }
+
+#[test]
+fn a_pool_runs_a_job() {
+    let pool = ThreadPool::new(2);
+    let seen = Arc::new(Mutex::new(false));
+    let flag = Arc::clone(&seen);
+
+    pool.execute(move || {
+        *flag.lock().expect("lock") = true;
+    })
+    .expect("should queue");
+
+    drop(pool); // joins the workers
+    assert!(*seen.lock().expect("lock"));
+}
