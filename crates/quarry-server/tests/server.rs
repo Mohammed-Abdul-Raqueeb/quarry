@@ -662,3 +662,9 @@ fn a_zero_sized_pool_is_clamped_to_one() {
     // A pool that accepts jobs and never runs them looks exactly like a hang.
     assert_eq!(ThreadPool::new(0).size(), 1);
 }
+
+#[test]
+fn a_machine_sized_pool_is_within_bounds() {
+    let size = ThreadPool::sized_for_machine().size();
+    assert!((2..=32).contains(&size), "size was {size}");
+}
