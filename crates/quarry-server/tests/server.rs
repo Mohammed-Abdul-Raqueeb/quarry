@@ -618,3 +618,11 @@ fn a_wrong_method_on_a_known_path_is_a_405() {
 
     assert_eq!(response.status, 405);
 }
+
+#[test]
+fn a_wrong_method_on_search_is_a_405() {
+    let temp = TempDir::new("405-search");
+    let response = route(&request("DELETE", "/search", "", ""), &state(&temp));
+
+    assert_eq!(response.status, 405);
+}
