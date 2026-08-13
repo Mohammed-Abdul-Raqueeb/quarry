@@ -15,3 +15,33 @@ use quarry_core::{
 };
 use std::hint::black_box;
 use std::time::{Duration, Instant};
+
+/// Words assembled into synthetic documents.
+///
+/// A fixed vocabulary with a skewed distribution, because a uniform one makes
+/// every term equally selective and hides the difference between a common and
+/// a rare term — which is most of what query performance depends on.
+const VOCABULARY: &[&str] = &[
+    "rust",
+    "ownership",
+    "borrow",
+    "checker",
+    "compile",
+    "time",
+    "memory",
+    "safety",
+    "thread",
+    "concurrency",
+    "iterator",
+    "abstraction",
+    "zero",
+    "cost",
+    "trait",
+    "lifetime",
+    "reference",
+    "mutable",
+    "immutable",
+    "allocation",
+    "stack",
+    "heap",
+    "pointer",
