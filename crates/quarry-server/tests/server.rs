@@ -626,3 +626,28 @@ fn a_wrong_method_on_search_is_a_405() {
 
     assert_eq!(response.status, 405);
 }
+
+#[test]
+fn every_response_body_is_valid_json() {
+    let temp = TempDir::new("json-everywhere");
+    let app = state(&temp);
+
+    for (method, path, query) in [
+        ("GET", "/health", ""),
+        ("GET", "/stats", ""),
+        ("GET", "/schema", ""),
+        ("GET", "/search", "q=rust"),
+        ("GET", "/nope", ""),
+        ("POST", "/health", ""),
+        ("GET", "/search", ""),
+    ] {
+        let response = route(&request(method, path, query, ""), &app);
+        assert!(
+            quarry_core::json::parse(&response.body).is_ok(),
+            "{method} {path} returned non-json: {}",
+            response.body
+        );
+    }
+}
+
+// ---- thread pool --------------------------------------------------------
