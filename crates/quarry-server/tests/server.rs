@@ -651,3 +651,8 @@ fn every_response_body_is_valid_json() {
 }
 
 // ---- thread pool --------------------------------------------------------
+
+#[test]
+fn a_pool_reports_its_size() {
+    assert_eq!(ThreadPool::new(4).size(), 4);
+}
