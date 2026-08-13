@@ -737,3 +737,10 @@ fn a_pool_refuses_work_after_shutdown() {
 
     assert!(pool.execute(|| {}).is_err());
 }
+
+#[test]
+fn shutting_down_twice_is_harmless() {
+    let mut pool = ThreadPool::new(2);
+    pool.shutdown();
+    pool.shutdown();
+}
