@@ -88,3 +88,30 @@ fn schema() -> Schema {
 /// Seeded and reproducible so two runs benchmark the same corpus; a real RNG
 /// would make run-to-run comparison meaningless.
 struct Rng(u64);
+
+impl Rng {
+    fn next(&mut self) -> u64 {
+        // xorshift64*, which is three shifts and a multiply.
+        self.0 ^= self.0 >> 12;
+        self.0 ^= self.0 << 25;
+        self.0 ^= self.0 >> 27;
+        self.0.wrapping_mul(0x2545_F491_4F6C_DD1D)
+    }
+
+    fn below(&mut self, limit: usize) -> usize {
+        (self.next() % limit as u64) as usize
+    }
+
+    /// A word drawn from a Zipf-like distribution.
+    ///
+    /// Real prose has a few very common words and a long tail of rare ones, and
+    /// that shape is most of what determines query cost: a common term means a
+    /// huge posting list to score, a rare one means a short walk. A fixed
+    /// fifty-word vocabulary produces neither — every list is enormous, the
+    /// dictionary is tiny, and front-coding and merging have nothing to show.
+    ///
+    /// So the common words come from the hand-written list and the tail is
+    /// synthesised, giving a dictionary of roughly `TAIL_SIZE` entries with
+    /// realistically skewed frequencies.
+    fn word(&mut self) -> String {
+        const TAIL_SIZE: usize = 20_000;
