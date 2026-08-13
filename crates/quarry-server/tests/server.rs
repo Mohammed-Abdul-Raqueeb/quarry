@@ -729,3 +729,11 @@ fn a_pool_spreads_work_across_its_workers() {
 
     assert!(distinct.len() > 1, "only {distinct:?} did any work");
 }
+
+#[test]
+fn a_pool_refuses_work_after_shutdown() {
+    let mut pool = ThreadPool::new(2);
+    pool.shutdown();
+
+    assert!(pool.execute(|| {}).is_err());
+}
