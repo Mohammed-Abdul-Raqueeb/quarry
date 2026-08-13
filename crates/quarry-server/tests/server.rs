@@ -683,3 +683,20 @@ fn a_pool_runs_a_job() {
     drop(pool); // joins the workers
     assert!(*seen.lock().expect("lock"));
 }
+
+#[test]
+fn a_pool_runs_every_queued_job() {
+    let pool = ThreadPool::new(4);
+    let count = Arc::new(Mutex::new(0usize));
+
+    for _ in 0..50 {
+        let counter = Arc::clone(&count);
+        pool.execute(move || {
+            *counter.lock().expect("lock") += 1;
+        })
+        .expect("should queue");
+    }
+
+    drop(pool);
+    assert_eq!(*count.lock().expect("lock"), 50);
+}
