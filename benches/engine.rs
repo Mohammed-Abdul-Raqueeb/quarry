@@ -139,3 +139,17 @@ impl Rng {
             .join(" ")
     }
 }
+
+fn corpus(count: usize) -> Vec<Document> {
+    let mut rng = Rng(0x5EED_1234_5678_9ABC);
+
+    (0..count)
+        .map(|_| {
+            let mut doc = Document::new();
+            doc.add(0, Value::Text(rng.sentence(6)));
+            doc.add(1, Value::Text(rng.sentence(60)));
+            doc.add(2, Value::Keyword(VOCABULARY[rng.below(8)].to_string()));
+            doc
+        })
+        .collect()
+}
