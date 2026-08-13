@@ -744,3 +744,23 @@ fn shutting_down_twice_is_harmless() {
     pool.shutdown();
     pool.shutdown();
 }
+
+#[test]
+fn a_panicking_job_does_not_take_the_pool_down() {
+    let pool = ThreadPool::new(2);
+
+    pool.execute(|| panic!("deliberate")).expect("should queue");
+
+    let survived = Arc::new(Mutex::new(false));
+    let flag = Arc::clone(&survived);
+    pool.execute(move || {
+        *flag.lock().expect("lock") = true;
+    })
+    .expect("should queue");
+
+    drop(pool);
+    assert!(
+        *survived.lock().expect("lock"),
+        "the pool stopped after a panic"
+    );
+}
