@@ -82,3 +82,9 @@ fn schema() -> Schema {
         .and_then(SchemaBuilder::build)
         .expect("schema should build")
 }
+
+/// A deterministic pseudo-random generator.
+///
+/// Seeded and reproducible so two runs benchmark the same corpus; a real RNG
+/// would make run-to-run comparison meaningless.
+struct Rng(u64);
