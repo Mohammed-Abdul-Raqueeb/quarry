@@ -404,3 +404,27 @@ fn bench_queries() {
     })
     .report();
 }
+
+fn bench_merge() {
+    section("Merging");
+
+    let segments: Vec<Segment> = (0..4).flat_map(|_| index_corpus(&corpus(2_500))).collect();
+    let schema = schema();
+
+    let before: usize = segments.iter().map(|s| s.write().len()).sum();
+
+    measure("merge 4 x 2,500-document segments", 5, 1, || {
+        black_box(quarry_core::index::merge(&segments, &schema).expect("merge"));
+    })
+    .report();
+
+    let merged = quarry_core::index::merge(&segments, &schema).expect("merge");
+    let after = merged.write().len();
+
+    println!();
+    println!(
+        "  {before} bytes -> {after} bytes ({:.1}% smaller), {} dictionary entries collapsed",
+        (1.0 - after as f64 / before as f64) * 100.0,
+        segments.iter().map(|s| s.index.term_count()).sum::<usize>() - merged.index.term_count()
+    );
+}
