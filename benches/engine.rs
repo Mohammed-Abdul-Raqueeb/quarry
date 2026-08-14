@@ -310,3 +310,29 @@ fn bench_indexing() {
         bytes as f64 / 2_000.0
     );
 }
+
+fn bench_codec() {
+    section("Segment codec");
+
+    let docs = corpus(5_000);
+    let segments = index_corpus(&docs);
+    let segment = &segments[0];
+    let bytes = segment.write();
+
+    measure("serialize a 5,000-document segment", 9, 20, || {
+        black_box(segment.write());
+    })
+    .report();
+
+    measure("parse a 5,000-document segment", 9, 20, || {
+        black_box(Segment::read(&bytes).expect("should read"));
+    })
+    .report();
+
+    println!();
+    println!(
+        "  {} bytes, {} dictionary entries",
+        bytes.len(),
+        segment.index.term_count()
+    );
+}
