@@ -247,3 +247,16 @@ fn section(title: &str) {
     println!("{title}");
     println!("{}", "─".repeat(100));
 }
+
+fn main() {
+    println!("Quarry {} benchmarks", quarry_core::VERSION);
+    println!("Each line: median of 9 samples, with the best and worst sample in brackets.");
+
+    bench_analysis();
+    bench_indexing();
+    bench_codec();
+    bench_queries();
+    bench_merge();
+
+    println!();
+}
