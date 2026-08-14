@@ -371,3 +371,36 @@ fn bench_queries() {
         black_box(searcher.search(&conjunction, 10).expect("search"));
     })
     .report();
+
+    let disjunction = BooleanQuery::new()
+        .should(TermQuery::new(1, common.clone()))
+        .should(TermQuery::new(1, rare.clone()));
+    measure("two-term OR", 9, 200, || {
+        black_box(searcher.search(&disjunction, 10).expect("search"));
+    })
+    .report();
+
+    let phrase = BooleanQuery::new().phrase(PhraseQuery::new(
+        1,
+        vec![common.clone(), analyzer.terms("ownership").remove(0)],
+    ));
+    measure("two-term phrase", 9, 200, || {
+        black_box(searcher.search(&phrase, 10).expect("search"));
+    })
+    .report();
+
+    // The point of a bounded collector: a large limit should not cost
+    // proportionally more than a small one.
+    for limit in [10usize, 100, 1_000] {
+        measure(&format!("common term, limit {limit}"), 9, 200, || {
+            black_box(searcher.search(&single_common, limit).expect("search"));
+        })
+        .report();
+    }
+
+    let counting = BooleanQuery::new().must(TermQuery::new(1, common));
+    measure("count without ranking", 9, 500, || {
+        black_box(searcher.count(&counting).expect("count"));
+    })
+    .report();
+}
