@@ -38,3 +38,24 @@ this says what the alternatives were.
                                                         ▼
                                                       Hits
 ```
+
+## Segments are immutable
+
+Everything else follows from this. A flush writes a new segment file; nothing is ever updated in
+place.
+
+What it buys:
+
+- **No locking on the write path.** A reader holds a segment that cannot change underneath it.
+- **No partial-write window.** A segment is written to a temporary name and renamed into place, and
+  a rename within one directory is atomic. A process killed mid-write leaves a stray `.tmp` file,
+  not a half-valid segment.
+- **Cheap concurrency.** Any number of threads can search the same segments with no coordination,
+  which is what lets the server use a plain thread pool.
+
+What it costs:
+
+- **No deletes or updates.** Removing a document means reindexing without it. A tombstone bitmap per
+  segment is the usual answer and is not implemented.
+- **Segment accumulation.** Every flush adds a file, and a query visits each one. Merging trades
+  write work for read speed, and `MergePolicy` decides when.
