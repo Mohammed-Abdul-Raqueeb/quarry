@@ -59,3 +59,16 @@ What it costs:
   segment is the usual answer and is not implemented.
 - **Segment accumulation.** Every flush adds a file, and a query visits each one. Merging trades
   write work for read speed, and `MergePolicy` decides when.
+
+## The index is held in memory
+
+`IndexDir::open` reads every segment into RAM and keeps it there. This is the biggest limitation in
+the project and the one most worth understanding before adopting it.
+
+The alternative is memory-mapping the postings and letting the OS page them, which is what Lucene
+and Tantivy do. It was not done here for one reason: `mmap` in Rust requires `unsafe`, and
+`unsafe_code = "forbid"` is a workspace-wide constraint that buys more than paging would.
+
+The practical consequence: an index has to fit in memory with room to work. Postings compress well —
+a few bytes per posting — so tens of millions of documents is reachable on an ordinary machine, but
+a corpus that does not fit needs a different engine.
