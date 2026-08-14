@@ -84,3 +84,13 @@ would be scored as common in both.
 
 The cost is a larger dictionary — the same word appears once per field it occurs in — which
 front-coding largely absorbs, since the entries sort adjacently.
+
+## Document ids are dense and segment-local
+
+Ids are assigned `0, 1, 2, …` in insertion order within a segment. That is what makes gap encoding
+work: consecutive ids differ by small numbers, so a varint spends one byte where a fixed `u32`
+spends four. On a dense posting list this is most of the compression.
+
+It also means an id is meaningless outside its segment. Merging assigns a fresh id space by
+offsetting each segment's ids by the count of everything before it, which keeps them dense and
+ascending. A caller who needs a stable identifier stores one in a keyword field.
