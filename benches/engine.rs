@@ -192,3 +192,38 @@ impl Measurement {
         println!();
     }
 }
+
+/// Runs `body` repeatedly and reports the median of several samples.
+fn measure(label: &str, samples: u32, iterations: u32, mut body: impl FnMut()) -> Measurement {
+    // One untimed pass, so the first measurement does not pay for cold caches
+    // and lazily initialised statics.
+    body();
+
+    let mut timings = Vec::with_capacity(samples as usize);
+
+    for _ in 0..samples {
+        let started = Instant::now();
+        for _ in 0..iterations {
+            body();
+        }
+        timings.push(started.elapsed() / iterations);
+    }
+
+    timings.sort_unstable();
+
+    let median = timings[timings.len() / 2];
+    let per_op = if median.as_secs_f64() > 0.0 {
+        Some(1.0 / median.as_secs_f64())
+    } else {
+        None
+    };
+
+    Measurement {
+        label: label.to_string(),
+        median,
+        best: timings[0],
+        worst: timings[timings.len() - 1],
+        iterations,
+        per_op,
+    }
+}
