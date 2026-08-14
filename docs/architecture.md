@@ -94,3 +94,25 @@ spends four. On a dense posting list this is most of the compression.
 It also means an id is meaningless outside its segment. Merging assigns a fresh id space by
 offsetting each segment's ids by the count of everything before it, which keeps them dense and
 ascending. A caller who needs a stable identifier stores one in a keyword field.
+
+## The query pipeline is three stages, not one
+
+```
+text ──lexer──▶ tokens ──parser──▶ AST ──planner──▶ BooleanQuery
+```
+
+Each stage fails for a different reason, and a user needs to know which:
+
+- **Lexer** — an unterminated quote, a stray `&`. Reported with a character position.
+- **Parser** — unbalanced parentheses, a dangling operator, nesting too deep. Purely syntactic, so
+  it needs no index.
+- **Planner** — an unknown field, a range on a text field, a phrase on a field without positions.
+  These depend on the schema and the dictionary, so they cannot be caught earlier.
+
+Separating them is also what makes the parser testable without an index, which is why there are
+76 parser tests that construct no segments at all.
+
+The planner's output is deliberately lossy. `BooleanQuery` is flat — `must`, `must_any`, `should`,
+`must_not`, `phrases` — so nested alternation collapses. `(a OR b) AND (c OR d)` becomes two
+`must_any` groups, which is exactly right; deeper nesting flattens in ways that change scoring
+slightly. [docs/query-language.md](query-language.md) says where.
