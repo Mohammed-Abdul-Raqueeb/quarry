@@ -241,3 +241,9 @@ fn format_duration(duration: Duration) -> String {
         format!("{:.2}s", nanos as f64 / 1_000_000_000.0)
     }
 }
+
+fn section(title: &str) {
+    println!();
+    println!("{title}");
+    println!("{}", "─".repeat(100));
+}
