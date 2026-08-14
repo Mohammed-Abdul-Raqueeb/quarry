@@ -161,3 +161,13 @@ fn index_corpus(docs: &[Document]) -> Vec<Segment> {
     }
     writer.flush().map(|s| vec![s]).unwrap_or_default()
 }
+
+/// One measured result.
+struct Measurement {
+    label: String,
+    median: Duration,
+    best: Duration,
+    worst: Duration,
+    iterations: u32,
+    per_op: Option<f64>,
+}
