@@ -72,3 +72,15 @@ and Tantivy do. It was not done here for one reason: `mmap` in Rust requires `un
 The practical consequence: an index has to fit in memory with room to work. Postings compress well —
 a few bytes per posting — so tens of millions of documents is reachable on an ordinary machine, but
 a corpus that does not fit needs a different engine.
+
+## Terms are keyed by field, not filtered by it
+
+`TermKey` is `(FieldId, String)`, so `title:rust` and `body:rust` are separate posting lists.
+
+The cheaper design is one list per term with a field tag on each posting, filtered at query time.
+That breaks scoring: BM25's IDF needs the document frequency *for the field being searched*, and a
+shared list only knows the frequency across all fields. A word common in bodies but rare in titles
+would be scored as common in both.
+
+The cost is a larger dictionary — the same word appears once per field it occurs in — which
+front-coding largely absorbs, since the entries sort adjacently.
