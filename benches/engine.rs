@@ -153,3 +153,11 @@ fn corpus(count: usize) -> Vec<Document> {
         })
         .collect()
 }
+
+fn index_corpus(docs: &[Document]) -> Vec<Segment> {
+    let mut writer = IndexWriter::new(schema());
+    for doc in docs {
+        writer.add(doc).expect("should index");
+    }
+    writer.flush().map(|s| vec![s]).unwrap_or_default()
+}
