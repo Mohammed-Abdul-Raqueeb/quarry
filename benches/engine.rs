@@ -171,3 +171,24 @@ struct Measurement {
     iterations: u32,
     per_op: Option<f64>,
 }
+
+impl Measurement {
+    fn report(&self) {
+        let median = format_duration(self.median);
+        let spread = format!(
+            "{} … {}",
+            format_duration(self.best),
+            format_duration(self.worst)
+        );
+
+        print!(
+            "  {:<44} {:>12}   [{:>24}]  x{}",
+            self.label, median, spread, self.iterations
+        );
+
+        if let Some(rate) = self.per_op {
+            print!("   {rate:>12.0}/s");
+        }
+        println!();
+    }
+}
