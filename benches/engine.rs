@@ -260,3 +260,26 @@ fn main() {
 
     println!();
 }
+
+fn bench_analysis() {
+    section("Analysis");
+
+    let analyzer = Analyzer::english();
+    let short = "Rust ownership and the borrow checker";
+    let long = Rng(1).sentence(500);
+
+    measure("analyze a 6-word title", 9, 20_000, || {
+        black_box(analyzer.terms(short));
+    })
+    .report();
+
+    measure("analyze a 500-word body", 9, 500, || {
+        black_box(analyzer.terms(&long));
+    })
+    .report();
+
+    measure("stem one word", 9, 200_000, || {
+        black_box(quarry_core::tokenize::stemmer::stem("connections"));
+    })
+    .report();
+}
