@@ -336,3 +336,38 @@ fn bench_codec() {
         segment.index.term_count()
     );
 }
+
+fn bench_queries() {
+    section("Queries (10,000 documents, single segment)");
+
+    let docs = corpus(10_000);
+    let segments = index_corpus(&docs);
+    let schema = schema();
+    let searcher = Searcher::new(&segments, &schema);
+    let analyzer = Analyzer::english();
+
+    let common = analyzer.terms("rust").remove(0);
+    // A genuine long-tail term, not one from the hand-written head list: it
+    // appears in a handful of documents, which is what makes the contrast with
+    // the common term meaningful.
+    let rare = analyzer.terms("term19873").remove(0);
+
+    let single_common = BooleanQuery::new().must(TermQuery::new(1, common.clone()));
+    measure("term, common (matches ~half)", 9, 200, || {
+        black_box(searcher.search(&single_common, 10).expect("search"));
+    })
+    .report();
+
+    let single_rare = BooleanQuery::new().must(TermQuery::new(1, rare.clone()));
+    measure("term, rare", 9, 2_000, || {
+        black_box(searcher.search(&single_rare, 10).expect("search"));
+    })
+    .report();
+
+    let conjunction = BooleanQuery::new()
+        .must(TermQuery::new(1, common.clone()))
+        .must(TermQuery::new(1, rare.clone()));
+    measure("two-term AND", 9, 500, || {
+        black_box(searcher.search(&conjunction, 10).expect("search"));
+    })
+    .report();
