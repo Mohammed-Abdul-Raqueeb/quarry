@@ -283,3 +283,30 @@ fn bench_analysis() {
     })
     .report();
 }
+
+fn bench_indexing() {
+    section("Indexing");
+
+    for count in [1_000usize, 10_000] {
+        let docs = corpus(count);
+
+        let mut result = measure(&format!("index {count} documents"), 5, 1, || {
+            black_box(index_corpus(&docs));
+        });
+
+        // Documents per second is the number that actually matters here.
+        result.per_op = Some(count as f64 / result.median.as_secs_f64());
+        result.report();
+    }
+
+    let docs = corpus(2_000);
+    let segments = index_corpus(&docs);
+    let bytes = segments.iter().map(|s| s.write().len()).sum::<usize>();
+    let terms = segments.iter().map(|s| s.index.term_count()).sum::<usize>();
+
+    println!();
+    println!(
+        "  2,000 documents: {bytes} bytes on disk, {terms} dictionary entries, {:.1} bytes/doc",
+        bytes as f64 / 2_000.0
+    );
+}
