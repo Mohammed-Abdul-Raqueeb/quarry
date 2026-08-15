@@ -42,3 +42,14 @@ them would force a needless reindex.
 ```
 varint   documents in this segment
 ```
+
+### 3. Field statistics
+
+```
+varint   number of fields
+  varint   field id
+  varint   documents with any value for the field
+  varint   total terms across those documents
+```
+
+Used for BM25's average field length.
