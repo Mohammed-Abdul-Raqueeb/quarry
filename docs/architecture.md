@@ -129,3 +129,16 @@ The fix is a clause type the flat boolean did not have — a group of which at l
 Worth recording because the failure mode is silent. A query returning no results looks like an empty
 corpus, not like a planner bug, and only a test that indexed a word in one field and queried it
 alongside another found it.
+
+## Scoring is behind a trait
+
+`Scorer` takes primitives — term frequency, document frequency, corpus size, field length, average
+field length — rather than a struct, because everything it needs is already in registers when the
+executor reaches it, and it is called once per matching term per document.
+
+BM25 is the default. TF-IDF is kept for comparison, and `ConstantScorer` exists for filters where
+the score is computed and then discarded.
+
+The subtle part is BM25's IDF: `ln(1 + (N - df + 0.5) / (df + 0.5))`. Without the `1 +`, a term
+appearing in more than half the documents gets a *negative* weight, so adding a common word to a
+query would push matching documents down the ranking. There is a test for exactly that.
