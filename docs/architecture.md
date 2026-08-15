@@ -142,3 +142,17 @@ the score is computed and then discarded.
 The subtle part is BM25's IDF: `ln(1 + (N - df + 0.5) / (df + 0.5))`. Without the `1 +`, a term
 appearing in more than half the documents gets a *negative* weight, so adding a common word to a
 query would push matching documents down the ranking. There is a test for exactly that.
+
+## The collector is bounded
+
+`TopK` is a min-heap of size `k`. Sorting every match and truncating would be simpler, but it
+allocates proportional to the result set — on a query matching a million documents for the top ten,
+that allocation is the whole cost of the query.
+
+The heap also exposes `threshold()`, the worst score currently kept, so an executor can skip
+documents that cannot make the cut. The ordering reverses the document-id tiebreak so that once the
+heap is inverted for top-k, equal scores come out lowest-id-first and results are stable across
+runs.
+
+`ScoredDoc` uses `total_cmp` rather than `partial_cmp`. A pathological boost can produce a NaN
+score, and a partial comparison would either panic or quietly break the heap's invariant.
