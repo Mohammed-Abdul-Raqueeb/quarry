@@ -107,3 +107,12 @@ varint   number of documents
 
 Only fields the schema marks `stored` appear here. Numbers are stored as raw bits so they
 round-trip exactly rather than through a decimal rendering.
+
+## Why gap encoding
+
+Almost every number in a posting list is small: a document gap of 3, a frequency of 1, a position of
+12. A fixed `u32` spends four bytes on each; LEB128 spends one for anything under 128.
+
+Measured on 300 consecutive document ids with a frequency of 1, the encoded list comes in under four
+bytes per posting against eight for a fixed layout — and that ratio is what the whole format is
+built around.
