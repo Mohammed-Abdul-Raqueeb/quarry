@@ -53,3 +53,16 @@ varint   number of fields
 ```
 
 Used for BM25's average field length.
+
+### 4. Per-document field lengths
+
+```
+varint   number of field groups
+  varint   field id
+  varint   number of entries
+  entries, ascending by document id:
+    varint   document id, as a gap from the previous
+    varint   length in terms
+```
+
+Grouped by field so the ids ascend within each group and gap-code well.
