@@ -156,3 +156,20 @@ runs.
 
 `ScoredDoc` uses `total_cmp` rather than `partial_cmp`. A pathological boost can produce a NaN
 score, and a partial comparison would either panic or quietly break the heap's invariant.
+
+## The segment format is checksummed and framed
+
+```
+magic "QRYS" │ version │ body │ CRC32(body) │ magic "QRYE"
+```
+
+Both magics matter. A truncated file — the signature of a process killed mid-write — has no trailing
+magic, which is a clearer diagnosis than a checksum mismatch. A damaged byte has the footer but
+fails the CRC. The two are reported differently because they call for different responses: one means
+an interrupted write, the other means damaged storage.
+
+The dictionary is front-coded: terms arrive sorted, so each entry stores the length of the prefix it
+shares with the previous term plus its own suffix. `borrow`, `borrowed`, `borrowing` cost six
+characters and two short suffixes instead of twenty-one characters.
+
+`docs/format.md` has the byte-level layout.
