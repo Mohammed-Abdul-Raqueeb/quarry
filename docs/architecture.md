@@ -116,3 +116,16 @@ The planner's output is deliberately lossy. `BooleanQuery` is flat — `must`, `
 `must_not`, `phrases` — so nested alternation collapses. `(a OR b) AND (c OR d)` becomes two
 `must_any` groups, which is exactly right; deeper nesting flattens in ways that change scoring
 slightly. [docs/query-language.md](query-language.md) says where.
+
+## `must_any` exists because of a real bug
+
+A bare term with no field searches every default field. Early on, that expansion became one `must`
+clause per field, and `rust AND concurrency` returned nothing: it was demanding that *both* words
+appear in *both* title and body.
+
+The fix is a clause type the flat boolean did not have — a group of which at least one must match.
+`must_any` holds a `Vec<Vec<TermQuery>>`: union within a group, intersect across groups.
+
+Worth recording because the failure mode is silent. A query returning no results looks like an empty
+corpus, not like a planner bug, and only a test that indexed a word in one field and queried it
+alongside another found it.
