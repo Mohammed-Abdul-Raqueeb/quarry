@@ -66,3 +66,30 @@ varint   number of field groups
 ```
 
 Grouped by field so the ids ascend within each group and gap-code well.
+
+### 5. Term dictionary and postings
+
+```
+varint   number of terms
+  varint   field id
+  varint   shared prefix length with the previous term
+  string   the remaining suffix
+  posting list
+```
+
+Terms arrive sorted, so adjacent entries usually share a prefix. `borrow`, `borrowed` and
+`borrowing` cost the six shared characters once plus two short suffixes, rather than twenty-one
+characters.
+
+A posting list:
+
+```
+varint   field id
+varint   number of postings
+  varint          document id, as a gap from the previous
+  varint          term frequency
+  sorted u32 list positions
+```
+
+A sorted list is a varint count followed by varint gaps. Positions are empty when the field was
+indexed without them.
