@@ -25,3 +25,14 @@ of a truncated file would otherwise produce a nonsense version number instead of
 ## Body
 
 Sections in order. `varint` is unsigned LEB128; `string` is a varint length followed by UTF-8 bytes.
+
+### 1. Schema digest
+
+```
+u64   FNV-1a of the schema shape
+```
+
+Field ids are positional, so reading a segment with a reordered schema would attribute every term to
+the wrong field. The digest covers field names, types, `indexed` and `positions`. It deliberately
+excludes `stored` and `boost`: changing either does not invalidate existing postings, so including
+them would force a needless reindex.
