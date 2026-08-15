@@ -93,3 +93,17 @@ varint   number of postings
 
 A sorted list is a varint count followed by varint gaps. Positions are empty when the field was
 indexed without them.
+
+### 6. Stored fields
+
+```
+varint   number of documents
+  varint   document id, as a gap from the previous
+  varint   number of values
+  values:
+    u8       type tag: 1 text, 2 keyword, 3 number
+    string, or u64 of f64::to_bits for a number
+```
+
+Only fields the schema marks `stored` appear here. Numbers are stored as raw bits so they
+round-trip exactly rather than through a decimal rendering.
