@@ -21,3 +21,7 @@ Both magics are load-bearing, and the reader checks the trailing one **before** 
 
 They are reported differently because they call for different responses, and reading the version out
 of a truncated file would otherwise produce a nonsense version number instead of a clear diagnosis.
+
+## Body
+
+Sections in order. `varint` is unsigned LEB128; `string` is a varint length followed by UTF-8 bytes.
