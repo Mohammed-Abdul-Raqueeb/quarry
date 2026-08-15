@@ -36,3 +36,9 @@ Field ids are positional, so reading a segment with a reordered schema would att
 the wrong field. The digest covers field names, types, `indexed` and `positions`. It deliberately
 excludes `stored` and `boost`: changing either does not invalidate existing postings, so including
 them would force a needless reindex.
+
+### 2. Document count
+
+```
+varint   documents in this segment
+```
