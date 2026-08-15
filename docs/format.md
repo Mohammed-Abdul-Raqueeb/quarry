@@ -133,3 +133,9 @@ truncated or damaged:
 - Every gap addition is checked for overflow.
 
 The test suite flips every single byte of a small segment's body and asserts each one is detected.
+
+## Compatibility
+
+The version is checked exactly: a segment written by a different version is refused rather than read
+on a best-effort basis. There is no migration path — reindex instead. For a format this young that
+is the honest trade, and the error message names both versions so the situation is obvious.
