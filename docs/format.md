@@ -116,3 +116,20 @@ Almost every number in a posting list is small: a document gap of 3, a frequency
 Measured on 300 consecutive document ids with a frequency of 1, the encoded list comes in under four
 bytes per posting against eight for a fixed layout — and that ratio is what the whole format is
 built around.
+
+## Reader guarantees
+
+Every length is bounded and every read is checked, because the input is a file that may have been
+truncated or damaged:
+
+- A `Vec::with_capacity` taken from an on-disk count is clamped, so a corrupt length cannot request
+  a multi-gigabyte allocation before the first read fails.
+- Document ids are checked against the segment's document count; a posting referencing a
+  nonexistent document is corruption.
+- A front-coded prefix length longer than the previous term, or one landing mid-character in UTF-8,
+  is rejected.
+- A varint with redundant trailing-zero padding is rejected, so two byte sequences cannot encode the
+  same value.
+- Every gap addition is checked for overflow.
+
+The test suite flips every single byte of a small segment's body and asserts each one is detected.
