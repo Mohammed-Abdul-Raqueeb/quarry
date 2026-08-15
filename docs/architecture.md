@@ -173,3 +173,13 @@ shares with the previous term plus its own suffix. `borrow`, `borrowed`, `borrow
 characters and two short suffixes instead of twenty-one characters.
 
 `docs/format.md` has the byte-level layout.
+
+## The HTTP server uses threads, not async
+
+Once an index is in memory, a request is CPU-bound: walk postings, score, collect. There is no I/O
+to overlap, so an async runtime would add a large dependency and a different programming model to
+solve a problem this workload does not have. A fixed thread pool sized to the core count is the
+right shape.
+
+The pool is fixed rather than thread-per-connection because thread-per-connection makes memory a
+function of how many clients show up, which is precisely what an attacker controls.
