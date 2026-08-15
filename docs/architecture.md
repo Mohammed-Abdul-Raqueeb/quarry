@@ -183,3 +183,12 @@ right shape.
 
 The pool is fixed rather than thread-per-connection because thread-per-connection makes memory a
 function of how many clients show up, which is precisely what an attacker controls.
+
+## What is deliberately missing
+
+- **Deletes and updates.** Needs a tombstone bitmap per segment and a merge that honours it.
+- **Range execution.** Numeric fields are indexed by their exact decimal form, so a range needs
+  either a post-filter over stored values or a numeric trie. Parsed and planned, not executed.
+- **A distributed mode.** Out of scope by a wide margin.
+- **Faceting and aggregations.** Would need a column store alongside the inverted index.
+- **Non-English analysis.** The pipeline is pluggable; only the English components exist.
