@@ -128,3 +128,28 @@ algorithm is visible rather than silent.
 
 Two guarantees worth relying on: stemming is **idempotent** (`stem(stem(w)) == stem(w)`), and
 non-ASCII input passes through unchanged.
+
+## Choosing a pipeline
+
+| Analyzer | Pipeline | For |
+| --- | --- | --- |
+| `Analyzer::english()` | tokenize, lowercase, fold, length, stopwords, stem | Prose. The default |
+| `Analyzer::simple()` | tokenize, lowercase, fold | Exactness over recall — product codes, text only ever phrase-matched |
+| `Analyzer::keyword()` | whole input, lowercased | Identifiers and tags |
+
+Building your own:
+
+```rust
+use quarry_core::tokenize::{Analyzer, Lowercase, LengthFilter};
+use quarry_core::tokenize::standard::StandardTokenizer;
+use quarry_core::tokenize::stopwords::StopwordFilter;
+
+let analyzer = Analyzer::new(Box::new(StandardTokenizer::default()))
+    .with(Box::new(Lowercase))
+    .with(Box::new(LengthFilter { min: 2, max: 32 }))
+    .with(Box::new(StopwordFilter::english().with_word("boilerplate")));
+```
+
+A field's type decides which pipeline it gets: `text` uses the configured analyzer, `keyword` always
+uses the keyword pipeline. That is deliberate — lowercasing a tag is wanted, stemming it is not, so
+a keyword field must not follow the text analyzer's configuration.
