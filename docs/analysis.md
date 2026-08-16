@@ -107,3 +107,24 @@ contributes almost nothing to a score while taking a posting list proportional t
 **Positions are preserved, not renumbered.** This is the subtle part. With `the` removed from
 `"king of the hill"`, the gap it leaves is why the exact phrase `"king of hill"` does not match. If
 positions were compacted, dropping a stopword would silently change which phrases match.
+
+### PorterStemmer
+
+Porter's 1980 algorithm: a sequence of suffix-rewriting rules gated on a measure of
+vowel-consonant pairs. Not a dictionary, so it is small, fast and language-specific.
+
+It is also deliberately crude, and these are not bugs to be patched case by case:
+
+| Input | Stem | What happened |
+| --- | --- | --- |
+| `connect`, `connected`, `connecting`, `connection` | `connect` | Working as intended |
+| `universal`, `universe` | `univers` | **Over-stemming** — unrelated words collide |
+| `argument` | `argument` | **Under-stemming** — `argu` has only one VC pair, so `-ment` stays |
+| `conflated` | `conflat` | Step 1b restores an `e`, step 5a removes it again |
+
+Patching any of these would break the property that the same input always produces the same stem on
+both sides. The tests assert the over- and under-stemming cases precisely so a change to the
+algorithm is visible rather than silent.
+
+Two guarantees worth relying on: stemming is **idempotent** (`stem(stem(w)) == stem(w)`), and
+non-ASCII input passes through unchanged.
