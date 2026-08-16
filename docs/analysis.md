@@ -58,3 +58,8 @@ proper Unicode segmentation implementation would be a large table and a dependen
 
 Emits the whole input as one token. For identifiers, tags and enum values, where splitting would
 make an exact lookup impossible. `keyword` schema fields use this.
+
+### WhitespaceTokenizer
+
+Splits on whitespace only, keeping punctuation attached. Rarely what you want for prose; useful when
+the input is already tokenized.
