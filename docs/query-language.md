@@ -49,3 +49,5 @@ bound   := number | "-" number | "*"
 | `*:*` or `*` | every document |
 
 Operators are **case sensitive**: `AND` is an operator, `and` is a word someone will search for.
+
+## Things worth knowing
