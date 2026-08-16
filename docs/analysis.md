@@ -53,3 +53,8 @@ Cyrillic, Greek, Arabic, Hebrew and more.
 What it does not handle: Chinese, Japanese and Thai, which do not use spaces. Those produce one
 enormous token. Use `NgramTokenizer` instead — this is a real limitation, not an oversight, and a
 proper Unicode segmentation implementation would be a large table and a dependency.
+
+### KeywordTokenizer
+
+Emits the whole input as one token. For identifiers, tags and enum values, where splitting would
+make an exact lookup impossible. `keyword` schema fields use this.
