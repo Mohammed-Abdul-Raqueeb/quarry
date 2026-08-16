@@ -37,3 +37,19 @@ it on query text for exactly this reason, and there is a test asserting
 `analyzer.terms("Running") == analyzer.terms("runs")`.
 
 ## Tokenizers
+
+### StandardTokenizer (the default)
+
+Splits on anything that is not a letter, digit or underscore, with three characters kept *inside* a
+token: `'`, `-` and `.`.
+
+Those three are kept because splitting on them produces nonsense: `wasn't` would become `wasn` + `t`,
+`e-mail` would become two terms, and `v1.2.3` would become three. They are then trimmed from the
+*edges* of a token, because a trailing period is a sentence and a leading dash is a list item.
+
+What it handles: any script that separates words with spaces. `char::is_alphanumeric` covers Latin,
+Cyrillic, Greek, Arabic, Hebrew and more.
+
+What it does not handle: Chinese, Japanese and Thai, which do not use spaces. Those produce one
+enormous token. Use `NgramTokenizer` instead — this is a real limitation, not an oversight, and a
+proper Unicode segmentation implementation would be a large table and a dependency.
