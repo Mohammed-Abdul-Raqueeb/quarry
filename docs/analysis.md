@@ -153,3 +153,15 @@ let analyzer = Analyzer::new(Box::new(StandardTokenizer::default()))
 A field's type decides which pipeline it gets: `text` uses the configured analyzer, `keyword` always
 uses the keyword pipeline. That is deliberate — lowercasing a tag is wanted, stemming it is not, so
 a keyword field must not follow the text analyzer's configuration.
+
+## Highlighting works backwards through this
+
+Analysis is lossy: `run` cannot be turned back into `running`. So snippets re-analyze the **stored
+original text** with the same analyzer, which yields byte offsets for each term, and marks the spans
+whose analyzed form matches a query term.
+
+That is why a search for `ownership` highlights the word `Ownership` as it appears, and why
+`stored: true` is required for a field to be highlightable.
+
+Offsets are preserved through every filter — a filter rewrites a token's text but keeps its span —
+which is what makes this possible.
