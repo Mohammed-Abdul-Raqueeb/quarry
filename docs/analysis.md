@@ -92,3 +92,9 @@ rather than being mangled: leaving text alone is better than corrupting it.
 
 **Order matters.** Folding runs *before* the stopword filter, or `thé` survives a list that contains
 `the`.
+
+### LengthFilter
+
+Drops tokens outside 1 to 64 characters. A single character is rarely worth a dictionary entry, and a
+300-character "word" is a URL or a hash nobody will search for. Measured in characters, not bytes, so
+a four-character accented word is not wrongly dropped.
