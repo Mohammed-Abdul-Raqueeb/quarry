@@ -98,3 +98,12 @@ rather than being mangled: leaving text alone is better than corrupting it.
 Drops tokens outside 1 to 64 characters. A single character is rarely worth a dictionary entry, and a
 300-character "word" is a URL or a hash nobody will search for. Measured in characters, not bytes, so
 a four-character accented word is not wrongly dropped.
+
+### StopwordFilter
+
+Removes the 33 standard English stopwords. Each appears in a large fraction of documents, so it
+contributes almost nothing to a score while taking a posting list proportional to the corpus.
+
+**Positions are preserved, not renumbered.** This is the subtle part. With `the` removed from
+`"king of the hill"`, the gap it leaves is why the exact phrase `"king of hill"` does not match. If
+positions were compacted, dropping a stopword would silently change which phrases match.
