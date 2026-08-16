@@ -51,3 +51,12 @@ bound   := number | "-" number | "*"
 Operators are **case sensitive**: `AND` is an operator, `and` is a word someone will search for.
 
 ## Things worth knowing
+
+### An implicit `OR` is what you want
+
+`rust ownership` means "either word, best matches first" — not a demand for both. That matches what
+people expect from a search box, and the ranking does the rest: a document with both words scores
+higher than one with either.
+
+A bare disjunction gets `minimum_should_match = 1`, so it cannot degenerate into matching every
+document.
