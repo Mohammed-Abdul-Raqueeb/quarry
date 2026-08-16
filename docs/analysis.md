@@ -26,3 +26,12 @@ knowing the pipeline: most surprising search results trace back to one of them.
       ▼  PorterStemmer
 ["run", "cafe"]
 ```
+
+## The one property that matters
+
+**Indexing and querying run the same pipeline.** If a document's `Running` became `run`, then a
+query for `Running` must also become `run`, or the document is unfindable.
+
+`Analyzer` is the single object both sides use, which is what stops them drifting. The planner calls
+it on query text for exactly this reason, and there is a test asserting
+`analyzer.terms("Running") == analyzer.terms("runs")`.
