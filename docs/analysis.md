@@ -63,3 +63,13 @@ make an exact lookup impossible. `keyword` schema fields use this.
 
 Splits on whitespace only, keeping punctuation attached. Rarely what you want for prose; useful when
 the input is already tokenized.
+
+### NgramTokenizer and EdgeNgramTokenizer
+
+Character windows. Two jobs:
+
+- Languages without word separators, where bigrams are the standard cheap answer.
+- Prefix matching as a plain term lookup, which is how an as-you-type box stays fast without a
+  wildcard scan over the dictionary.
+
+The cost is index size: every word becomes several terms. Use it on one field, not everywhere.
