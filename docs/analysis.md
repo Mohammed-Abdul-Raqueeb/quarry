@@ -73,3 +73,5 @@ Character windows. Two jobs:
   wildcard scan over the dictionary.
 
 The cost is index size: every word becomes several terms. Use it on one field, not everywhere.
+
+## Filters
