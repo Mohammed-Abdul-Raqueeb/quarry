@@ -60,3 +60,12 @@ higher than one with either.
 
 A bare disjunction gets `minimum_should_match = 1`, so it cannot degenerate into matching every
 document.
+
+### A bare term searches several fields at once, disjunctively
+
+With `title` and `body` both indexed as text, `rust` becomes "rust in title **or** rust in body".
+Under `AND` that stays a disjunction: `rust AND concurrency` finds a document with `rust` in the
+body and `concurrency` in the title.
+
+That is the `must_any` clause in `BooleanQuery`. Getting it wrong — one `must` per field — makes the
+query demand the word in *every* field, which returns nothing and looks like an empty index.
