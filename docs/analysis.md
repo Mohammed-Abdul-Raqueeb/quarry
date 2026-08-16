@@ -75,3 +75,8 @@ Character windows. Two jobs:
 The cost is index size: every word becomes several terms. Use it on one field, not everywhere.
 
 ## Filters
+
+### Lowercase
+
+Almost always first. Without it `Rust` and `rust` are different terms and a user typing either
+expects both.
