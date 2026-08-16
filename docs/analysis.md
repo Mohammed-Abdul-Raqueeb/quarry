@@ -80,3 +80,15 @@ The cost is index size: every word becomes several terms. Use it on one field, n
 
 Almost always first. Without it `Rust` and `rust` are different terms and a user typing either
 expects both.
+
+### AsciiFolding
+
+Strips diacritics, so `café` and `cafe` are the same term. Users type accents inconsistently, often
+because their keyboard makes it awkward, so without this half of them cannot find the document.
+
+It covers Latin-1 and Latin Extended-A — the ranges that actually appear in indexed prose — plus the
+typographic punctuation that survives tokenization. Anything outside those passes through unchanged
+rather than being mangled: leaving text alone is better than corrupting it.
+
+**Order matters.** Folding runs *before* the stopword filter, or `thé` survives a list that contains
+`the`.
