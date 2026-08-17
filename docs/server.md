@@ -18,3 +18,5 @@ synchronisation.
 
 Reindexing while the server runs works: build a new index directory, then restart pointing at it.
 Hot reload is not implemented.
+
+## Endpoints
