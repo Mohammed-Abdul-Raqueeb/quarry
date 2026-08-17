@@ -44,3 +44,7 @@ Liveness. Never touches the index, so a slow query cannot make a health check fa
 ```
 
 `should_merge` is a hint that the segment count is high enough to be costing read performance.
+
+### `GET /schema`
+
+The field definitions, in the same shape as the `schema.json` inside the index directory.
