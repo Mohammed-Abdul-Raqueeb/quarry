@@ -105,3 +105,13 @@ or two characters, 1 for three to five, 2 beyond. Two edits on a three-letter wo
 almost everything.
 
 Closer matches are boosted higher, so an exact hit outranks a two-edit neighbour.
+
+### Phrases need positions
+
+A phrase needs the field to have been indexed with positions. `text` fields get them by default;
+`keyword` fields do not, because a keyword is one token. A phrase on a keyword field is an error
+rather than an empty result.
+
+Slop interacts with stopwords in a way worth knowing. `"king of the hill"` drops `the`, leaving a
+position gap, so the exact phrase `"king of hill"` does **not** match — the gap is still there.
+`"king of hill"~1` does.
