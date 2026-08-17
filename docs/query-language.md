@@ -139,3 +139,23 @@ more useful than getting nothing back.
 | Fuzzy distance | 2 | Past this it matches unrelated words |
 | Expansions per clause | 64 | One character must not become thousands of clauses |
 | Phrase terms | unbounded | Each costs one dictionary lookup |
+
+## What the flat plan loses
+
+`BooleanQuery` has five clause kinds and no nesting:
+
+```rust
+must: Vec<TermQuery>              // all required
+must_any: Vec<Vec<TermQuery>>     // one from each group required
+should: Vec<TermQuery>            // optional, contribute score
+must_not: Vec<TermQuery>          // excluded
+phrases: Vec<PhraseQuery>         // required, ordered
+```
+
+`(a OR b) AND (c OR d)` maps exactly onto two `must_any` groups. Deeper nesting —
+`(a AND (b OR (c AND d)))` — flattens, and the flattening can change relative scores because a
+clause's nesting depth no longer affects its contribution. Membership in the result set is
+preserved; the ordering within it may shift.
+
+A tree-walking executor would fix this. The flat form is what makes single-pass execution possible,
+and the tradeoff has not yet been worth revisiting.
