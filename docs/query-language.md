@@ -75,3 +75,13 @@ query demand the word in *every* field, which returns nothing and looks like an 
 `+rust` parses but does nothing. Requirement comes from the `AND`/`OR` structure, not from a
 per-clause marker, so there is nothing for `+` to attach to. It is accepted because people type it
 out of habit.
+
+### Query text goes through the same analyzer as documents
+
+`Running` is indexed as `run`, so the query has to become `run` too. The planner runs the query
+through the same `Analyzer` the documents used, which is why `Running` and `runs` find the same
+documents. Porter is a suffix-stripping algorithm, so irregular forms like `ran` do not join them.
+
+The consequence: a query of nothing but stopwords has no terms left. That is an error —
+`the query has no searchable terms` — rather than an empty result, because an empty result with no
+explanation is the more confusing outcome.
