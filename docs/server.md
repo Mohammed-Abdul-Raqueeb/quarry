@@ -28,3 +28,19 @@ Liveness. Never touches the index, so a slow query cannot make a health check fa
 ```json
 { "status": "ok", "version": "0.4.0", "uptime_seconds": 8241 }
 ```
+
+### `GET /stats`
+
+```json
+{
+  "documents": 19043,
+  "segments": 3,
+  "terms": 48210,
+  "bytes": 7245193,
+  "fields": 4,
+  "bytes_per_doc": 380.5,
+  "should_merge": false
+}
+```
+
+`should_merge` is a hint that the segment count is high enough to be costing read performance.
