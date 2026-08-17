@@ -129,3 +129,13 @@ error, caught at plan time.
 
 `year:[2020 TO 2000]` is an error, not an empty result, because being told the range is backwards is
 more useful than getting nothing back.
+
+## Limits
+
+| Limit | Value | Why |
+| --- | --- | --- |
+| Query length | 4096 bytes | It is user input reaching a parser |
+| Nesting depth | 24 | A deeply nested query is cheap to write and expensive to plan |
+| Fuzzy distance | 2 | Past this it matches unrelated words |
+| Expansions per clause | 64 | One character must not become thousands of clauses |
+| Phrase terms | unbounded | Each costs one dictionary lookup |
