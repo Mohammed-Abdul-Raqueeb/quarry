@@ -91,3 +91,8 @@ explanation is the more confusing outcome.
 `kuber*` on a corpus with no such terms returns zero results with a note, not an error. The query
 was well formed; the corpus just does not contain it. Only a query with *nothing to search for* is
 an error.
+
+### Prefix and fuzzy expansion is capped
+
+Both expand against the real dictionary, and both are capped at 64 terms. Without a cap, `a*` turns
+one character of input into thousands of clauses. When the cap bites, the response says so.
