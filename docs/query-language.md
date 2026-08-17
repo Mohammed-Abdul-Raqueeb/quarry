@@ -69,3 +69,9 @@ body and `concurrency` in the title.
 
 That is the `must_any` clause in `BooleanQuery`. Getting it wrong — one `must` per field — makes the
 query demand the word in *every* field, which returns nothing and looks like an empty index.
+
+### `+` is accepted and ignored
+
+`+rust` parses but does nothing. Requirement comes from the `AND`/`OR` structure, not from a
+per-clause marker, so there is nothing for `+` to attach to. It is accepted because people type it
+out of habit.
