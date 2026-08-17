@@ -94,3 +94,26 @@ The same thing with a JSON body, for queries awkward to URL-encode:
 curl -X POST http://127.0.0.1:7700/search \
   -d '{"q":"title:\"zero cost\" AND NOT deprecated","limit":5}'
 ```
+
+## Status codes
+
+| Code | When |
+| --- | --- |
+| 200 | Success, including a search that matched nothing |
+| 400 | Malformed request, or a query the parser rejected |
+| 404 | No such endpoint |
+| 405 | Known endpoint, wrong method |
+| 413 | Request body over 16 MB |
+| 422 | Well-formed but unprocessable: no `q`, or a query the planner rejected |
+| 500 | The engine failed |
+
+The 400/422 split follows the stage that rejected the query. A syntax error is 400; an unknown field
+or a phrase on a positionless field is 422, because the request parsed fine and the problem is
+semantic. An unknown field also gets a spelling suggestion:
+
+```json
+{ "error": "no field named \"titel\"; did you mean \"title\"?" }
+```
+
+Every response body is JSON, including every error. There is a test asserting that across every
+endpoint and method combination.
