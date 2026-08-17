@@ -20,3 +20,11 @@ Reindexing while the server runs works: build a new index directory, then restar
 Hot reload is not implemented.
 
 ## Endpoints
+
+### `GET /health`
+
+Liveness. Never touches the index, so a slow query cannot make a health check fail.
+
+```json
+{ "status": "ok", "version": "0.4.0", "uptime_seconds": 8241 }
+```
