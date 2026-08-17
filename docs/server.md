@@ -60,3 +60,28 @@ The field definitions, in the same shape as the `schema.json` inside the index d
 ```bash
 curl 'http://127.0.0.1:7700/search?q=rust+AND+ownership&limit=5&highlight'
 ```
+
+```json
+{
+  "query": "rust AND ownership",
+  "total": 1,
+  "took_us": 142,
+  "hits": [
+    {
+      "doc": 0,
+      "score": 3.0669,
+      "document": { "title": "Rust ownership", "body": "...", "tag": "rust" },
+      "highlights": [
+        { "field": "title", "snippet": "Rust <mark>ownership</mark>" }
+      ]
+    }
+  ]
+}
+```
+
+`total` is the number of documents that **matched**, not the number returned. With `limit=1` on a
+query matching six documents, `total` is 6 and `hits` has one entry.
+
+A `notes` array appears when the planner had something to say — a dropped stopword, a truncated
+expansion, a range that parsed but was not executed. Without it, a result set shaped by one of those
+looks arbitrary.
