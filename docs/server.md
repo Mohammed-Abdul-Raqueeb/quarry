@@ -85,3 +85,12 @@ query matching six documents, `total` is 6 and `hits` has one entry.
 A `notes` array appears when the planner had something to say — a dropped stopword, a truncated
 expansion, a range that parsed but was not executed. Without it, a result set shaped by one of those
 looks arbitrary.
+
+### `POST /search`
+
+The same thing with a JSON body, for queries awkward to URL-encode:
+
+```bash
+curl -X POST http://127.0.0.1:7700/search \
+  -d '{"q":"title:\"zero cost\" AND NOT deprecated","limit":5}'
+```
