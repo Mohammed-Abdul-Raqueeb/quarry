@@ -124,3 +124,8 @@ trie, and neither is built.
 
 A range clause is reported as a note and otherwise ignored. A range on a non-numeric field *is* an
 error, caught at plan time.
+
+### An impossible range is rejected at parse time
+
+`year:[2020 TO 2000]` is an error, not an empty result, because being told the range is backwards is
+more useful than getting nothing back.
