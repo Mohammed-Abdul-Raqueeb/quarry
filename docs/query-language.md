@@ -96,3 +96,12 @@ an error.
 
 Both expand against the real dictionary, and both are capped at 64 terms. Without a cap, `a*` turns
 one character of input into thousands of clauses. When the cap bites, the response says so.
+
+### Fuzzy distance is bounded at 2, and scaled by length
+
+Beyond two edits a fuzzy match stops correcting typos and starts matching unrelated words — `cat`
+within three edits reaches `dogs`. A bare `~` picks the distance from the word's length: 0 for one
+or two characters, 1 for three to five, 2 beyond. Two edits on a three-letter word would match
+almost everything.
+
+Closer matches are boosted higher, so an exact hit outranks a two-edit neighbour.
