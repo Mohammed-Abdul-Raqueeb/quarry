@@ -48,3 +48,15 @@ Liveness. Never touches the index, so a slow query cannot make a health check fa
 ### `GET /schema`
 
 The field definitions, in the same shape as the `schema.json` inside the index directory.
+
+### `GET /search`
+
+| Parameter | Default | Meaning |
+| --- | --- | --- |
+| `q` | — | Required. The query |
+| `limit` | 10 | Results to return, clamped to 200 |
+| `highlight` | off | Also return highlighted snippets |
+
+```bash
+curl 'http://127.0.0.1:7700/search?q=rust+AND+ownership&limit=5&highlight'
+```
