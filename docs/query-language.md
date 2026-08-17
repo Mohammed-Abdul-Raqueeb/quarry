@@ -115,3 +115,12 @@ rather than an empty result.
 Slop interacts with stopwords in a way worth knowing. `"king of the hill"` drops `the`, leaving a
 position gap, so the exact phrase `"king of hill"` does **not** match — the gap is still there.
 `"king of hill"~1` does.
+
+### Ranges parse but do not execute yet
+
+The lexer, parser and planner all handle ranges. The executor does not: numeric fields are indexed
+by their exact decimal form, so a range needs either a post-filter over stored values or a numeric
+trie, and neither is built.
+
+A range clause is reported as a note and otherwise ignored. A range on a non-numeric field *is* an
+error, caught at plan time.
