@@ -85,3 +85,9 @@ documents. Porter is a suffix-stripping algorithm, so irregular forms like `ran`
 The consequence: a query of nothing but stopwords has no terms left. That is an error —
 `the query has no searchable terms` — rather than an empty result, because an empty result with no
 explanation is the more confusing outcome.
+
+### A prefix or fuzzy term that matches nothing is not an error
+
+`kuber*` on a corpus with no such terms returns zero results with a note, not an error. The query
+was well formed; the corpus just does not contain it. Only a query with *nothing to search for* is
+an error.
