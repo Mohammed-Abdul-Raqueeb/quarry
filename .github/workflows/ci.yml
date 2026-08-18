@@ -11,3 +11,11 @@ on:
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
+
+env:
+  CARGO_TERM_COLOR: always
+  # Quarry has no dependencies, so nothing is fetched and a build cannot be
+  # broken by a registry outage. Failing on a network attempt makes an
+  # accidentally added dependency loud rather than silent.
+  CARGO_NET_OFFLINE: "true"
+  RUSTFLAGS: "-D warnings"
