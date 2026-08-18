@@ -48,3 +48,16 @@ Linear, as it should be: an insert is an analyze plus a `BTreeMap` lookup and a 
 2,000 documents produce 7,543 dictionary entries and 780 bytes per document on disk. The per-document
 figure is dominated by positions — a 66-word document stores 66 position entries — which is the price
 of phrase matching. Turning positions off for a field roughly halves its postings.
+
+## Segment codec
+
+| Operation | Median |
+| --- | --- |
+| Serialize a 5,000-document segment | 21.6 ms |
+| Parse a 5,000-document segment | 42.7 ms |
+
+3.86 MB, 13,530 dictionary entries. Parsing costs about twice what writing does, because reading
+rebuilds the `BTreeMap` and allocates a `String` per term while writing only walks one.
+
+That matters because parsing happens on `IndexDir::open` — a cold start pays it once for every
+segment, which is another reason to keep the segment count low.
