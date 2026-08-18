@@ -117,3 +117,17 @@ semantic. An unknown field also gets a spelling suggestion:
 
 Every response body is JSON, including every error. There is a test asserting that across every
 endpoint and method combination.
+
+## Concurrency
+
+A fixed thread pool, sized to the core count and clamped to 2–32, or set with `--threads`.
+
+Fixed rather than thread-per-connection because thread-per-connection makes memory a function of how
+many clients connect, which is exactly what an attacker controls. Requests queue instead.
+
+No async runtime. Once the index is in memory a request is CPU-bound — walk postings, score, collect
+— so there is no I/O to overlap and threads equal to cores is the right shape. An executor would add
+a large dependency to solve a problem this workload does not have.
+
+A panicking handler kills its job, not the pool: the worker is replaced on the next loop iteration
+and the server keeps serving. There is a test for that.
