@@ -131,3 +131,21 @@ a large dependency to solve a problem this workload does not have.
 
 A panicking handler kills its job, not the pool: the worker is replaced on the next loop iteration
 and the server keeps serving. There is a test for that.
+
+## Limits
+
+| Limit | Value |
+| --- | --- |
+| Request line | 8 KB |
+| Headers | 64, each up to 8 KB |
+| Body | 16 MB |
+| Requests per kept-alive connection | 100 |
+| Idle timeout | 30 seconds |
+| `limit` parameter | 200 |
+
+The idle timeout and the per-connection request cap exist for the same reason: without them an idle
+client holds a pool worker indefinitely, and enough of them starve the server without sending a
+single request.
+
+The `limit` clamp matters more than it looks. `?limit=100000000` would otherwise ask the collector
+for a heap that size before a single document is scored.
