@@ -61,3 +61,30 @@ rebuilds the `BTreeMap` and allocates a `String` per term while writing only wal
 
 That matters because parsing happens on `IndexDir::open` — a cold start pays it once for every
 segment, which is another reason to keep the segment count low.
+
+## Queries
+
+10,000 documents, one segment:
+
+| Query | Median |
+| --- | --- |
+| Rare term | 307 ns |
+| Common term (matches about half the corpus) | 1.88 ms |
+| Two-term `AND`, one rare | 3.9 µs |
+| Two-term `OR`, both common | 3.58 ms |
+| Two-term phrase | 2.09 ms |
+| Count without ranking | 3.6 µs |
+
+Three things worth reading off this table.
+
+**Selectivity is everything.** A rare term is roughly 6,000× faster than a common one. Cost is
+proportional to the number of matching documents, because each one has to be scored — not to the
+size of the corpus.
+
+**Intersection order works.** The two-term `AND` runs in 3.9 µs, far faster than the common term
+alone at 1.88 ms, because the rare term's short posting list becomes the candidate set and the
+common term is then only probed for those few documents. A planner that intersected in the other
+order would pay the full 1.88 ms.
+
+**Counting is nearly free** — 3.6 µs against 1.88 ms — because it skips scoring entirely. Use
+`Searcher::count` when you need a total and not a ranking.
