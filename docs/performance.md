@@ -35,3 +35,16 @@ A single mutable pass would be several times faster. It has not been done becaus
 shape — each filter a small, independently testable `TokenFilter` — is what makes the analyzer easy
 to reason about and to extend, and indexing is not the bottleneck for a search workload. It is a
 known, deliberate cost rather than an oversight.
+
+## Indexing
+
+| Documents | Median | Rate |
+| --- | --- | --- |
+| 1,000 | 50.8 ms | ~19,700 docs/s |
+| 10,000 | 519 ms | ~19,250 docs/s |
+
+Linear, as it should be: an insert is an analyze plus a `BTreeMap` lookup and a push.
+
+2,000 documents produce 7,543 dictionary entries and 780 bytes per document on disk. The per-document
+figure is dominated by positions — a 66-word document stores 66 position entries — which is the price
+of phrase matching. Turning positions off for a field roughly halves its postings.
