@@ -118,3 +118,14 @@ which is what a query actually walks: four segments means four dictionary lookup
 means one.
 
 So merge for read latency, not for disk space.
+
+## Rules of thumb
+
+- Query cost tracks matching documents, not corpus size.
+- Put the most selective clause in a conjunction first; the planner does not reorder for you.
+- Positions roughly double a field's postings. Turn them off for fields you will never
+  phrase-match.
+- Keep the segment count low. Each one adds a dictionary lookup per term and a parse on open.
+- Use `count` rather than `search` when you only need a total.
+- Indexing runs around 19,000 documents per second per core, so a million documents is about a
+  minute.
