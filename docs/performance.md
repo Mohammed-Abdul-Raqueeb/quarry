@@ -103,3 +103,18 @@ is proportional to the number of *matches*, not to the requested limit, and memo
 
 Sorting every match and truncating would allocate proportional to the matches — on a query matching
 a million documents for the top ten, that allocation would be the entire cost of the query.
+
+## Merging
+
+| Operation | Median |
+| --- | --- |
+| Merge 4 × 2,500-document segments | 65.5 ms |
+
+7.78 MB → 7.62 MB, with 26,187 dictionary entries collapsed.
+
+The byte saving is modest at 2.1% because postings dominate and they do not shrink — the same
+postings are rewritten under new ids. The win is the 26,187 duplicate dictionary entries removed,
+which is what a query actually walks: four segments means four dictionary lookups per term, one
+means one.
+
+So merge for read latency, not for disk space.
