@@ -161,3 +161,28 @@ for a heap that size before a single document is scored.
 
 It is a search API, not a general-purpose server. The subset is deliberate; see
 [architecture.md](architecture.md).
+
+## Deploying
+
+Behind nginx:
+
+```nginx
+location /search/ {
+    proxy_pass http://127.0.0.1:7700/;
+    proxy_set_header Host $host;
+    proxy_set_header X-Real-IP $remote_addr;
+    proxy_read_timeout 30s;
+}
+```
+
+As a systemd unit:
+
+```ini
+[Unit]
+Description=Quarry search server
+After=network.target
+
+[Service]
+ExecStart=/usr/local/bin/quarry-server --index /var/lib/quarry/idx --quiet
+Restart=on-failure
+User=quarry
