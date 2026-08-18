@@ -149,3 +149,15 @@ single request.
 
 The `limit` clamp matters more than it looks. `?limit=100000000` would otherwise ask the collector
 for a heap that size before a single document is scored.
+
+## What it does not do
+
+- **No TLS.** Put it behind a reverse proxy.
+- **No chunked request bodies.** `Content-Length` only. A chunked request is rejected with a clear
+  message rather than hanging.
+- **No HTTP/2, no pipelining.** HTTP/1.1 with keep-alive.
+- **No authentication.** Anything reachable should be internal or proxied.
+- **No compression.** A proxy does it better.
+
+It is a search API, not a general-purpose server. The subset is deliberate; see
+[architecture.md](architecture.md).
