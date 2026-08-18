@@ -88,3 +88,18 @@ order would pay the full 1.88 ms.
 
 **Counting is nearly free** — 3.6 µs against 1.88 ms — because it skips scoring entirely. Use
 `Searcher::count` when you need a total and not a ranking.
+
+## The bounded collector
+
+| Limit | Median |
+| --- | --- |
+| 10 | 1.87 ms |
+| 100 | 1.92 ms |
+| 1,000 | 2.18 ms |
+
+A hundredfold increase in the limit costs 17% more time. That is the point of the min-heap: the work
+is proportional to the number of *matches*, not to the requested limit, and memory is bounded by
+`k` rather than by the result set.
+
+Sorting every match and truncating would allocate proportional to the matches — on a query matching
+a million documents for the top ten, that allocation would be the entire cost of the query.
