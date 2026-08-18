@@ -129,3 +129,12 @@ So merge for read latency, not for disk space.
 - Use `count` rather than `search` when you only need a total.
 - Indexing runs around 19,000 documents per second per core, so a million documents is about a
   minute.
+
+## Honest unknowns
+
+- **No large-corpus numbers.** Everything here is 10,000 documents or fewer. The in-memory design
+  means behaviour past a few tens of millions of documents is untested and bounded by RAM.
+- **Single-threaded queries.** The server runs requests in parallel, but one query uses one thread.
+  Segments are independent and could be searched concurrently; they are not.
+- **No profile-guided work.** Nothing here has been optimised against a profiler. The analyzer
+  allocation cost above is the one known hot spot, and it is unaddressed on purpose.
