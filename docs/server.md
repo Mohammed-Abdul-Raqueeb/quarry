@@ -186,3 +186,16 @@ After=network.target
 ExecStart=/usr/local/bin/quarry-server --index /var/lib/quarry/idx --quiet
 Restart=on-failure
 User=quarry
+
+# The process only ever reads its index, so it needs nothing else.
+ProtectSystem=strict
+ReadOnlyPaths=/var/lib/quarry
+PrivateTmp=true
+NoNewPrivileges=true
+
+[Install]
+WantedBy=multi-user.target
+```
+
+`ReadOnlyPaths` is worth setting precisely because the server never writes. If it ever tries to, the
+sandbox catches a bug rather than letting it corrupt an index.
