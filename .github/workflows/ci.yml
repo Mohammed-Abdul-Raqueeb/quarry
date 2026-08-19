@@ -127,3 +127,7 @@ jobs:
       # promotes it, so an undocumented public item fails here.
       - name: Build documentation
         run: cargo doc --no-deps --all-features
+
+  smoke:
+    name: End-to-end smoke test
+    runs-on: ubuntu-24.04
