@@ -37,3 +37,8 @@ jobs:
 
     steps:
       - uses: actions/checkout@v7
+
+      - name: Install Rust ${{ matrix.rust }}
+        run: |
+          rustup toolchain install ${{ matrix.rust }} --profile minimal
+          rustup default ${{ matrix.rust }}
