@@ -100,3 +100,13 @@ jobs:
             exit 1
           fi
           echo "Cargo.lock holds only workspace crates."
+
+      - name: Assert no unsafe code
+        run: |
+          # `unsafe_code = "forbid"` already fails the build, so this only
+          # catches an attempt to override it with an allow attribute.
+          if grep -rn 'allow(unsafe_code)' crates/ benches/; then
+            echo "::error::unsafe is forbidden workspace-wide"
+            exit 1
+          fi
+          echo "No unsafe overrides."
