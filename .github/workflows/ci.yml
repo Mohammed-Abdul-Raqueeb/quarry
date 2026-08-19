@@ -66,3 +66,6 @@ jobs:
 
       - name: Formatting
         run: cargo fmt --all -- --check
+
+      - name: Clippy
+        run: cargo clippy --all-targets -- -D warnings
