@@ -117,3 +117,13 @@ jobs:
 
     steps:
       - uses: actions/checkout@v7
+
+      - name: Install Rust
+        run: |
+          rustup toolchain install stable --profile minimal
+          rustup default stable
+
+      # `missing_docs` is a warning in the workspace lints, and RUSTFLAGS
+      # promotes it, so an undocumented public item fails here.
+      - name: Build documentation
+        run: cargo doc --no-deps --all-features
