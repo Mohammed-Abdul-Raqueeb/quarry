@@ -48,3 +48,6 @@ jobs:
 
       - name: Test
         run: cargo test --all-targets --verbose
+
+      - name: Doc tests
+        run: cargo test --doc --verbose
