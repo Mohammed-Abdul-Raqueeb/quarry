@@ -34,3 +34,6 @@ jobs:
           # library feature cannot slip in unnoticed.
           - os: ubuntu-24.04
             rust: "1.82"
+
+    steps:
+      - uses: actions/checkout@v7
