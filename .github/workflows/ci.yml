@@ -63,3 +63,6 @@ jobs:
         run: |
           rustup toolchain install stable --profile minimal --component rustfmt,clippy
           rustup default stable
+
+      - name: Formatting
+        run: cargo fmt --all -- --check
