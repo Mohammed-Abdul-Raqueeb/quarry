@@ -76,3 +76,27 @@ jobs:
 
     steps:
       - uses: actions/checkout@v7
+
+      - name: Install Rust
+        run: |
+          rustup toolchain install stable --profile minimal
+          rustup default stable
+
+      # The headline claim in the README, enforced rather than asserted. The
+      # lock file lists only the workspace members, so anything else means a
+      # dependency was added.
+      - name: Assert the lock file holds only workspace crates
+        run: |
+          cargo generate-lockfile --offline
+          unexpected=$(
+            grep '^name = ' Cargo.lock \
+              | sed 's/name = "//; s/"//' \
+              | grep -v '^quarry-' \
+              || true
+          )
+          if [ -n "$unexpected" ]; then
+            echo "::error::Quarry claims zero dependencies, but Cargo.lock lists:"
+            echo "$unexpected"
+            exit 1
+          fi
+          echo "Cargo.lock holds only workspace crates."
