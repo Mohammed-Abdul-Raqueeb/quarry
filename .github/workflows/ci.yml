@@ -69,3 +69,7 @@ jobs:
 
       - name: Clippy
         run: cargo clippy --all-targets -- -D warnings
+
+  no-dependencies:
+    name: Dependency count is zero
+    runs-on: ubuntu-24.04
