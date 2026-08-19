@@ -51,3 +51,7 @@ jobs:
 
       - name: Doc tests
         run: cargo test --doc --verbose
+
+  lint:
+    name: Format and lint
+    runs-on: ubuntu-24.04
