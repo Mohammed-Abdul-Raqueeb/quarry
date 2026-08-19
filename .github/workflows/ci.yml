@@ -110,3 +110,7 @@ jobs:
             exit 1
           fi
           echo "No unsafe overrides."
+
+  docs:
+    name: Documentation
+    runs-on: ubuntu-24.04
