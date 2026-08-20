@@ -172,3 +172,8 @@ jobs:
           echo "--- json output must be parseable ---"
           ./target/release/quarry search --index ./idx rust --json --color never \
             | python3 -c 'import json,sys; d=json.load(sys.stdin); assert d["total"] >= 1, d'
+
+          echo "--- a second index pass then a merge ---"
+          ./target/release/quarry index --index ./idx --input docs.ndjson --color never
+          ./target/release/quarry merge --index ./idx --color never
+          ./target/release/quarry stats --index ./idx --terms 5 --color never
