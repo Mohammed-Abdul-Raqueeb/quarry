@@ -186,3 +186,8 @@ jobs:
           ./target/release/quarry-server --index ./idx --addr 127.0.0.1:7700 --quiet &
           server=$!
           trap 'kill $server 2>/dev/null || true' EXIT
+
+          for _ in $(seq 1 50); do
+            if curl -fsS http://127.0.0.1:7700/health >/dev/null 2>&1; then break; fi
+            sleep 0.2
+          done
