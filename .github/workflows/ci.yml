@@ -191,3 +191,8 @@ jobs:
             if curl -fsS http://127.0.0.1:7700/health >/dev/null 2>&1; then break; fi
             sleep 0.2
           done
+
+          curl -fsS http://127.0.0.1:7700/health | grep -q '"status":"ok"'
+          curl -fsS 'http://127.0.0.1:7700/search?q=ownership&highlight' | grep -q '<mark>'
+          curl -fsS -X POST http://127.0.0.1:7700/search \
+            -d '{"q":"title:rust","limit":2}' | grep -q '"total"'
