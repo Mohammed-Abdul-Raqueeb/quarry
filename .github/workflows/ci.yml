@@ -168,3 +168,7 @@ jobs:
           echo "--- a phrase must match ---"
           ./target/release/quarry search --index ./idx '"zero cost"' \
             --color never --no-snippets | grep -q 'Zero cost'
+
+          echo "--- json output must be parseable ---"
+          ./target/release/quarry search --index ./idx rust --json --color never \
+            | python3 -c 'import json,sys; d=json.load(sys.stdin); assert d["total"] >= 1, d'
