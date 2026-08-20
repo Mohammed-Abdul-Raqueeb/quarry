@@ -177,3 +177,7 @@ jobs:
           ./target/release/quarry index --index ./idx --input docs.ndjson --color never
           ./target/release/quarry merge --index ./idx --color never
           ./target/release/quarry stats --index ./idx --terms 5 --color never
+
+          echo "--- search still works after the merge ---"
+          ./target/release/quarry search --index ./idx ownership --color never --no-snippets \
+            | grep -q 'Rust ownership'
