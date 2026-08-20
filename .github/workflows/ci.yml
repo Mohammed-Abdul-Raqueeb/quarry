@@ -164,3 +164,7 @@ jobs:
           ./target/release/quarry search --index ./idx 'rust AND concurrency' \
             --color never --no-snippets | tee out.txt
           grep -q 'Fearless concurrency' out.txt
+
+          echo "--- a phrase must match ---"
+          ./target/release/quarry search --index ./idx '"zero cost"' \
+            --color never --no-snippets | grep -q 'Zero cost'
