@@ -159,3 +159,8 @@ jobs:
           ./target/release/quarry index --index ./idx \
             --schema 'title:text,body:text,tag:keyword,year:numeric' \
             --input docs.ndjson --color never
+
+          echo "--- a conjunction across two fields must match ---"
+          ./target/release/quarry search --index ./idx 'rust AND concurrency' \
+            --color never --no-snippets | tee out.txt
+          grep -q 'Fearless concurrency' out.txt
