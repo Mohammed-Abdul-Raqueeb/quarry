@@ -181,3 +181,8 @@ jobs:
           echo "--- search still works after the merge ---"
           ./target/release/quarry search --index ./idx ownership --color never --no-snippets \
             | grep -q 'Rust ownership'
+
+          echo "--- the server answers ---"
+          ./target/release/quarry-server --index ./idx --addr 127.0.0.1:7700 --quiet &
+          server=$!
+          trap 'kill $server 2>/dev/null || true' EXIT
