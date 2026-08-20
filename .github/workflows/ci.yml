@@ -200,3 +200,5 @@ jobs:
           echo "--- a bad query must be rejected, not crash the server ---"
           test "$(curl -s -o /dev/null -w '%{http_code}' 'http://127.0.0.1:7700/search?q=title%3A%28unclosed')" = "400"
           test "$(curl -s -o /dev/null -w '%{http_code}' http://127.0.0.1:7700/nope)" = "404"
+
+          echo "All smoke checks passed."
