@@ -202,3 +202,7 @@ jobs:
           test "$(curl -s -o /dev/null -w '%{http_code}' http://127.0.0.1:7700/nope)" = "404"
 
           echo "All smoke checks passed."
+
+  bench:
+    name: Benchmarks compile and run
+    runs-on: ubuntu-24.04
