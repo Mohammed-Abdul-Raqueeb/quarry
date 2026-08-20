@@ -155,3 +155,7 @@ jobs:
           {"title":"Fearless concurrency","body":"Rust prevents data races at compile time","tag":"rust","year":2020}
           {"title":"Python typing","body":"Gradual typing annotates incrementally","tag":"python","year":2022}
           EOF
+
+          ./target/release/quarry index --index ./idx \
+            --schema 'title:text,body:text,tag:keyword,year:numeric' \
+            --input docs.ndjson --color never
