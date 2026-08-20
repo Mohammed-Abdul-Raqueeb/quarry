@@ -139,3 +139,12 @@ jobs:
         run: |
           rustup toolchain install stable --profile minimal
           rustup default stable
+
+      - name: Build release binaries
+        run: cargo build --release --bins
+
+      # Exercises the real binaries against a real index, which the unit tests
+      # deliberately do not: they call the library directly.
+      - name: Index, search, merge and serve
+        run: |
+          set -euo pipefail
