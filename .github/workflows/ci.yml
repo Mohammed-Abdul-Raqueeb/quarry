@@ -148,3 +148,10 @@ jobs:
       - name: Index, search, merge and serve
         run: |
           set -euo pipefail
+
+          cat > docs.ndjson <<'EOF'
+          {"title":"Rust ownership","body":"The borrow checker enforces ownership","tag":"rust","year":2021}
+          {"title":"Zero cost abstractions","body":"Iterators compile to tight loops","tag":"rust","year":2019}
+          {"title":"Fearless concurrency","body":"Rust prevents data races at compile time","tag":"rust","year":2020}
+          {"title":"Python typing","body":"Gradual typing annotates incrementally","tag":"python","year":2022}
+          EOF
