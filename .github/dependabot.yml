@@ -1,0 +1,8 @@
+version: 2
+updates:
+  # There are no cargo dependencies to update, by design, so only the Actions
+  # used by CI are watched.
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: monthly
