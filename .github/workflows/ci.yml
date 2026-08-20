@@ -209,3 +209,13 @@ jobs:
 
     steps:
       - uses: actions/checkout@v7
+
+      - name: Install Rust
+        run: |
+          rustup toolchain install stable --profile minimal
+          rustup default stable
+
+      # Run rather than only compiled: a benchmark that panics is a broken
+      # benchmark, and nobody notices until they next need a number from it.
+      - name: Run benchmarks
+        run: cargo bench
