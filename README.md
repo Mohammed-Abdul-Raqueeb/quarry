@@ -75,3 +75,21 @@ EOF
      tag: rust
      year: 2020
 ```
+
+## Query language
+
+| Syntax | Meaning |
+| --- | --- |
+| `rust ownership` | either word, ranked by how many matched |
+| `rust AND ownership` | both words |
+| `"zero cost"` | an exact phrase |
+| `"zero cost"~2` | the phrase, tolerating two positions of slack |
+| `title:rust` | scoped to one field |
+| `title:(rust OR go)` | a group scoped to one field |
+| `rust~1` | within one edit, for typos |
+| `own*` | prefix match |
+| `rust NOT unsafe` | excluding a word |
+| `title:rust^2 body:rust` | with the title weighted higher |
+| `year:[2000 TO 2020]` | a numeric range |
+
+Full grammar and the parser's limits: [docs/query-language.md](docs/query-language.md).
