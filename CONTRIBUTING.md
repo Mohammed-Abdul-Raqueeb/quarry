@@ -32,3 +32,15 @@ feature is worth the constraint, not a review comment.
 
 The same applies to `unsafe`, which is `forbid` workspace-wide. CI also greps for
 `allow(unsafe_code)` in case someone tries to override it locally.
+
+## Where code goes
+
+| Crate | Rule |
+| --- | --- |
+| `quarry-core` | Index, analysis, scoring, search, segment format. Knows about nothing else |
+| `quarry-query` | Lexer, parser, planner, fuzzy. Knows about `core` |
+| `quarry-cli` | The `quarry` binary. Logic lives in the lib half so it is testable |
+| `quarry-server` | The `quarry-server` binary, same split |
+
+The dependency direction is one-way and worth keeping that way: `core` must stay usable as an
+embedded library without pulling in a query parser.
