@@ -44,3 +44,34 @@ dependencies:
 - **Storage** — a checksummed segment format with a front-coded dictionary and gap-encoded postings,
   plus background merging.
 - **Interfaces** — an embeddable library, a CLI, and an HTTP server with a fixed thread pool.
+
+## Try it
+
+```bash
+git clone https://github.com/Mohammed-Abdul-Raqueeb/quarry.git
+cd quarry
+cargo build --release
+
+cat > docs.ndjson <<'EOF'
+{"title":"Rust ownership","body":"The borrow checker enforces ownership at compile time","tag":"rust","year":2021}
+{"title":"Zero cost abstractions","body":"Iterators compile to the same code you would write by hand","tag":"rust","year":2019}
+{"title":"Fearless concurrency","body":"Rust prevents data races by tracking which thread owns what","tag":"rust","year":2020}
+{"title":"Python type hints","body":"Gradual typing lets you annotate incrementally","tag":"python","year":2022}
+EOF
+
+./target/release/quarry index --index ./idx \
+  --schema 'title:text,body:text,tag:keyword,year:numeric' \
+  --input docs.ndjson
+
+./target/release/quarry search --index ./idx 'rust AND concurrency'
+```
+
+```
+1 match in 14µs
+
+  1. 2.3434  #2
+     title: Fearless [concurrency]
+     body: [Rust] prevents data races by tracking which thread owns what
+     tag: rust
+     year: 2020
+```
