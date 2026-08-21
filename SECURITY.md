@@ -36,3 +36,16 @@ unsafety and supply-chain risk are structurally absent rather than merely audite
 - **The server's `limit` is clamped to 200**, so `?limit=100000000` cannot ask the collector for a
   heap that size before any document is scored.
 - **The thread pool is fixed**, so connection count does not drive memory.
+
+## Known limitations
+
+These are design positions, not oversights:
+
+- **The server has no authentication and no TLS.** Anything reachable should be internal or behind a
+  reverse proxy. See [docs/server.md](docs/server.md).
+- **An index is loaded wholly into memory.** A hostile index file could therefore demand a lot of
+  memory. Only index files you trust — they are a database, not a document format.
+- **Stored field values are kept verbatim.** Whatever you index is readable by anyone who can query
+  it or read the segment file. Do not index secrets.
+- **No query timeout.** A pathological query — a phrase of common terms over a very large corpus —
+  will run to completion. Put a timeout at the proxy.
