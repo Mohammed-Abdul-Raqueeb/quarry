@@ -21,3 +21,18 @@ Quarry parses untrusted input in four places. These are where a vulnerability wo
 
 `unsafe` is forbidden workspace-wide and there are no dependencies, so the usual sources of memory
 unsafety and supply-chain risk are structurally absent rather than merely audited.
+
+## Specific hardening worth knowing about
+
+- **No allocation from an unvalidated length.** A count read from a segment is clamped before it
+  reaches `Vec::with_capacity`, so a corrupt four-byte field cannot request gigabytes before the
+  first read fails.
+- **Varints reject redundant padding**, so two byte sequences cannot encode the same value.
+- **Front-coded prefixes are checked** against the previous term's length and for UTF-8 character
+  boundaries.
+- **Every arithmetic step on an on-disk value is checked** for overflow.
+- **The query planner never interpolates a column name from input.** Field names resolve through the
+  schema to a numeric id; an unknown name is an error.
+- **The server's `limit` is clamped to 200**, so `?limit=100000000` cannot ask the collector for a
+  heap that size before any document is scored.
+- **The thread pool is fixed**, so connection count does not drive memory.
