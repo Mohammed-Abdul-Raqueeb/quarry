@@ -30,3 +30,17 @@ dependencies:
 | `clap` | `cli/args.rs` | The CLI uses six option forms, not sixty |
 | `axum` + `tokio` | `server/http.rs` | Requests are CPU-bound once the index is in memory, so threads equal to cores is the right shape |
 | `strsim` | `query/fuzzy.rs` | Banded Levenshtein, which a generic crate would not specialise |
+
+## What it does
+
+- **Indexing** — an inverted index with positions, term frequencies and per-field length
+  statistics, flushed into immutable segments.
+- **Ranking** — BM25 with tunable `k1` and `b`, plus TF-IDF for comparison, behind a `Scorer` trait.
+- **Analysis** — a tokenizer, lowercasing, accent folding, stopwords and a Porter stemmer, composed
+  into an `Analyzer` that both indexing and querying share so they cannot drift.
+- **Query language** — booleans, phrases with slop, field scoping, prefixes, fuzzy terms, boosts and
+  ranges, with a lexer, a recursive-descent parser and a planner that resolves against the real
+  dictionary.
+- **Storage** — a checksummed segment format with a front-coded dictionary and gap-encoded postings,
+  plus background merging.
+- **Interfaces** — an embeddable library, a CLI, and an HTTP server with a fixed thread pool.
