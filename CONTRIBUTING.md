@@ -62,3 +62,34 @@ eventually find it and need to know whether it is a bug.
 
 **No `any`-equivalents.** No `unwrap` in library code; return a `Result`. `expect` is fine in tests
 and in a binary's `main`, where a panic is the correct response.
+
+## Tests
+
+Integration tests in `crates/*/tests/`, which exercise the public API. There are 931 of them and the
+suite runs in under a second, so there is no reason not to run it.
+
+One behaviour per test, named as a sentence about the behaviour:
+
+```rust
+// good
+#[test]
+fn a_truncated_segment_is_reported_as_truncated_not_corrupt() { … }
+
+// not good
+#[test]
+fn test_segment_read() { … }
+```
+
+**A bug fix needs a test that fails before the fix.** That is the only way to know it is actually
+fixed and stays fixed. Two of the bugs found while building this were silent — a query returning
+nothing, and a distance computed too low — and neither would have been noticed without a test that
+pinned the correct answer.
+
+**Test the rejections.** For anything that reads external input — the JSON parser, the segment
+reader, the HTTP layer, the query lexer — the invalid cases matter as much as the valid ones. The
+segment tests flip every byte of a small segment and assert each flip is caught.
+
+**Correcting a test to match the code is only legitimate when the code is right.** If a test fails,
+work out which side is wrong before changing either. Several stemmer test expectations in this
+codebase were wrong and were corrected only after hand-tracing Porter's published rules; the commit
+messages say so.
