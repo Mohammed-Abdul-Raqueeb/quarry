@@ -111,3 +111,17 @@ Conventional commits: `feat:`, `fix:`, `refactor:`, `test:`, `docs:`, `perf:`, `
 
 One logical change per commit. Say *why* in the body when the what is not obvious from the diff —
 particularly for a fix, where the interesting part is how the bug was possible.
+
+## Adding to the query language
+
+The bar is high, because every addition is a thing that can never be removed from the grammar. If
+you are adding syntax:
+
+1. Lexer token, with tests
+2. Parser rule, with tests, including the rejections
+3. Planner handling, with tests against a real index
+4. A row in the table in `docs/query-language.md`
+5. A line in the CLI help text
+
+If it cannot be executed yet, report it as a note rather than ignoring it — that is what ranges do,
+and the note is why nobody has to guess whether it worked.
