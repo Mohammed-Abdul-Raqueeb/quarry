@@ -103,3 +103,11 @@ Be careful with the generator. An earlier version used a fifty-word vocabulary, 
 posting list enormous and the dictionary tiny, and reported a 0.1% merge saving that was an artefact
 of the benchmark rather than a fact about the code. A benchmark that measures the wrong thing is
 worse than none.
+
+## Commits
+
+Conventional commits: `feat:`, `fix:`, `refactor:`, `test:`, `docs:`, `perf:`, `chore:`, `ci:`,
+`build:`, `style:`.
+
+One logical change per commit. Say *why* in the body when the what is not obvious from the diff —
+particularly for a fix, where the interesting part is how the bug was possible.
