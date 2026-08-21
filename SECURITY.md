@@ -49,3 +49,7 @@ These are design positions, not oversights:
   it or read the segment file. Do not index secrets.
 - **No query timeout.** A pathological query — a phrase of common terms over a very large corpus —
   will run to completion. Put a timeout at the proxy.
+
+## Supported versions
+
+The latest minor release receives fixes.
