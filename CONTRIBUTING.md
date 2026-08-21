@@ -93,3 +93,13 @@ segment tests flip every byte of a small segment and assert each flip is caught.
 work out which side is wrong before changing either. Several stemmer test expectations in this
 codebase were wrong and were corrected only after hand-tracing Porter's published rules; the commit
 messages say so.
+
+## Benchmarks
+
+`cargo bench` prints a table. If you change something on a hot path, include before and after
+numbers in the pull request.
+
+Be careful with the generator. An earlier version used a fifty-word vocabulary, which made every
+posting list enormous and the dictionary tiny, and reported a 0.1% merge saving that was an artefact
+of the benchmark rather than a fact about the code. A benchmark that measures the wrong thing is
+worse than none.
