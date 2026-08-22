@@ -71,3 +71,18 @@ and the project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 ## [0.1.0] - 2026-05-24
 
 First working version.
+
+### Added
+
+- Inverted index with term frequencies and positions.
+- Analysis pipeline: tokenizer, lowercasing, stopwords and a Porter stemmer, composed into an
+  `Analyzer` shared by indexing and querying.
+- Schema with text, keyword and numeric field types.
+- A hand-written JSON reader and writer, a LEB128 varint codec and a table-driven CRC32 — the
+  beginnings of the no-dependency constraint.
+- `quarry index` and `quarry search`.
+
+[0.4.0]: https://github.com/Mohammed-Abdul-Raqueeb/quarry/releases/tag/v0.4.0
+[0.3.0]: https://github.com/Mohammed-Abdul-Raqueeb/quarry/releases/tag/v0.3.0
+[0.2.0]: https://github.com/Mohammed-Abdul-Raqueeb/quarry/releases/tag/v0.2.0
+[0.1.0]: https://github.com/Mohammed-Abdul-Raqueeb/quarry/releases/tag/v0.1.0
