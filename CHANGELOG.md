@@ -35,3 +35,12 @@ and the project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 - The stemmer passes non-ASCII input through unchanged rather than attempting ASCII byte rules on it.
 
 ## [0.3.0] - 2026-07-18
+
+### Added
+
+- **Query language**: lexer, recursive-descent parser and a planner that resolves fields, analyzes
+  query text with the index's own analyzer, and expands against the dictionary.
+- Booleans with precedence, implicit `OR`, phrases with slop, field scoping over groups, boosts and
+  numeric range parsing.
+- Edit distance: Levenshtein, a banded bounded variant, and Damerau for transpositions.
+- An unknown field now suggests the closest schema field by edit distance.
