@@ -33,3 +33,5 @@ and the project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
   back closer than they are. Found by cross-checking it against the unbounded implementation.
 - Segment format is version 4: front-coded dictionary and a CRC32 footer.
 - The stemmer passes non-ASCII input through unchanged rather than attempting ASCII byte rules on it.
+
+## [0.3.0] - 2026-07-18
