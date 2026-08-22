@@ -170,3 +170,7 @@ Honest limits, so you can tell quickly whether it fits:
   n-gram tokenizer.
 - **Ranges parse but do not execute yet.** The parser and planner handle them; the executor does
   not. It is reported as a note rather than silently ignored.
+
+## License
+
+MIT © Mohammed Abdul Raqueeb
