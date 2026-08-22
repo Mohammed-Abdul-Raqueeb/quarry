@@ -114,3 +114,5 @@ let query = BooleanQuery::new().must(TermQuery::new(
 ));
 
 assert_eq!(searcher.search(&query, 10)?.len(), 1);
+# Ok::<(), quarry_core::Error>(())
+```
