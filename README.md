@@ -126,3 +126,23 @@ curl 'http://127.0.0.1:7700/search?q=rust+ownership&limit=5&highlight'
 
 `GET /health`, `GET /stats`, `GET /schema`, `GET /search`, `POST /search`. Read-only by design —
 see [docs/server.md](docs/server.md).
+
+## Layout
+
+```
+crates/
+├── quarry-core/    index, analysis, scoring, search, segment format
+├── quarry-query/   lexer, parser, planner, fuzzy matching
+├── quarry-cli/     the `quarry` binary
+└── quarry-server/  the `quarry-server` binary
+docs/
+├── architecture.md    how it works and what was traded away
+├── query-language.md  the grammar, and what it does not do
+├── format.md          the on-disk segment layout, byte by byte
+├── analysis.md        tokenization, stemming, and their limits
+├── server.md          running and deploying the HTTP server
+└── performance.md     measured numbers and how to reproduce them
+```
+
+The dependency direction is one-way: `core` knows about nobody, `query` knows about `core`, and the
+two binaries know about both.
