@@ -156,3 +156,17 @@ two binaries know about both.
 | `cargo fmt --all -- --check` | Formatting |
 | `cargo bench` | Indexing and query benchmarks |
 | `cargo doc --open` | API documentation |
+
+## What it is not
+
+Honest limits, so you can tell quickly whether it fits:
+
+- **Not distributed.** One process, one index directory. No replication or sharding.
+- **Not incremental.** Segments are immutable; there is no delete or update, only reindex and merge.
+- **In memory.** An index is loaded whole when opened, so it has to fit in RAM. Memory-mapping would
+  lift that; [docs/architecture.md](docs/architecture.md) explains why it was not done.
+- **English analysis only.** The stemmer and stopword list are English. Other space-separated
+  languages tokenize correctly but are not stemmed; scripts without word separators need the
+  n-gram tokenizer.
+- **Ranges parse but do not execute yet.** The parser and planner handle them; the executor does
+  not. It is reported as a note rather than silently ignored.
