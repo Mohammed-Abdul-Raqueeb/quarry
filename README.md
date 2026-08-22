@@ -146,3 +146,13 @@ docs/
 
 The dependency direction is one-way: `core` knows about nobody, `query` knows about `core`, and the
 two binaries know about both.
+
+## Commands
+
+| Command | What it does |
+| --- | --- |
+| `cargo test` | The full suite — 931 tests |
+| `cargo clippy --all-targets` | Lints, `pedantic` included |
+| `cargo fmt --all -- --check` | Formatting |
+| `cargo bench` | Indexing and query benchmarks |
+| `cargo doc --open` | API documentation |
