@@ -19,3 +19,17 @@ and the project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 - **Segment merging**, with a policy that prefers the smallest candidates and a dry-run mode that
   reports what a merge would save.
 - **Benchmarks** (`cargo bench`) over a Zipf-distributed synthetic corpus.
+
+### Changed
+
+- **Crawler of a bug, fixed: a required multi-field term is now a disjunction.** A bare term
+  searches every default text field, and those expansions were each becoming a separate `must`
+  clause — so `rust AND concurrency` demanded both words in *both* title and body and returned
+  nothing. Added a `must_any` clause group: union within a group, intersect across groups.
+- **`total` now counts every match, not the number returned.** `Results::total_hits` was being set
+  from the collector's output rather than its running count, so `limit=1` always reported one match.
+- **Banded edit distance no longer under-reports.** `bounded_levenshtein` left the cell on the
+  band's lower edge uninitialised and read a stale value from two rows earlier, so some pairs came
+  back closer than they are. Found by cross-checking it against the unbounded implementation.
+- Segment format is version 4: front-coded dictionary and a CRC32 footer.
+- The stemmer passes non-ASCII input through unchanged rather than attempting ASCII byte rules on it.
