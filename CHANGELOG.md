@@ -62,3 +62,8 @@ and the project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
   section.
 - Phrase matching over positions, with slop.
 - Accent folding and an n-gram tokenizer.
+
+### Changed
+
+- Terms are keyed by `(field, term)` rather than filtered by field at query time, because a shared
+  posting list cannot give a correct per-field document frequency.
