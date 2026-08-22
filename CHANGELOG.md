@@ -51,3 +51,14 @@ and the project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
   silently match across the gap a removed word leaves.
 
 ## [0.2.0] - 2026-06-20
+
+### Added
+
+- **BM25 scoring** with tunable `k1` and `b`, behind a `Scorer` trait, alongside TF-IDF for
+  comparison.
+- **Bounded top-k collector**: a min-heap of size `k`, so memory is bounded by the limit rather than
+  by the result set.
+- **Segment format**: an immutable, checksummed file with gap-encoded postings and a stored-field
+  section.
+- Phrase matching over positions, with slop.
+- Accent folding and an n-gram tokenizer.
