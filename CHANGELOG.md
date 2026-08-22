@@ -67,3 +67,7 @@ and the project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 - Terms are keyed by `(field, term)` rather than filtered by field at query time, because a shared
   posting list cannot give a correct per-field document frequency.
+
+## [0.1.0] - 2026-05-24
+
+First working version.
