@@ -44,3 +44,8 @@ and the project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
   numeric range parsing.
 - Edit distance: Levenshtein, a banded bounded variant, and Damerau for transpositions.
 - An unknown field now suggests the closest schema field by edit distance.
+
+### Changed
+
+- Positions are preserved rather than renumbered when a stopword is dropped, so a phrase cannot
+  silently match across the gap a removed word leaves.
