@@ -116,3 +116,13 @@ let query = BooleanQuery::new().must(TermQuery::new(
 assert_eq!(searcher.search(&query, 10)?.len(), 1);
 # Ok::<(), quarry_core::Error>(())
 ```
+
+## As a server
+
+```bash
+./target/release/quarry-server --index ./idx
+curl 'http://127.0.0.1:7700/search?q=rust+ownership&limit=5&highlight'
+```
+
+`GET /health`, `GET /stats`, `GET /schema`, `GET /search`, `POST /search`. Read-only by design —
+see [docs/server.md](docs/server.md).
