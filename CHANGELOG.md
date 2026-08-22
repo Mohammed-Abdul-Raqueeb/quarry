@@ -49,3 +49,5 @@ and the project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 - Positions are preserved rather than renumbered when a stopword is dropped, so a phrase cannot
   silently match across the gap a removed word leaves.
+
+## [0.2.0] - 2026-06-20
