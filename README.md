@@ -93,3 +93,24 @@ EOF
 | `year:[2000 TO 2020]` | a numeric range |
 
 Full grammar and the parser's limits: [docs/query-language.md](docs/query-language.md).
+
+## As a library
+
+```rust
+use quarry_core::{Analyzer, BooleanQuery, IndexWriter, Schema, Searcher, TermQuery};
+
+let schema = Schema::builder().text("title")?.text("body")?.build()?;
+
+let mut writer = IndexWriter::new(schema.clone());
+writer.add_json_str(r#"{"title":"Rust ownership","body":"Borrowing explained"}"#)?;
+
+let segments = vec![writer.flush().expect("a document was added")];
+let analyzer = Analyzer::english();
+
+let searcher = Searcher::new(&segments, &schema);
+let query = BooleanQuery::new().must(TermQuery::new(
+    schema.field_id("title")?,
+    analyzer.terms("ownership").remove(0),
+));
+
+assert_eq!(searcher.search(&query, 10)?.len(), 1);
