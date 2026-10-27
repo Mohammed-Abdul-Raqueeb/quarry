@@ -22,7 +22,7 @@ use crate::error::{QueryError, Result};
 use crate::fuzzy;
 use quarry_core::index::Segment;
 use quarry_core::schema::{FieldId, FieldType, Schema};
-use quarry_core::search::{BooleanQuery, PhraseQuery, TermQuery};
+use quarry_core::search::{BooleanQuery, PhraseQuery, RangeQuery, TermQuery};
 use quarry_core::tokenize::Analyzer;
 
 /// Most dictionary terms one fuzzy or prefix clause may expand to.
@@ -275,7 +275,13 @@ fn walk(
             Ok(())
         }
 
-        Query::Range { field, .. } => {
+        Query::Range {
+            field,
+            lower,
+            upper,
+            include_lower,
+            include_upper,
+        } => {
             let definition = ctx
                 .schema
                 .field(field)
@@ -291,13 +297,35 @@ fn walk(
                 });
             }
 
-            // Ranges are not pushed into the inverted index: numeric fields are
-            // indexed by their exact decimal form, so a range has to be applied
-            // as a post-filter over stored values. The executor does not do
-            // that yet, so this is reported rather than silently ignored.
-            notes.push(format!(
-                "range on {field:?} is parsed but not yet executed; see docs/query-language.md"
-            ));
+            let planned = RangeQuery {
+                field: definition.id,
+                lower: *lower,
+                upper: *upper,
+                include_lower: *include_lower,
+                include_upper: *include_upper,
+            };
+
+            // The parser already rejects crossed bounds, but equal bounds with
+            // one end excluded also describe an empty interval and reach here.
+            if planned.is_empty() {
+                return Err(QueryError::EmptyRange {
+                    field: field.clone(),
+                });
+            }
+
+            *resolved = true;
+
+            // A negated range would need the executor to subtract a set it
+            // currently only intersects. Reported rather than silently dropped,
+            // which would turn an exclusion into no filter at all.
+            if occur == Occur::MustNot {
+                notes.push(format!(
+                    "a negated range on {field:?} is not supported and was ignored"
+                ));
+                return Ok(());
+            }
+
+            out.ranges.push(planned);
             Ok(())
         }
 
