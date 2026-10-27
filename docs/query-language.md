@@ -116,14 +116,33 @@ Slop interacts with stopwords in a way worth knowing. `"king of the hill"` drops
 position gap, so the exact phrase `"king of hill"` does **not** match — the gap is still there.
 `"king of hill"~1` does.
 
-### Ranges parse but do not execute yet
+### Ranges cost one dictionary scan of their field
 
-The lexer, parser and planner all handle ranges. The executor does not: numeric fields are indexed
-by their exact decimal form, so a range needs either a post-filter over stored values or a numeric
-trie, and neither is built.
+A numeric field is indexed as the canonical decimal form of its value, so that field's dictionary
+*is* the sorted set of values it holds. A range is answered by scanning those terms, parsing each
+one, and unioning the postings of the terms that fall inside the bounds.
 
-A range clause is reported as a note and otherwise ignored. A range on a non-numeric field *is* an
-error, caught at plan time.
+Cost is therefore proportional to the number of **distinct values** in the field, not to the corpus
+size. For a year, a rating or a status code that is a handful of terms and effectively free. For a
+high-cardinality field — a float price with a million distinct values — it is a full scan of that
+field's dictionary, and a range on it will be slow.
+
+A numeric trie, or range-encoded terms at several precisions, would make that case logarithmic.
+Neither is built: the common case is low cardinality, and the scan is a dozen lines against a few
+hundred.
+
+Two other things to know:
+
+- **A range on a non-numeric field is an error**, caught at plan time, not an empty result.
+- **A negated range is not supported.** The executor intersects range results and cannot yet
+  subtract them, so `NOT year:[2000 TO 2020]` is reported as a note and the clause is dropped.
+  Dropping it silently would turn an exclusion into no filter at all, which is why it is reported.
+
+### Ranges run last among the required clauses
+
+When a query pairs a term with a range, the term's posting list narrows the candidate set first and
+the range only filters what survives. So `rust AND year:[2020 TO *]` is as cheap as `rust`, plus one
+dictionary scan of `year`.
 
 ### An impossible range is rejected at parse time
 
