@@ -527,6 +527,16 @@ fn english_analyzer_lowercases_folds_and_stems() {
 }
 
 #[test]
+fn stemming_in_place_handles_a_stem_that_is_not_a_prefix() {
+    // `quickly` stems to `quickli` -- step 1c rewrites the terminal `y`, so the
+    // stem is the same length as the word but is not a prefix of it. An
+    // in-place filter that decides whether to substitute by comparing lengths
+    // skips this case and silently stops stemming the whole `-ly` family.
+    let terms = Analyzer::english().terms("quickly");
+    assert_eq!(terms, ["quickli"]);
+}
+
+#[test]
 fn english_analyzer_drops_stopwords() {
     let terms = Analyzer::english().terms("the quick brown fox");
     assert!(!terms.contains(&"the".to_string()));
