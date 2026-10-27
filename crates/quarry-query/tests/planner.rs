@@ -397,18 +397,68 @@ fn a_range_on_a_non_numeric_field_is_an_error() {
 }
 
 #[test]
-fn a_range_on_a_numeric_field_is_accepted_with_a_note() {
-    // Parsed but not yet executed, and saying so beats silently ignoring it.
+fn a_range_on_a_numeric_field_becomes_a_range_clause() {
     let segments = segments();
-    let ctx = PlanContext {
-        schema: schema(),
-        analyzer: analyzer(),
-        segments: &segments,
-    };
-    let ast = parse("title:rust AND year:[2000 TO 2020]").expect("should parse");
-    let plan = plan(&ast, &ctx).expect("should plan");
+    let plan = planned("title:rust AND year:[2000 TO 2020]", &segments);
 
-    assert!(plan.notes.iter().any(|n| n.contains("not yet executed")));
+    assert_eq!(plan.query.ranges.len(), 1);
+    assert_eq!(plan.query.ranges[0].lower, Some(2000.0));
+    assert_eq!(plan.query.ranges[0].upper, Some(2020.0));
+    assert!(plan.query.ranges[0].include_lower);
+    assert!(plan.query.ranges[0].include_upper);
+}
+
+#[test]
+fn a_range_resolves_its_field_to_an_id() {
+    let segments = segments();
+    let plan = planned("year:[2000 TO 2020]", &segments);
+
+    // `year` is the fourth field in the test schema.
+    assert_eq!(plan.query.ranges[0].field, 3);
+}
+
+#[test]
+fn an_exclusive_range_keeps_its_exclusivity() {
+    let segments = segments();
+    let plan = planned("year:{2000 TO 2020}", &segments);
+
+    assert!(!plan.query.ranges[0].include_lower);
+    assert!(!plan.query.ranges[0].include_upper);
+}
+
+#[test]
+fn a_half_open_range_plans_with_one_bound_unset() {
+    let segments = segments();
+    let plan = planned("year:[2000 TO *]", &segments);
+
+    assert_eq!(plan.query.ranges[0].lower, Some(2000.0));
+    assert_eq!(plan.query.ranges[0].upper, None);
+}
+
+#[test]
+fn equal_bounds_with_one_end_excluded_is_an_empty_range() {
+    // The parser catches crossed bounds; this shape reaches the planner, and it
+    // can match nothing either.
+    let segments = segments();
+    assert!(matches!(
+        plan_error("year:{2000 TO 2000}", &segments),
+        QueryError::EmptyRange { .. }
+    ));
+}
+
+#[test]
+fn a_negated_range_is_reported_rather_than_silently_dropped() {
+    // The executor intersects range results and cannot yet subtract them.
+    // Dropping the clause quietly would turn an exclusion into no filter.
+    let segments = segments();
+    let plan = planned("title:rust AND NOT year:[2000 TO 2020]", &segments);
+
+    assert!(plan.query.ranges.is_empty());
+    assert!(
+        plan.notes.iter().any(|n| n.contains("negated range")),
+        "notes were {:?}",
+        plan.notes
+    );
 }
 
 // ---- whole-query behaviour ----------------------------------------------
