@@ -569,13 +569,17 @@ fn merge_report_reports_zero_savings_when_it_grew() {
 #[test]
 fn the_policy_leaves_a_small_number_of_segments_alone() {
     let segments = [segment_with(&["a"]), segment_with(&["b"])];
-    assert!(MergePolicy::default().select(&segments).is_empty());
+    let selected = MergePolicy::default().select(&segments);
+
+    assert_eq!(selected, Vec::new());
 }
 
 #[test]
 fn the_policy_selects_once_there_are_enough_segments() {
     let segments: Vec<Segment> = (0..5).map(|_| segment_with(&["a"])).collect();
-    assert!(!MergePolicy::default().select(&segments).is_empty());
+    let selected = MergePolicy::default().select(&segments);
+
+    assert_ne!(selected, Vec::new());
 }
 
 #[test]
@@ -628,6 +632,7 @@ fn the_policy_declines_when_only_one_candidate_remains() {
         max_merged_docs: 2,
     };
     let segments = [segment_with(&["a", "b", "c"]), segment_with(&["d"])];
+    let selected = policy.select(&segments);
 
-    assert!(policy.select(&segments).is_empty());
+    assert_eq!(selected, Vec::new());
 }

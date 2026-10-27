@@ -514,6 +514,155 @@ fn a_phrase_matches_adjacent_terms_in_order() {
 }
 
 #[test]
+fn a_phrase_group_matches_when_one_field_has_it() {
+    // The bug this exists for: an unscoped phrase expands to one PhraseQuery
+    // per default field, and requiring all of them means requiring the phrase
+    // in the title *and* the body, which no document satisfies. Here only the
+    // body has it.
+    let segments = index(&[("unrelated title", "iterators compile to tight loops", "t")]);
+    let searcher = Searcher::new(&segments, schema());
+
+    let group = vec![
+        PhraseQuery::new(0, vec![term("tight"), term("loops")]),
+        PhraseQuery::new(1, vec![term("tight"), term("loops")]),
+    ];
+    let query = BooleanQuery::new().phrase_any(group);
+
+    assert_eq!(searcher.search(&query, 10).expect("search").len(), 1);
+}
+
+#[test]
+fn a_phrase_group_still_requires_one_of_its_phrases() {
+    let segments = index(&[("unrelated title", "nothing adjacent here", "t")]);
+    let searcher = Searcher::new(&segments, schema());
+
+    let query = BooleanQuery::new().phrase_any(vec![
+        PhraseQuery::new(0, vec![term("tight"), term("loops")]),
+        PhraseQuery::new(1, vec![term("tight"), term("loops")]),
+    ]);
+
+    assert!(searcher.search(&query, 10).expect("search").is_empty());
+}
+
+#[test]
+fn phrase_groups_intersect_with_each_other() {
+    // Union within a group, intersection across groups -- the same contract
+    // `must_any` has.
+    let segments = index(&[
+        (
+            "zero cost abstractions",
+            "iterators compile to tight loops",
+            "t",
+        ),
+        ("zero cost abstractions", "nothing adjacent here", "t"),
+    ]);
+    let searcher = Searcher::new(&segments, schema());
+
+    let query = BooleanQuery::new()
+        .phrase_any(vec![
+            PhraseQuery::new(0, vec![term("zero"), term("cost")]),
+            PhraseQuery::new(1, vec![term("zero"), term("cost")]),
+        ])
+        .phrase_any(vec![
+            PhraseQuery::new(0, vec![term("tight"), term("loops")]),
+            PhraseQuery::new(1, vec![term("tight"), term("loops")]),
+        ]);
+
+    assert_eq!(searcher.search(&query, 10).expect("search").len(), 1);
+}
+
+#[test]
+fn an_empty_phrase_group_is_ignored_rather_than_matching_nothing() {
+    let segments = corpus();
+    let searcher = Searcher::new(&segments, schema());
+
+    let query = BooleanQuery::new()
+        .must(TermQuery::new(0, term("rust")))
+        .phrase_any(Vec::new());
+
+    assert_eq!(searcher.search(&query, 10).expect("search").len(), 1);
+}
+
+#[test]
+fn a_forbidden_phrase_removes_documents_rather_than_requiring_them() {
+    let segments = corpus();
+    let searcher = Searcher::new(&segments, schema());
+
+    let wanted = BooleanQuery::new().must(TermQuery::new(1, term("compile")));
+    let before = searcher.search(&wanted, 10).expect("search").len();
+    assert!(
+        before >= 2,
+        "expected the corpus to have two such documents"
+    );
+
+    let query = BooleanQuery::new()
+        .must(TermQuery::new(1, term("compile")))
+        .without_phrase(PhraseQuery::new(1, vec![term("compile"), term("time")]));
+
+    let after = searcher.search(&query, 10).expect("search").len();
+    assert_eq!(after, before - 1);
+}
+
+#[test]
+fn a_forbidden_phrase_matching_nothing_removes_nothing() {
+    let segments = corpus();
+    let searcher = Searcher::new(&segments, schema());
+
+    let query = BooleanQuery::new()
+        .must(TermQuery::new(0, term("rust")))
+        .without_phrase(PhraseQuery::new(0, vec![term("absent"), term("words")]));
+
+    assert_eq!(searcher.search(&query, 10).expect("search").len(), 1);
+}
+
+#[test]
+fn a_phrase_group_scores_above_zero() {
+    // A phrase contributes no term weight, so a query made only of phrase
+    // groups would collect every match at score zero and rank them by nothing.
+    let segments = index(&[("zero cost abstractions", "x", "t")]);
+    let searcher = Searcher::new(&segments, schema());
+
+    let query =
+        BooleanQuery::new().phrase_any(vec![PhraseQuery::new(0, vec![term("zero"), term("cost")])]);
+
+    let results = searcher.search(&query, 10).expect("search");
+    assert_eq!(results.len(), 1);
+    assert!(results.hits[0].score > 0.0);
+}
+
+#[test]
+fn a_forbidden_phrase_is_not_highlighted() {
+    // Highlighting the words a query excluded would mark them in the very
+    // documents chosen for not containing the phrase.
+    let query = BooleanQuery::new()
+        .must(TermQuery::new(0, term("rust")))
+        .without_phrase(PhraseQuery::new(1, vec![term("compile"), term("time")]));
+
+    let terms = query.all_terms();
+    assert!(terms.contains(&term("rust")));
+    assert!(!terms.contains(&term("compile")));
+}
+
+#[test]
+fn a_phrase_group_is_highlighted() {
+    let query =
+        BooleanQuery::new().phrase_any(vec![PhraseQuery::new(0, vec![term("zero"), term("cost")])]);
+
+    assert_eq!(query.all_terms(), vec![term("cost"), term("zero")]);
+}
+
+#[test]
+fn a_query_of_only_a_phrase_group_is_not_empty() {
+    let query =
+        BooleanQuery::new().phrase_any(vec![PhraseQuery::new(0, vec![term("zero"), term("cost")])]);
+    assert!(!query.is_empty());
+
+    let excluding =
+        BooleanQuery::new().without_phrase(PhraseQuery::new(0, vec![term("zero"), term("cost")]));
+    assert!(!excluding.is_empty());
+}
+
+#[test]
 fn a_phrase_does_not_match_reversed_terms() {
     let segments = index(&[("zero cost abstractions", "x", "t")]);
     let searcher = Searcher::new(&segments, schema());
@@ -666,8 +815,11 @@ fn intersect_sorted_keeps_shared_ids() {
 
 #[test]
 fn intersect_sorted_handles_empty_inputs() {
-    assert!(intersect_sorted(&[], &[1, 2]).is_empty());
-    assert!(intersect_sorted(&[1, 2], &[]).is_empty());
+    let empty_first = intersect_sorted(&[], &[1, 2]);
+    let empty_second = intersect_sorted(&[1, 2], &[]);
+
+    assert_eq!(empty_first, Vec::new());
+    assert_eq!(empty_second, Vec::new());
 }
 
 #[test]
@@ -714,13 +866,17 @@ fn finds_spans_for_an_inflected_form() {
 #[test]
 fn finds_no_spans_for_an_absent_term() {
     let analyzer = Analyzer::english();
-    assert!(find_spans(&analyzer, "nothing here", &[term("absent")]).is_empty());
+    let spans = find_spans(&analyzer, "nothing here", &[term("absent")]);
+
+    assert_eq!(spans, Vec::new());
 }
 
 #[test]
 fn finds_no_spans_when_no_terms_are_given() {
     let analyzer = Analyzer::english();
-    assert!(find_spans(&analyzer, "some text", &[]).is_empty());
+    let spans = find_spans(&analyzer, "some text", &[]);
+
+    assert_eq!(spans, Vec::new());
 }
 
 #[test]
