@@ -7,7 +7,7 @@ use crate::error::{Error, Result};
 use crate::json::Json;
 use crate::schema::{FieldType, Schema};
 use crate::store::docstore::DocStore;
-use crate::tokenize::Analyzer;
+use crate::tokenize::{Analyzer, Token};
 
 /// Documents accepted before the writer insists on a flush.
 pub const DEFAULT_MAX_BUFFERED_DOCS: u32 = 50_000;
@@ -46,6 +46,9 @@ pub struct IndexWriter {
     index: InvertedIndex,
     store: DocStore,
     config: WriterConfig,
+    /// Reused across every analyzed field value, so analysis allocates once
+    /// for the writer rather than once per value.
+    tokens: Vec<Token>,
 }
 
 impl IndexWriter {
@@ -68,6 +71,7 @@ impl IndexWriter {
             index: InvertedIndex::new(),
             store: DocStore::new(),
             config: WriterConfig::default(),
+            tokens: Vec::new(),
         }
     }
 
@@ -144,7 +148,8 @@ impl IndexWriter {
                 match field.ty {
                     FieldType::Text => {
                         let text = value.as_text();
-                        for token in self.analyzer.analyze(&text) {
+                        self.analyzer.analyze_into(&text, &mut self.tokens);
+                        for token in &self.tokens {
                             let position = field.options.positions.then_some(token.position);
                             self.index.add_term(field_id, &token.text, id, position);
                             length += 1;
@@ -152,7 +157,8 @@ impl IndexWriter {
                     }
                     FieldType::Keyword => {
                         let text = value.as_text();
-                        for token in self.keyword_analyzer.analyze(&text) {
+                        self.keyword_analyzer.analyze_into(&text, &mut self.tokens);
+                        for token in &self.tokens {
                             self.index.add_term(field_id, &token.text, id, None);
                             length += 1;
                         }
