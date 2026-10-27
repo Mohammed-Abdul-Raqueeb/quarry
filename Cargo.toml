@@ -43,6 +43,12 @@ too_many_lines = "allow"
 # Flags pairs like `doc`/`docs` and `field`/`fields`, which are the clearest
 # names available here.
 similar_names = "allow"
+# Wants every assert!(x.is_empty()) rewritten as assert_eq!(x, [] as [T; 0]).
+# The point -- printing what was found when the assertion fails -- is fair, but
+# the form it asks for is harder to read than the one it replaces, and the test
+# suite asserts emptiness in about twenty-five places. Where showing the value
+# genuinely helps, the test binds it and compares explicitly instead.
+assert_is_empty = "allow"
 
 [profile.release]
 opt-level = 3
