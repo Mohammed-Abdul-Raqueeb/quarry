@@ -69,14 +69,35 @@ indexing is not the bottleneck for a search workload.
 
 | Documents | Median | Rate |
 | --- | --- | --- |
-| 1,000 | 50.8 ms | ~19,700 docs/s |
-| 10,000 | 519 ms | ~19,250 docs/s |
+| 1,000 | 46 ms | ~21,500 docs/s |
+| 10,000 | 0.5 s – 1.7 s | see below |
 
-Linear, as it should be: an insert is an analyze plus a `BTreeMap` lookup and a push.
+An insert is an analyze plus a `BTreeMap` lookup and a push, so it should be linear, and at 1,000
+documents it is.
 
-2,000 documents produce 7,543 dictionary entries and 780 bytes per document on disk. The per-document
-figure is dominated by positions — a 66-word document stores 66 position entries — which is the price
-of phrase matching. Turning positions off for a field roughly halves its postings.
+`IndexWriter` keeps one `Vec<Token>` and analyzes into it, so analysis allocates once for the writer
+rather than once per value of every indexed field. Measured either side of that change in one
+sitting, 1,000 documents went from about 50 ms to about 46 ms — around 7%, which is roughly what the
+analysis table predicts once the per-value allocation is the only one left.
+
+### The 10,000-document figure is not trustworthy, and it is left in
+
+Five samples of one iteration each, and the spread across them is about threefold: the best sample
+lands near 0.5 s and the median near 1.7 s, on both sides of the change and across repeated runs.
+The best sample agrees with the linear extrapolation from 1,000 documents. The median does not.
+
+So something intermittent costs more than the work does — most likely the allocator or the OS
+reclaiming pages under a working set that 1,000 documents never reaches. It has not been chased
+down, and quoting a rate from that median would be inventing precision.
+
+It stays in the table because a benchmark that hides its unstable case is worse than one that
+reports it. If you need an indexing number for capacity planning, measure it on your hardware with
+your documents; the 1,000-document row is the one to compare ratios against.
+
+2,000 documents produce 7,543 dictionary entries and 780 bytes per document on disk. The
+per-document figure is dominated by positions — a 66-word document stores 66 position entries —
+which is the price of phrase matching. Turning positions off for a field roughly halves its
+postings.
 
 ## Segment codec
 
