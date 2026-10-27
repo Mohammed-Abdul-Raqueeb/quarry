@@ -168,8 +168,9 @@ Honest limits, so you can tell quickly whether it fits:
 - **English analysis only.** The stemmer and stopword list are English. Other space-separated
   languages tokenize correctly but are not stemmed; scripts without word separators need the
   n-gram tokenizer.
-- **Ranges parse but do not execute yet.** The parser and planner handle them; the executor does
-  not. It is reported as a note rather than silently ignored.
+- **Ranges scan a dictionary.** A numeric range costs one pass over the distinct values of that
+  field, which is free for a year and slow for a float with a million of them. A negated range is
+  not supported, and is reported rather than silently dropped.
 
 ## License
 
