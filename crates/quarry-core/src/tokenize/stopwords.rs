@@ -90,15 +90,12 @@ impl Default for StopwordFilter {
 }
 
 impl TokenFilter for StopwordFilter {
-    fn filter(&self, tokens: Vec<Token>) -> Vec<Token> {
+    fn apply(&self, tokens: &mut Vec<Token>) {
         if self.words.is_empty() {
-            return tokens;
+            return;
         }
 
-        tokens
-            .into_iter()
-            .filter(|t| !self.words.contains(&t.text))
-            .collect()
+        tokens.retain(|token| !self.words.contains(&token.text));
     }
 
     fn name(&self) -> &'static str {

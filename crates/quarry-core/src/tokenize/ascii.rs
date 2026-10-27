@@ -14,18 +14,14 @@ use super::{Token, TokenFilter};
 pub struct AsciiFolding;
 
 impl TokenFilter for AsciiFolding {
-    fn filter(&self, tokens: Vec<Token>) -> Vec<Token> {
-        tokens
-            .into_iter()
-            .map(|t| {
-                // Skip the allocation for the common all-ASCII case.
-                if t.text.is_ascii() {
-                    return t;
-                }
-                let folded = fold(&t.text);
-                t.with_text(folded)
-            })
-            .collect()
+    fn apply(&self, tokens: &mut Vec<Token>) {
+        for token in tokens.iter_mut() {
+            // Skip the allocation for the common all-ASCII case.
+            if token.text.is_ascii() {
+                continue;
+            }
+            token.text = fold(&token.text);
+        }
     }
 
     fn name(&self) -> &'static str {

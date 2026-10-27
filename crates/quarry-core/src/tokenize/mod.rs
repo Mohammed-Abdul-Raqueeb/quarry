@@ -70,8 +70,13 @@ pub trait Tokenizer: Debug + Send + Sync {
 
 /// Transforms a token stream.
 pub trait TokenFilter: Debug + Send + Sync {
-    /// Rewrites, drops or expands tokens.
-    fn filter(&self, tokens: Vec<Token>) -> Vec<Token>;
+    /// Rewrites or drops tokens, in place.
+    ///
+    /// Takes `&mut Vec<Token>` rather than consuming and returning one so a
+    /// chain of filters costs a single allocation instead of one per filter.
+    /// Analysis runs over every term of every document, so that difference is
+    /// most of the pipeline's cost.
+    fn apply(&self, tokens: &mut Vec<Token>);
 
     /// A short name, used when describing an analyzer in diagnostics.
     fn name(&self) -> &'static str;
@@ -85,14 +90,17 @@ pub trait TokenFilter: Debug + Send + Sync {
 pub struct Lowercase;
 
 impl TokenFilter for Lowercase {
-    fn filter(&self, tokens: Vec<Token>) -> Vec<Token> {
-        tokens
-            .into_iter()
-            .map(|t| {
-                let lowered = t.text.to_lowercase();
-                t.with_text(lowered)
-            })
-            .collect()
+    fn apply(&self, tokens: &mut Vec<Token>) {
+        for token in tokens.iter_mut() {
+            // An all-ASCII token lowercases in place, which is the common case
+            // and allocates nothing. Anything else can change length, so it
+            // needs a new String.
+            if token.text.is_ascii() {
+                token.text.make_ascii_lowercase();
+            } else {
+                token.text = token.text.to_lowercase();
+            }
+        }
     }
 
     fn name(&self) -> &'static str {
@@ -119,14 +127,11 @@ impl Default for LengthFilter {
 }
 
 impl TokenFilter for LengthFilter {
-    fn filter(&self, tokens: Vec<Token>) -> Vec<Token> {
-        tokens
-            .into_iter()
-            .filter(|t| {
-                let len = t.text.chars().count();
-                len >= self.min && len <= self.max
-            })
-            .collect()
+    fn apply(&self, tokens: &mut Vec<Token>) {
+        tokens.retain(|token| {
+            let len = token.text.chars().count();
+            len >= self.min && len <= self.max
+        });
     }
 
     fn name(&self) -> &'static str {
@@ -163,7 +168,7 @@ impl Analyzer {
     pub fn analyze(&self, input: &str) -> Vec<Token> {
         let mut tokens = self.tokenizer.tokenize(input);
         for filter in &self.filters {
-            tokens = filter.filter(tokens);
+            filter.apply(&mut tokens);
         }
         tokens
     }

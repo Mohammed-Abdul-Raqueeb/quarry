@@ -20,14 +20,27 @@ use super::{Token, TokenFilter};
 pub struct PorterStemmer;
 
 impl TokenFilter for PorterStemmer {
-    fn filter(&self, tokens: Vec<Token>) -> Vec<Token> {
-        tokens
-            .into_iter()
-            .map(|t| {
-                let stemmed = stem(&t.text);
-                t.with_text(stemmed)
-            })
-            .collect()
+    fn apply(&self, tokens: &mut Vec<Token>) {
+        for token in tokens.iter_mut() {
+            // `stem` returns the word unchanged for anything short or
+            // non-ASCII, and for a word already in stem form. Truncating in
+            // place when the stem is a prefix covers almost every real case
+            // and allocates nothing.
+            let stemmed = stem(&token.text);
+
+            // Compared by content, not by length. Step 1c rewrites a terminal
+            // `y` to `i` without changing the length, so a length check here
+            // would silently stop `quickly` becoming `quickli`.
+            if stemmed == token.text {
+                continue;
+            }
+
+            if token.text.starts_with(&stemmed) {
+                token.text.truncate(stemmed.len());
+            } else {
+                token.text = stemmed;
+            }
+        }
     }
 
     fn name(&self) -> &'static str {

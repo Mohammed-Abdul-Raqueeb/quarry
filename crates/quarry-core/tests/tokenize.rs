@@ -10,6 +10,16 @@ fn texts(tokens: &[Token]) -> Vec<&str> {
     tokens.iter().map(|t| t.text.as_str()).collect()
 }
 
+/// Runs a filter over a token list and hands the list back.
+///
+/// `TokenFilter::apply` works in place to avoid an allocation per filter; this
+/// wraps it so each test still reads as "filter these tokens, check the result".
+fn filtered(filter: &dyn TokenFilter, tokens: Vec<Token>) -> Vec<Token> {
+    let mut tokens = tokens;
+    filter.apply(&mut tokens);
+    tokens
+}
+
 // ---- StandardTokenizer ----------------------------------------------------
 
 #[test]
@@ -211,13 +221,13 @@ fn whitespace_tokenizer_reports_usable_offsets() {
 
 #[test]
 fn lowercase_filter_lowers_every_token() {
-    let tokens = Lowercase.filter(vec![Token::new("Rust", 0, 0, 4)]);
+    let tokens = filtered(&Lowercase, vec![Token::new("Rust", 0, 0, 4)]);
     assert_eq!(tokens[0].text, "rust");
 }
 
 #[test]
 fn lowercase_filter_preserves_positions_and_offsets() {
-    let tokens = Lowercase.filter(vec![Token::new("ABC", 7, 10, 13)]);
+    let tokens = filtered(&Lowercase, vec![Token::new("ABC", 7, 10, 13)]);
     assert_eq!(
         (tokens[0].position, tokens[0].start, tokens[0].end),
         (7, 10, 13)
@@ -226,7 +236,7 @@ fn lowercase_filter_preserves_positions_and_offsets() {
 
 #[test]
 fn lowercase_filter_handles_non_ascii() {
-    let tokens = Lowercase.filter(vec![Token::new("ÉCOLE", 0, 0, 7)]);
+    let tokens = filtered(&Lowercase, vec![Token::new("ÉCOLE", 0, 0, 7)]);
     assert_eq!(tokens[0].text, "école");
 }
 
@@ -235,14 +245,17 @@ fn lowercase_filter_handles_non_ascii() {
 #[test]
 fn length_filter_drops_tokens_below_the_minimum() {
     let filter = LengthFilter { min: 3, max: 10 };
-    let tokens = filter.filter(vec![Token::new("a", 0, 0, 1), Token::new("abc", 1, 2, 5)]);
+    let tokens = filtered(
+        &filter,
+        vec![Token::new("a", 0, 0, 1), Token::new("abc", 1, 2, 5)],
+    );
     assert_eq!(texts(&tokens), ["abc"]);
 }
 
 #[test]
 fn length_filter_drops_tokens_above_the_maximum() {
     let filter = LengthFilter { min: 1, max: 4 };
-    let tokens = filter.filter(vec![Token::new("abcdefgh", 0, 0, 8)]);
+    let tokens = filtered(&filter, vec![Token::new("abcdefgh", 0, 0, 8)]);
     assert!(tokens.is_empty());
 }
 
@@ -250,14 +263,14 @@ fn length_filter_drops_tokens_above_the_maximum() {
 fn length_filter_measures_characters_not_bytes() {
     // Four characters, eight bytes: a byte-based limit would wrongly drop it.
     let filter = LengthFilter { min: 1, max: 4 };
-    let tokens = filter.filter(vec![Token::new("éééé", 0, 0, 8)]);
+    let tokens = filtered(&filter, vec![Token::new("éééé", 0, 0, 8)]);
     assert_eq!(tokens.len(), 1);
 }
 
 #[test]
 fn length_filter_default_keeps_ordinary_words() {
     let filter = LengthFilter::default();
-    let tokens = filter.filter(vec![Token::new("ownership", 0, 0, 9)]);
+    let tokens = filtered(&filter, vec![Token::new("ownership", 0, 0, 9)]);
     assert_eq!(tokens.len(), 1);
 }
 
@@ -266,10 +279,10 @@ fn length_filter_default_keeps_ordinary_words() {
 #[test]
 fn stopword_filter_removes_listed_words() {
     let filter = StopwordFilter::english();
-    let tokens = filter.filter(vec![
-        Token::new("the", 0, 0, 3),
-        Token::new("king", 1, 4, 8),
-    ]);
+    let tokens = filtered(
+        &filter,
+        vec![Token::new("the", 0, 0, 3), Token::new("king", 1, 4, 8)],
+    );
     assert_eq!(texts(&tokens), ["king"]);
 }
 
@@ -278,12 +291,15 @@ fn stopword_filter_preserves_positions_so_phrases_stay_honest() {
     // Removing `the` must leave a gap, or "king of the hill" would match the
     // phrase "king of hill" exactly.
     let filter = StopwordFilter::english();
-    let tokens = filter.filter(vec![
-        Token::new("king", 0, 0, 4),
-        Token::new("of", 1, 5, 7),
-        Token::new("the", 2, 8, 11),
-        Token::new("hill", 3, 12, 16),
-    ]);
+    let tokens = filtered(
+        &filter,
+        vec![
+            Token::new("king", 0, 0, 4),
+            Token::new("of", 1, 5, 7),
+            Token::new("the", 2, 8, 11),
+            Token::new("hill", 3, 12, 16),
+        ],
+    );
 
     assert_eq!(texts(&tokens), ["king", "hill"]);
     assert_eq!(tokens[1].position, 3);
@@ -299,7 +315,7 @@ fn stopword_filter_is_case_insensitive_in_its_list() {
 #[test]
 fn empty_stopword_filter_removes_nothing() {
     let filter = StopwordFilter::empty();
-    let tokens = filter.filter(vec![Token::new("the", 0, 0, 3)]);
+    let tokens = filtered(&filter, vec![Token::new("the", 0, 0, 3)]);
     assert_eq!(tokens.len(), 1);
 }
 
@@ -394,13 +410,13 @@ fn needs_folding_detects_whether_work_is_required() {
 
 #[test]
 fn folding_filter_skips_allocation_for_ascii_tokens() {
-    let tokens = AsciiFolding.filter(vec![Token::new("ascii", 0, 0, 5)]);
+    let tokens = filtered(&AsciiFolding, vec![Token::new("ascii", 0, 0, 5)]);
     assert_eq!(tokens[0].text, "ascii");
 }
 
 #[test]
 fn folding_filter_preserves_positions() {
-    let tokens = AsciiFolding.filter(vec![Token::new("café", 3, 10, 15)]);
+    let tokens = filtered(&AsciiFolding, vec![Token::new("café", 3, 10, 15)]);
     assert_eq!((tokens[0].text.as_str(), tokens[0].position), ("cafe", 3));
 }
 
