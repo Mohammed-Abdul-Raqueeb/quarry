@@ -114,6 +114,10 @@ impl RangeQuery {
     /// Crossed bounds, or equal bounds with either end excluded, describe an
     /// empty interval. Detecting it here lets the executor skip the dictionary
     /// scan entirely.
+    // An exact comparison is the right one here. The question is whether the
+    // two bounds are the same value, not whether they are close: `[5 TO 5}` is
+    // empty and `[5 TO 5.0001}` is not, and an epsilon would blur the two.
+    #[allow(clippy::float_cmp)]
     #[must_use]
     pub fn is_empty(&self) -> bool {
         let (Some(lower), Some(upper)) = (self.lower, self.upper) else {
