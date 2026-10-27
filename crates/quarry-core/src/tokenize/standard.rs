@@ -47,6 +47,14 @@ impl StandardTokenizer {
 impl Tokenizer for StandardTokenizer {
     fn tokenize(&self, input: &str) -> Vec<Token> {
         let mut tokens = Vec::new();
+        self.tokenize_into(input, &mut tokens);
+        tokens
+    }
+
+    // The scanner lives here rather than in `tokenize` because this is the
+    // tokenizer on the indexing path, so it is the one worth letting a caller
+    // reuse a buffer with.
+    fn tokenize_into(&self, input: &str, out: &mut Vec<Token>) {
         let mut position = 0u32;
         let mut start: Option<usize> = None;
 
@@ -57,7 +65,7 @@ impl Tokenizer for StandardTokenizer {
                 }
             } else if let Some(begin) = start.take() {
                 if let Some(token) = trim_token(input, begin, offset, position) {
-                    tokens.push(token);
+                    out.push(token);
                     position += 1;
                 }
             }
@@ -66,11 +74,9 @@ impl Tokenizer for StandardTokenizer {
         // A token running to the end of the input has no terminating separator.
         if let Some(begin) = start {
             if let Some(token) = trim_token(input, begin, input.len(), position) {
-                tokens.push(token);
+                out.push(token);
             }
         }
-
-        tokens
     }
 }
 

@@ -537,6 +537,79 @@ fn stemming_in_place_handles_a_stem_that_is_not_a_prefix() {
 }
 
 #[test]
+fn analyze_into_matches_analyze() {
+    let analyzer = Analyzer::english();
+    let mut buf = Vec::new();
+    analyzer.analyze_into("Running CAFÉS quickly", &mut buf);
+    assert_eq!(buf, analyzer.analyze("Running CAFÉS quickly"));
+}
+
+#[test]
+fn analyze_into_replaces_the_buffer_rather_than_appending() {
+    // The buffer is reused across values, so a leftover token from the
+    // previous value must not leak into this one.
+    let analyzer = Analyzer::english();
+    let mut buf = Vec::new();
+    analyzer.analyze_into("ownership", &mut buf);
+    analyzer.analyze_into("borrow", &mut buf);
+    assert_eq!(texts(&buf), ["borrow"]);
+}
+
+#[test]
+fn analyze_into_keeps_the_buffer_capacity() {
+    // Reusing the allocation is the only reason this method exists, so the
+    // capacity surviving a clear is the property worth pinning.
+    let analyzer = Analyzer::english();
+    let mut buf = Vec::new();
+    analyzer.analyze_into(&"ownership borrow checker ".repeat(20), &mut buf);
+    let capacity = buf.capacity();
+    assert!(capacity >= 60);
+
+    analyzer.analyze_into("ownership", &mut buf);
+    assert_eq!(buf.len(), 1);
+    assert_eq!(buf.capacity(), capacity);
+}
+
+#[test]
+fn analyze_into_empties_the_buffer_for_input_with_no_terms() {
+    let analyzer = Analyzer::english();
+    let mut buf = Vec::new();
+    analyzer.analyze_into("ownership", &mut buf);
+    analyzer.analyze_into("the and of to", &mut buf);
+    assert!(buf.is_empty());
+}
+
+#[test]
+fn tokenize_into_appends_without_clearing() {
+    // Unlike `analyze_into`, the tokenizer appends: the analyzer is what owns
+    // the decision to clear, because it is what owns the buffer's lifetime.
+    let tokenizer = StandardTokenizer::default();
+    let mut buf = tokenizer.tokenize("rust ownership");
+    tokenizer.tokenize_into("borrow checker", &mut buf);
+    assert_eq!(texts(&buf), ["rust", "ownership", "borrow", "checker"]);
+}
+
+#[test]
+fn tokenize_into_agrees_with_tokenize_on_every_tokenizer() {
+    // `tokenize_into` has a default implementation and one override, so the
+    // two must be checked to agree for both paths.
+    let input = "The borrow-checker's rules, in 2026.";
+    let tokenizers: Vec<Box<dyn Tokenizer>> = vec![
+        Box::new(StandardTokenizer::default()),
+        Box::new(KeywordTokenizer),
+        Box::new(WhitespaceTokenizer),
+        Box::new(NgramTokenizer::new(2, 3)),
+        Box::new(EdgeNgramTokenizer::new(2, 3)),
+    ];
+
+    for tokenizer in tokenizers {
+        let mut buf = Vec::new();
+        tokenizer.tokenize_into(input, &mut buf);
+        assert_eq!(buf, tokenizer.tokenize(input), "{tokenizer:?}");
+    }
+}
+
+#[test]
 fn english_analyzer_drops_stopwords() {
     let terms = Analyzer::english().terms("the quick brown fox");
     assert!(!terms.contains(&"the".to_string()));

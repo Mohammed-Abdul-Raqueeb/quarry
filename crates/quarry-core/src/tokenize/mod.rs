@@ -66,6 +66,16 @@ impl Token {
 pub trait Tokenizer: Debug + Send + Sync {
     /// Splits `input`.
     fn tokenize(&self, input: &str) -> Vec<Token>;
+
+    /// Splits `input`, appending to `out`.
+    ///
+    /// The default appends the result of [`Tokenizer::tokenize`], so an
+    /// implementor need not write this. Overriding it lets a caller that
+    /// tokenizes repeatedly reuse one buffer; `StandardTokenizer` does, since
+    /// it is the one on the indexing path.
+    fn tokenize_into(&self, input: &str, out: &mut Vec<Token>) {
+        out.append(&mut self.tokenize(input));
+    }
 }
 
 /// Transforms a token stream.
@@ -166,11 +176,25 @@ impl Analyzer {
     /// Runs the tokenizer and every filter.
     #[must_use]
     pub fn analyze(&self, input: &str) -> Vec<Token> {
-        let mut tokens = self.tokenizer.tokenize(input);
-        for filter in &self.filters {
-            filter.apply(&mut tokens);
-        }
+        let mut tokens = Vec::new();
+        self.analyze_into(input, &mut tokens);
         tokens
+    }
+
+    /// Runs the tokenizer and every filter into `buf`, replacing its contents.
+    ///
+    /// Same result as [`Analyzer::analyze`], but a caller analyzing many values
+    /// in a row can keep one buffer and pay for its capacity once instead of
+    /// once per value. The indexing path does exactly that.
+    ///
+    /// `buf` is cleared first, so a leftover token from a previous call cannot
+    /// leak into this one. Its capacity survives, which is the whole point.
+    pub fn analyze_into(&self, input: &str, buf: &mut Vec<Token>) {
+        buf.clear();
+        self.tokenizer.tokenize_into(input, buf);
+        for filter in &self.filters {
+            filter.apply(buf);
+        }
     }
 
     /// Just the term strings.
