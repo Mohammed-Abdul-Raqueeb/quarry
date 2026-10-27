@@ -2,6 +2,7 @@
 
 use super::collector::{ScoredDoc, TopK};
 use super::highlight::{self, HighlightOptions};
+use super::range::{self, RangeQuery};
 use crate::doc::{DocId, Document};
 use crate::error::{Error, Result};
 use crate::index::posting::PostingList;
@@ -108,6 +109,11 @@ pub struct BooleanQuery {
     pub must_not: Vec<TermQuery>,
     /// Phrases whose terms must appear adjacently, in order.
     pub phrases: Vec<PhraseQuery>,
+    /// Numeric ranges every matching document must satisfy.
+    ///
+    /// Kept separate from the term clauses because a range is answered from
+    /// the field dictionary rather than from a single posting list.
+    pub ranges: Vec<RangeQuery>,
     /// How many `should` clauses must match when there are no `must` clauses.
     pub minimum_should_match: usize,
 }
@@ -156,6 +162,13 @@ impl BooleanQuery {
         self
     }
 
+    /// Adds a required numeric range.
+    #[must_use]
+    pub fn range(mut self, range: RangeQuery) -> Self {
+        self.ranges.push(range);
+        self
+    }
+
     /// Whether the query has no clauses at all.
     #[must_use]
     pub fn is_empty(&self) -> bool {
@@ -164,6 +177,7 @@ impl BooleanQuery {
             && self.should.is_empty()
             && self.must_not.is_empty()
             && self.phrases.is_empty()
+            && self.ranges.is_empty()
     }
 
     /// Every term mentioned, for highlighting.
@@ -399,6 +413,31 @@ impl<'a> Searcher<'a> {
             });
         }
 
+        // Ranges run last among the required clauses, so when a query pairs a
+        // term with a range the term's posting list has already narrowed the
+        // candidate set and the range only has to filter it.
+        for range in &query.ranges {
+            // An unbounded range places no constraint, so scanning the
+            // dictionary for it would be pure waste.
+            if range.is_unbounded() {
+                continue;
+            }
+
+            let docs = range::matching_docs(segment, range);
+            if docs.is_empty() {
+                return Ok(Vec::new());
+            }
+
+            candidates = Some(match candidates {
+                None => docs,
+                Some(existing) => intersect_sorted(&existing, &docs),
+            });
+
+            if candidates.as_ref().is_some_and(Vec::is_empty) {
+                return Ok(Vec::new());
+            }
+        }
+
         let mut docs = if let Some(docs) = candidates {
             docs
         } else {
@@ -493,9 +532,10 @@ impl<'a> Searcher<'a> {
                     * field_boost;
             }
 
-            // A pure phrase or pure filter query scores nothing above, but the
-            // document did match, so it must still be collected.
-            if score == 0.0 && !query.phrases.is_empty() {
+            // A pure phrase or pure range query scores nothing above, because
+            // neither contributes a term weight — but the document did match,
+            // so it still has to be collected with a non-zero score.
+            if score == 0.0 && !(query.phrases.is_empty() && query.ranges.is_empty()) {
                 score = 1.0;
             }
 
