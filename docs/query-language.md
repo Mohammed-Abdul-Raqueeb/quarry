@@ -106,6 +106,28 @@ almost everything.
 
 Closer matches are boosted higher, so an exact hit outranks a two-edit neighbour.
 
+### An unscoped phrase searches several fields disjunctively
+
+`"zero cost"` means "the phrase in title **or** in body", the same way a bare term does. The
+planner expands it once per default field and puts the expansions in one `phrase_any` group.
+
+Getting this wrong is the phrase version of the `must_any` bug above, and it failed the same silent
+way: one required clause per field demanded the phrase in *every* text field, so every unscoped
+phrase query on a multi-field schema returned nothing at all.
+
+A default field indexed without positions is skipped with a note rather than failing the query,
+because another default field may well be the one meant. A field named explicitly is still an
+error — see below.
+
+### A negated phrase excludes
+
+`rust NOT "compile time"` drops the documents containing the phrase. The exclusion is subtracted
+from the result set, not intersected into it; pushing it into the required phrases would invert the
+clause and demand the phrase instead of forbidding it.
+
+The excluded phrase's words are left out of highlighting, since marking them would highlight the
+very text a document was chosen for not containing.
+
 ### Phrases need positions
 
 A phrase needs the field to have been indexed with positions. `text` fields get them by default;
@@ -161,14 +183,17 @@ more useful than getting nothing back.
 
 ## What the flat plan loses
 
-`BooleanQuery` has five clause kinds and no nesting:
+`BooleanQuery` has seven clause kinds and no nesting:
 
 ```rust
-must: Vec<TermQuery>              // all required
-must_any: Vec<Vec<TermQuery>>     // one from each group required
-should: Vec<TermQuery>            // optional, contribute score
-must_not: Vec<TermQuery>          // excluded
-phrases: Vec<PhraseQuery>         // required, ordered
+must: Vec<TermQuery>                 // all required
+must_any: Vec<Vec<TermQuery>>        // one term from each group required
+should: Vec<TermQuery>               // optional, contribute score
+must_not: Vec<TermQuery>             // excluded
+phrases: Vec<PhraseQuery>            // required, ordered
+phrase_any: Vec<Vec<PhraseQuery>>    // one phrase from each group required
+phrases_not: Vec<PhraseQuery>        // excluded
+ranges: Vec<RangeQuery>              // required
 ```
 
 `(a OR b) AND (c OR d)` maps exactly onto two `must_any` groups. Deeper nesting —

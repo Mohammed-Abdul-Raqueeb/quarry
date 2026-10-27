@@ -288,6 +288,84 @@ fn a_phrase_on_a_field_without_positions_is_an_error() {
 }
 
 #[test]
+fn an_unscoped_phrase_becomes_one_group_not_one_clause_per_field() {
+    // The bug: `title` and `body` are both default fields, so this used to
+    // push two required phrase clauses and demand the phrase in both.
+    let segments = segments();
+    let plan = planned("\"zero cost\"", &segments);
+
+    assert!(plan.query.phrases.is_empty());
+    assert_eq!(plan.query.phrase_any.len(), 1);
+    assert_eq!(plan.query.phrase_any[0].len(), 2);
+}
+
+#[test]
+fn an_unscoped_phrase_keeps_its_slop_in_every_expansion() {
+    let segments = segments();
+    let plan = planned("\"zero cost\"~2", &segments);
+
+    assert!(plan.query.phrase_any[0]
+        .iter()
+        .all(|phrase| phrase.slop == 2));
+}
+
+#[test]
+fn an_unscoped_phrase_skips_fields_without_positions() {
+    // `tag` is a keyword field, so it cannot be phrase-matched -- but it is
+    // not a default search field either, so only `title` and `body` appear.
+    let segments = segments();
+    let plan = planned("\"zero cost\"", &segments);
+
+    let fields: Vec<_> = plan.query.phrase_any[0]
+        .iter()
+        .map(|phrase| phrase.field)
+        .collect();
+    assert_eq!(fields, vec![0, 1]);
+}
+
+#[test]
+fn a_negated_phrase_is_excluded_rather_than_required() {
+    // Pushing it into `phrases` inverted the clause: "not this phrase" became
+    // "this phrase, required".
+    let segments = segments();
+    let plan = planned("title:rust AND NOT title:\"zero cost\"", &segments);
+
+    assert!(plan.query.phrases.is_empty());
+    assert_eq!(plan.query.phrases_not.len(), 1);
+    assert_eq!(plan.query.phrases_not[0].terms.len(), 2);
+}
+
+#[test]
+fn a_negated_unscoped_phrase_excludes_every_field_it_could_appear_in() {
+    let segments = segments();
+    let plan = planned("rust AND NOT \"zero cost\"", &segments);
+
+    assert_eq!(plan.query.phrases_not.len(), 2);
+    assert!(plan.query.phrase_any.is_empty());
+}
+
+#[test]
+fn a_negated_phrase_leaves_a_query_searchable() {
+    // The phrase resolved, so this is not "nothing to search for" even though
+    // the only phrase clause is an exclusion.
+    let segments = segments();
+    let plan = planned("rust NOT \"zero cost\"", &segments);
+
+    assert!(!plan.query.is_empty());
+}
+
+#[test]
+fn an_unscoped_phrase_matches_a_document_with_it_in_one_field() {
+    // The planner and the executor agreeing is the point; either alone was
+    // not enough to catch the original bug.
+    let segments = segments();
+    let plan = planned("\"borrow checker\"", &segments);
+    let searcher = quarry_core::Searcher::new(&segments, schema());
+
+    assert_eq!(searcher.search(&plan.query, 10).expect("search").len(), 1);
+}
+
+#[test]
 fn a_phrase_whose_terms_mostly_analyze_away_falls_back_to_terms() {
     // `and` is a stopword, so only one term survives; demanding a phrase of
     // one term would need positions for no benefit.

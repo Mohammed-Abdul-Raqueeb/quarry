@@ -46,6 +46,18 @@ and the project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ### Fixed
 
+- **An unscoped phrase query matched nothing at all.** `"zero cost"` expands across every default
+  text field, and each expansion became a separate *required* phrase clause — so the phrase was
+  demanded in the title **and** the body, which no document satisfies. Exactly the `must_any` bug
+  from 0.4.0, in the clause it was never fixed for.
+  - Added `phrase_any: Vec<Vec<PhraseQuery>>`: union within a group, intersect across groups.
+  - A default field indexed without positions is now skipped with a note instead of failing the
+    query. A field named explicitly is still an error.
+  - Found by the end-to-end smoke test in CI, not by the unit tests. All 982 of those passed,
+    because every one of them scoped its phrase to a single field.
+- **A negated phrase was silently ignored.** `NOT "compile time"` pushed the phrase into the
+  required clauses, so the exclusion became a requirement. Added `phrases_not`, subtracted from the
+  result set rather than intersected into it, and left out of highlighting.
 - **A length-equality shortcut in the stemmer stopped stemming every `-ly` word.** Rewriting
   `PorterStemmer` to truncate in place made it tempting to skip the substitution when the stem is
   the same length as the word; step 1c turns a terminal `y` into an `i`, so `quickly` → `quickli`

@@ -235,6 +235,11 @@ fn walk(
 
         Query::Phrase { field, terms, slop } => {
             let fields = resolve_fields(field.as_deref(), ctx)?;
+            // A named field that cannot be phrase-matched is an error; one of
+            // several defaults is not, because another default may carry
+            // positions and be exactly what the user meant.
+            let named = field.is_some();
+            let mut planned: Vec<PhraseQuery> = Vec::new();
 
             for field_id in fields {
                 let definition =
@@ -246,9 +251,12 @@ fn walk(
                         })?;
 
                 if !definition.options.positions {
-                    return Err(QueryError::NoPositions {
-                        field: definition.name.clone(),
-                    });
+                    if named {
+                        return Err(QueryError::NoPositions {
+                            field: definition.name.clone(),
+                        });
+                    }
+                    continue;
                 }
 
                 // Each word analyzed separately, so the phrase keeps one term
@@ -268,10 +276,20 @@ fn walk(
                     continue;
                 }
 
-                *resolved = true;
-                out.phrases
-                    .push(PhraseQuery::new(field_id, analyzed).with_slop(*slop));
+                planned.push(PhraseQuery::new(field_id, analyzed).with_slop(*slop));
             }
+
+            if planned.is_empty() {
+                if !named {
+                    notes.push(format!(
+                        "no default field is indexed with positions, so phrase {terms:?} was dropped"
+                    ));
+                }
+                return Ok(());
+            }
+
+            *resolved = true;
+            push_phrases(out, occur, planned);
             Ok(())
         }
 
@@ -378,6 +396,27 @@ fn push_expansion(out: &mut BooleanQuery, occur: Occur, terms: Vec<(FieldId, Str
     for (field, term) in terms {
         push(out, occur, TermQuery::new(field, term).boosted(boost));
     }
+}
+
+/// Routes a phrase's per-field expansions into the right clause.
+///
+/// One field is a plain clause. Several are a `phrase_any` group, so the
+/// phrase has to match *one* of the default fields rather than all of them --
+/// pushing each into `phrases` is the bug this exists to prevent.
+fn push_phrases(out: &mut BooleanQuery, occur: Occur, phrases: Vec<PhraseQuery>) {
+    if occur == Occur::MustNot {
+        // Subtracted by the executor. Every expansion is excluded, because
+        // "not this phrase" means not in any field it could appear in.
+        out.phrases_not.extend(phrases);
+        return;
+    }
+
+    if phrases.len() > 1 {
+        out.phrase_any.push(phrases);
+        return;
+    }
+
+    out.phrases.extend(phrases);
 }
 
 fn push(out: &mut BooleanQuery, occur: Occur, term: TermQuery) {

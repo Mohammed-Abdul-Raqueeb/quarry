@@ -109,6 +109,15 @@ pub struct BooleanQuery {
     pub must_not: Vec<TermQuery>,
     /// Phrases whose terms must appear adjacently, in order.
     pub phrases: Vec<PhraseQuery>,
+    /// Each group must have at least one matching phrase.
+    ///
+    /// The phrase counterpart of `must_any`, and it exists for the same
+    /// reason: an unscoped phrase expands across every default field, and
+    /// pushing each expansion into `phrases` demands the phrase appear in
+    /// *every* one of them, which no document does.
+    pub phrase_any: Vec<Vec<PhraseQuery>>,
+    /// Phrases no matching document may contain.
+    pub phrases_not: Vec<PhraseQuery>,
     /// Numeric ranges every matching document must satisfy.
     ///
     /// Kept separate from the term clauses because a range is answered from
@@ -162,6 +171,22 @@ impl BooleanQuery {
         self
     }
 
+    /// Adds a group of which at least one phrase must match.
+    #[must_use]
+    pub fn phrase_any(mut self, phrases: Vec<PhraseQuery>) -> Self {
+        if !phrases.is_empty() {
+            self.phrase_any.push(phrases);
+        }
+        self
+    }
+
+    /// Adds a forbidden phrase.
+    #[must_use]
+    pub fn without_phrase(mut self, phrase: PhraseQuery) -> Self {
+        self.phrases_not.push(phrase);
+        self
+    }
+
     /// Adds a required numeric range.
     #[must_use]
     pub fn range(mut self, range: RangeQuery) -> Self {
@@ -177,6 +202,8 @@ impl BooleanQuery {
             && self.should.is_empty()
             && self.must_not.is_empty()
             && self.phrases.is_empty()
+            && self.phrase_any.is_empty()
+            && self.phrases_not.is_empty()
             && self.ranges.is_empty()
     }
 
@@ -191,7 +218,9 @@ impl BooleanQuery {
             .map(|t| t.term.clone())
             .collect();
 
-        for phrase in &self.phrases {
+        // `phrases_not` is deliberately absent: a term the query excludes
+        // must not be highlighted in the documents that came back.
+        for phrase in self.phrases.iter().chain(self.phrase_any.iter().flatten()) {
             terms.extend(phrase.terms.iter().cloned());
         }
 
@@ -413,6 +442,30 @@ impl<'a> Searcher<'a> {
             });
         }
 
+        for group in &query.phrase_any {
+            // Union within the group, intersect across groups, exactly as
+            // `must_any` does: an unscoped phrase has to match one of the
+            // default fields, not all of them.
+            let mut union: Vec<DocId> = Vec::new();
+            for phrase in group {
+                let docs = self.phrase_matches(segment, phrase)?;
+                union = union_sorted(&union, &docs);
+            }
+
+            if union.is_empty() {
+                return Ok(Vec::new());
+            }
+
+            candidates = Some(match candidates {
+                None => union,
+                Some(existing) => intersect_sorted(&existing, &union),
+            });
+
+            if candidates.as_ref().is_some_and(Vec::is_empty) {
+                return Ok(Vec::new());
+            }
+        }
+
         // Ranges run last among the required clauses, so when a query pairs a
         // term with a range the term's posting list has already narrowed the
         // candidate set and the range only has to filter it.
@@ -471,6 +524,16 @@ impl<'a> Searcher<'a> {
         for term in &query.must_not {
             if let Some(list) = segment.index.postings(term.field, &term.term) {
                 docs.retain(|doc| !list.contains(*doc));
+            }
+        }
+
+        // Excluded last, and by subtraction rather than by intersection, so a
+        // negated phrase removes documents instead of requiring them. Pushing
+        // one into `phrases` would invert the clause.
+        for phrase in &query.phrases_not {
+            let excluded = self.phrase_matches(segment, phrase)?;
+            if !excluded.is_empty() {
+                docs.retain(|doc| !excluded.contains(doc));
             }
         }
 
@@ -535,7 +598,10 @@ impl<'a> Searcher<'a> {
             // A pure phrase or pure range query scores nothing above, because
             // neither contributes a term weight — but the document did match,
             // so it still has to be collected with a non-zero score.
-            if score == 0.0 && !(query.phrases.is_empty() && query.ranges.is_empty()) {
+            let matched_without_scoring = !query.phrases.is_empty()
+                || !query.phrase_any.is_empty()
+                || !query.ranges.is_empty();
+            if score == 0.0 && matched_without_scoring {
                 score = 1.0;
             }
 

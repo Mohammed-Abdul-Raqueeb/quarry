@@ -113,7 +113,8 @@ Separating them is also what makes the parser testable without an index, which i
 76 parser tests that construct no segments at all.
 
 The planner's output is deliberately lossy. `BooleanQuery` is flat — `must`, `must_any`, `should`,
-`must_not`, `phrases` — so nested alternation collapses. `(a OR b) AND (c OR d)` becomes two
+`must_not`, `phrases`, `phrase_any`, `phrases_not` and `ranges` — so nested alternation
+collapses. `(a OR b) AND (c OR d)` becomes two
 `must_any` groups, which is exactly right; deeper nesting flattens in ways that change scoring
 slightly. [docs/query-language.md](query-language.md) says where.
 
@@ -129,6 +130,17 @@ The fix is a clause type the flat boolean did not have — a group of which at l
 Worth recording because the failure mode is silent. A query returning no results looks like an empty
 corpus, not like a planner bug, and only a test that indexed a word in one field and queried it
 alongside another found it.
+
+And it was recorded and still repeated. Phrases had the identical bug for as long: an unscoped
+phrase pushed one required `PhraseQuery` per default field, so `"zero cost"` demanded the phrase in
+the title *and* the body and every unscoped phrase query returned nothing. 982 unit tests passed
+over it, because each one scoped its phrase to a field. What caught it was the end-to-end smoke
+test in CI, running the real binary against a two-text-field schema — the one check that used the
+thing the way a user would.
+
+The fix is the same shape, `phrase_any`, and the lesson is about the tests rather than the code: a
+clause that expands across fields needs a case where the fields disagree, or the expansion is never
+exercised at all.
 
 ## Scoring is behind a trait
 
