@@ -9,7 +9,8 @@
 //!   cargo bench
 
 use quarry_core::schema::{Schema, SchemaBuilder};
-use quarry_core::tokenize::Analyzer;
+use quarry_core::tokenize::standard::StandardTokenizer;
+use quarry_core::tokenize::{Analyzer, Tokenizer};
 use quarry_core::{
     BooleanQuery, Document, IndexWriter, PhraseQuery, Searcher, Segment, TermQuery, Value,
 };
@@ -282,6 +283,33 @@ fn bench_analysis() {
         black_box(quarry_core::tokenize::stemmer::stem("connections"));
     })
     .report();
+
+    // Tokenizing without filters, for comparison with the full analyze above:
+    // the difference between the two is what the five-filter English chain
+    // costs. Both lines are kept so a claim about filter overhead is checkable
+    // rather than asserted.
+    //
+    // The filters are not timed in isolation on purpose. They consume the
+    // token list, so each iteration would need a fresh copy, and the clone is
+    // the same order of magnitude as the work being measured.
+    let tokenizer = StandardTokenizer::default();
+    measure("tokenize a 500-word body, no filters", 9, 500, || {
+        black_box(tokenizer.tokenize(&long));
+    })
+    .report();
+
+    println!();
+    println!(
+        "  a 500-word body is {} tokens before filtering and {} terms after",
+        tokenizer.tokenize(&long).len(),
+        analyzer.terms(&long).len()
+    );
+    println!(
+        "  the two counts match: the synthetic vocabulary holds no stopwords and no short words,"
+    );
+    println!(
+        "  so this measures the filter chain doing its work, not the shortcut of dropping tokens"
+    );
 }
 
 fn bench_indexing() {
