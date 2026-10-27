@@ -143,6 +143,21 @@ The subtle part is BM25's IDF: `ln(1 + (N - df + 0.5) / (df + 0.5))`. Without th
 appearing in more than half the documents gets a *negative* weight, so adding a common word to a
 query would push matching documents down the ranking. There is a test for exactly that.
 
+## Ranges are answered from the dictionary
+
+A numeric field is indexed as the canonical decimal form of its value. That has one useful
+consequence: the dictionary for that field is already the sorted set of values it contains, so a
+range needs no separate structure at all — scan the terms, parse each, union the postings of the
+ones inside the bounds.
+
+The cost is linear in **distinct values**, not in corpus size. A `year` field has a few dozen terms
+and the scan is free; a float price with a million distinct values makes it a full dictionary pass.
+That is the trade: a dozen lines instead of a numeric trie, correct everywhere, fast in the common
+case and honestly documented in the slow one.
+
+Ranges run last among the required clauses, so a term paired with a range has already narrowed the
+candidate set before the range filters it.
+
 ## The collector is bounded
 
 `TopK` is a min-heap of size `k`. Sorting every match and truncating would be simpler, but it
@@ -187,8 +202,11 @@ function of how many clients show up, which is precisely what an attacker contro
 ## What is deliberately missing
 
 - **Deletes and updates.** Needs a tombstone bitmap per segment and a merge that honours it.
-- **Range execution.** Numeric fields are indexed by their exact decimal form, so a range needs
-  either a post-filter over stored values or a numeric trie. Parsed and planned, not executed.
+- **A numeric index.** Ranges execute, but by scanning the field's dictionary and parsing each term
+  — see below. A trie or range-encoded terms would make a high-cardinality range logarithmic rather
+  than linear in distinct values.
+- **Negated ranges.** The executor intersects range results and cannot subtract them, so
+  `NOT year:[2000 TO 2020]` is reported and dropped rather than applied.
 - **A distributed mode.** Out of scope by a wide margin.
 - **Faceting and aggregations.** Would need a column store alongside the inverted index.
 - **Non-English analysis.** The pipeline is pluggable; only the English components exist.
