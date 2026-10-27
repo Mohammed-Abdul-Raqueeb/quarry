@@ -154,6 +154,47 @@ A field's type decides which pipeline it gets: `text` uses the configured analyz
 uses the keyword pipeline. That is deliberate — lowercasing a tag is wanted, stemming it is not, so
 a keyword field must not follow the text analyzer's configuration.
 
+## Writing a filter
+
+```rust
+pub trait TokenFilter: Debug + Send + Sync {
+    fn apply(&self, tokens: &mut Vec<Token>);
+    fn name(&self) -> &'static str;
+}
+```
+
+The signature mutates rather than consuming and returning, because analysis runs over every term of
+every document and a chain that returns a new `Vec` allocates one per filter. Rewrite text in place
+where you can, and `retain` to drop tokens.
+
+Three rules, in order of how much damage breaking them does:
+
+**Keep each token's offsets.** A filter changes a token's `text`; it must not change `start` or
+`end`. Those are byte offsets into the *original* field value, and highlighting depends on them to
+mark the word as the author wrote it. A filter that recomputes offsets from the rewritten text
+produces snippets that mark the wrong span, which is a bug nothing else will catch.
+
+**Do not renumber positions.** Dropping a token leaves a gap in the position sequence, and that gap
+is load-bearing: it is why `"king of hill"` does not match `"king of the hill"` with `the` removed.
+Compacting positions silently changes which phrases match.
+
+**Stay deterministic.** The same input must produce the same output on the indexing side and the
+query side, or a document becomes unfindable by the text it contains. That rules out anything
+stateful, anything that depends on a clock, and anything that depends on iteration order of a
+`HashMap`.
+
+A length-equality shortcut is the trap worth naming, since it looks like a free optimisation:
+
+```rust
+// Wrong. `quickly` stems to `quickli` -- same length, different text -- so this
+// skips the substitution and quietly stops stemming every `-ly` word.
+if replacement.len() == token.text.len() {
+    continue;
+}
+```
+
+Compare the text, not its length.
+
 ## Highlighting works backwards through this
 
 Analysis is lossy: `run` cannot be turned back into `running`. So snippets re-analyze the **stored
