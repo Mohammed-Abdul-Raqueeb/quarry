@@ -5,6 +5,10 @@ on:
     branches: [main]
   pull_request:
     branches: [main]
+  # Lets a run be started by hand. Needed because the push that creates a
+  # repository default branch does not itself trigger a workflow, so a fresh
+  # clone otherwise has a CI badge that has never been green.
+  workflow_dispatch:
 
 # A new push to the same branch cancels an in-flight run rather than queueing
 # behind it.
