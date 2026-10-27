@@ -23,18 +23,47 @@ fact about the code.
 
 | Operation | Median |
 | --- | --- |
-| Analyze a 6-word title | 1.7 µs |
-| Analyze a 500-word body | 189 µs |
-| Stem one word | 114 ns |
+| Analyze a 6-word title | 1.4 µs |
+| Analyze a 500-word body | 159 µs |
+| Tokenize a 500-word body, no filters | 41 µs |
+| Stem one word | 117 ns |
 
-About 380 ns per term through the full English pipeline. That is more than it needs to be: every
-filter allocates a fresh `Vec<Token>` and a fresh `String` per token, so a five-filter chain does
-five allocations per token.
+About 318 ns per term through the full English pipeline, of which tokenizing is 82 ns and the
+five-filter chain is the remaining 236 ns.
 
-A single mutable pass would be several times faster. It has not been done because the filter chain's
-shape — each filter a small, independently testable `TokenFilter` — is what makes the analyzer easy
-to reason about and to extend, and indexing is not the bottleneck for a search workload. It is a
-known, deliberate cost rather than an oversight.
+### What filtering in place bought
+
+The filters used to take a `Vec<Token>` and return a new one, so a five-filter chain allocated five
+vectors per field value and a `String` for every token `Lowercase` touched. They now take
+`&mut Vec<Token>`: `Lowercase` rewrites ASCII in place, `LengthFilter` and `StopwordFilter` use
+`retain`, `AsciiFolding` skips tokens that are already ASCII, and `PorterStemmer` truncates when the
+stem is a prefix of the word.
+
+Both sides measured in one sitting on one machine, from a worktree at the parent commit, because the
+absolute numbers here move by more than the effect does between sessions:
+
+| | Before | After |
+| --- | --- | --- |
+| 6-word title | 1.8 µs | 1.4 µs |
+| 500-word body | 186 µs | 159 µs |
+
+So roughly 20% off a short value and 15% off a long one — not the several-fold cut the allocation
+count suggests. Two things are worth taking from that.
+
+The short value gains more because the five vector allocations are a fixed cost per field value, and
+a title amortises them over six tokens rather than five hundred. Titles and keyword fields are where
+this shows up.
+
+The long value gains less because stemming dominates and the change barely touches it: at 117 ns a
+word, 500 words is 59 µs, about half of what the whole filter chain costs. `stem` builds a
+`Vec<u8>`, rewrites it through eight steps and converts it back to a `String`, and no amount of care
+in the chain around it changes that. Making the filters allocation-free was worth doing and was not
+where the time was.
+
+Stemming in place against a buffer owned by the filter is the next step and has not been taken:
+Porter's steps truncate and re-append, so the rules read clearly against a growable buffer and much
+less clearly against a borrowed one. Analysis is now within about 4x of the bare tokenizer, and
+indexing is not the bottleneck for a search workload.
 
 ## Indexing
 
