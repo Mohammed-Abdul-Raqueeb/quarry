@@ -26,7 +26,7 @@ Hot reload is not implemented.
 Liveness. Never touches the index, so a slow query cannot make a health check fail.
 
 ```json
-{ "status": "ok", "version": "0.4.0", "uptime_seconds": 8241 }
+{ "status": "ok", "version": "0.5.0", "uptime_seconds": 8241 }
 ```
 
 ### `GET /stats`

@@ -4,7 +4,7 @@ version = 3
 
 [[package]]
 name = "quarry-cli"
-version = "0.4.0"
+version = "0.5.0"
 dependencies = [
  "quarry-core",
  "quarry-query",
@@ -12,18 +12,18 @@ dependencies = [
 
 [[package]]
 name = "quarry-core"
-version = "0.4.0"
+version = "0.5.0"
 
 [[package]]
 name = "quarry-query"
-version = "0.4.0"
+version = "0.5.0"
 dependencies = [
  "quarry-core",
 ]
 
 [[package]]
 name = "quarry-server"
-version = "0.4.0"
+version = "0.5.0"
 dependencies = [
  "quarry-core",
  "quarry-query",
